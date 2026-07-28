@@ -34,7 +34,7 @@ function App() {
           </p>
           <div className="hero__actions">
             <a className="button" href="#directions">Explore directions</a>
-            <a className="text-link" href="/brand/reference/identity-board-wide.png" target="_blank" rel="noreferrer">Open concept board ↗</a>
+            <a className="text-link" href="/brand/reference/identity-board-production.png" target="_blank" rel="noreferrer">Open concept board ↗</a>
           </div>
           <div className="hero__mark" aria-hidden="true">
             <img src="/brand/final/bee-works-mark.svg" alt="" />
