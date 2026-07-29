@@ -1,5 +1,7 @@
 # Archive Note
 
-The previous **BEE Works** concepts remain in the repository only as historical exploration. They are not the active recommendation and should not be used in new website sections, proposals, social graphics, or production files.
+Previous identity concepts and logo directions have been removed from the active repository snapshot because no public name or permanent logo has been approved.
 
-The active working direction is stored under `public/brand/rebrand/` and documented in this directory.
+The only active website identifier is the neutral placeholder under `public/brand/placeholder/`. It exists to support development and must not be treated as final production artwork.
+
+Historical concepts may remain in Git commit history for project traceability, but they should not be reused in website sections, proposals, social graphics, packaging, or garments without a new approval decision.
