@@ -1,5 +1,5 @@
 export type BrandDirection = {
-  id: 'engineered' | 'maker' | 'premium';
+  id: 'everson-supply' | 'bee-assembly' | 'bee-foundry';
   number: string;
   name: string;
   tagline: string;
