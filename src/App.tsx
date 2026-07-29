@@ -1,3 +1,4 @@
+import type { ComponentType } from 'react';
 import { SiteFooter } from './components/SiteFooter';
 import { SiteHeader } from './components/SiteHeader';
 import {
@@ -13,7 +14,7 @@ import {
   StartOrderPage,
 } from './pages/SitePages';
 
-const routeMap: Record<string, () => JSX.Element> = {
+const routeMap: Record<string, ComponentType> = {
   '/': HomePage,
   '/bulk-orders': BulkOrdersPage,
   '/embroidery': EmbroideryPage,
