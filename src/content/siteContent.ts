@@ -16,7 +16,7 @@ export const siteConfig = {
   legalName: 'BEE Organization LLC',
   descriptor: 'Custom Apparel · Embroidery · Graphic Goods',
   primaryMessage: 'Custom apparel built around your group, brand, or idea.',
-  email: 'orders@beeorganization.com',
+  email: '',
   phone: '',
   serviceArea: 'Serving schools, organizations, creators, businesses, teams, events, and individuals.',
   brandStatus: 'Public name and final logo pending approval.',
