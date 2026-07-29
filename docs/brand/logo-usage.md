@@ -1,56 +1,52 @@
-# BEE Assembly Logo Usage
+# Temporary Identifier Usage
 
-## Available files
+## Current asset
 
-- `bee-assembly-mark.svg` — primary full-color symbol for dark backgrounds
-- `bee-assembly-horizontal-dark.svg` — primary horizontal lockup for dark backgrounds
-- `bee-assembly-horizontal-light.svg` — horizontal lockup for light backgrounds
-- `bee-assembly-one-color.svg` — production-safe mark for embroidery, vinyl, stamps, and single-ink printing
+- `public/brand/placeholder/bee-organization-mark.svg`
 
-## Production priority
+This is a neutral website placeholder used while the final public name and logo are developed. It is not a final brand asset and must not be submitted for trademark registration, embroidery digitizing, garment labels, permanent signage, or customer merchandise.
 
-The identity must remain recognizable in this order:
+## Permitted use
+
+- Local and staging website header
+- Development favicon
+- Internal website previews
+- Temporary project documentation
+
+## Do not
+
+- Describe the placeholder as the official logo
+- Add a founder name or personal-name explanation
+- Produce the mark on customer garments
+- Create branded packaging or signage from it
+- Use it in a public launch campaign
+- Infer a final color palette from the temporary website colors
+- Add insect, hornet, hive, honey, wing, or stinger elements
+
+## Requirements for the final mark
+
+The final identity must remain recognizable in this order:
 
 1. One-color embroidery
 2. One-color print
 3. Two-color print
-4. Full-color digital use
+4. Small digital icon
+5. Full-color digital use
 
-Digital gradients, shadows, chrome, bevels, and glow effects are not part of the core identity. They may appear in campaign artwork only when the flat logo remains available and unchanged.
+It should be tested for:
 
-## Clear space
-
-Keep clear space around the mark equal to at least one-half of the mark’s total height. Do not place type, seams, borders, or other logos inside that space.
-
-## Minimum size
-
-- Digital standalone mark: 24 px minimum height
-- Digital horizontal lockup: 180 px minimum width
-- Embroidered standalone mark: test at 1.25 inches tall or larger
-- Printed horizontal lockup: 2.5 inches wide or larger
-
-Actual embroidery minimums must be confirmed with a stitch test. Small details may require a simplified digitized version.
-
-## Approved colors
-
-- Carbon: `#0B0D10`
-- Steel: `#394047`
-- Bone: `#F5F2EA`
-- Copper: `#C8793A`
-- Signal amber: `#E0A53A`
-
-## Do not
-
-- Add bee wings, antennae, eyes, or a stinger
-- Replace copper with neon yellow by default
-- Stretch or rotate the mark
-- Add bevels or metallic effects to production files
-- Change the relative size of the mark and wordmark
-- Put the detailed descriptor into very small embroidery
-- Use the legal LLC name as though it were part of the public logo
+- Structured hats
+- Left-chest embroidery
+- Sleeve marks
+- Woven or printed labels
+- Vinyl and transfer production
+- Invoices and proposals
+- Social avatars
+- Mobile and desktop headers
+- Dark and light backgrounds
 
 ## Legal attribution
 
-When appropriate, use the following separately from the logo:
+Use the legal company name separately in appropriate contracts, invoices, policies, and website footer content:
 
-> BEE Assembly is operated by BEE Organization LLC.
+> Operated by BEE Organization LLC.
