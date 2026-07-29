@@ -1,22 +1,22 @@
-# Color System
+# Temporary Interface Color System
 
-## Core palette
+The current website colors support a polished development preview. They are not the final brand palette.
+
+## Current interface tokens
 
 | Token | Hex | Purpose |
 |---|---|---|
-| Carbon | `#0B0D10` | Primary dark background and one-color mark |
-| Steel | `#394047` | Secondary surfaces and technical support color |
-| Bone | `#F5F2EA` | Primary light text and light-background mark |
-| Copper | `#C8793A` | Primary accent and assembly joint |
-| Signal amber | `#E0A53A` | Limited calls to action and campaign emphasis |
+| Background | `#0A0D10` | Primary website background |
+| Surface | `#11161C` | Cards, header, and footer surfaces |
+| Text | `#EDF0F2` | Primary readable text |
+| Muted | `#9DA7B0` | Supporting copy and labels |
+| Temporary accent | `#6E8EA3` | Calls to action and interface emphasis |
+| Temporary bright accent | `#9BB7C8` | Small labels and active states |
 
-## Usage balance
+## Rules
 
-- Carbon and Bone should carry most of the identity.
-- Copper should be the recognizable brand accent.
-- Signal amber should be used sparingly and should not turn the system back into generic yellow-and-black bee branding.
-- Steel supports interface structure, technical diagrams, and neutral apparel applications.
-
-## Accessibility
-
-Text and interface colors must be checked against the actual background used. Do not rely on Copper or Signal amber for small body text on light backgrounds.
+- Do not reproduce these colors as a permanent garment or packaging identity without approval.
+- Do not infer that the blue-gray accent is the final company color.
+- Maintain accessible contrast for text, controls, focus states, and form fields.
+- The final palette should be introduced through CSS variables rather than scattered hard-coded replacements.
+- Final colors must be tested across print, thread, screen, light garments, and dark garments.
