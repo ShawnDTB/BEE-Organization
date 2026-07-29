@@ -1,44 +1,32 @@
-# BEE Organization Platform
+# BEE Organization Website
 
-Brand, website, sales, and operating-system foundation for **BEE Organization LLC**.
+Website, custom-order intake, brand foundation, and future commerce platform for **BEE Organization LLC**.
 
-The current recommended customer-facing identity is **BEE Assembly**. In this system, BEE represents founder **Brian Eugene Everson** rather than a literal bee or hornet mascot. “Assembly” connects the company’s group-focused customers, made-to-order production, creator communities, and Brian’s hands-on interest in computer hardware and systems.
+## Current status
 
-> **Working identity:** Naming, domain, social-handle, and trademark clearance must be completed before public launch.
+The project now contains a complete customer-facing website structure while the final public name and logo remain undecided.
 
-## Current milestone
-
-This branch delivers the second identity milestone:
-
-- Replaces **BEE Works** throughout the active experience.
-- Introduces three stronger naming routes:
-  - Everson Supply Co.
-  - BEE Assembly — recommended
-  - BEE Foundry
-- Adds a flat modular BEE Assembly mark designed for embroidery and one-color production.
-- Adds dark, light, and production-safe logo variants.
-- Repositions BEE as Brian Eugene Everson’s founder mark.
-- Repairs the dependency versions that prevented `npm install` from completing.
-- Adds automated typecheck and production-build validation through GitHub Actions.
-
-## Positioning
-
-> **Custom apparel, built for your people.**
-
-BEE Assembly is being designed to serve schools, teams, organizations, businesses, events, streamers, content creators, and individual customers through affordable bulk ordering, dependable quality, proof approval, and easy reorders.
-
-## Brand architecture
-
+- Temporary site label: **BEE Organization**
 - Legal entity: **BEE Organization LLC**
-- Recommended public brand: **BEE Assembly**
-- Founder meaning: **Brian Eugene Everson**
-- Primary descriptor: **Custom Apparel · Embroidery · Creator Goods**
-- Brand promise: **Built together. Made to represent.**
-- Future-compatible divisions:
-  - BEE Assembly Apparel
-  - BEE Assembly Creator Goods
-  - BEE Assembly Programs
-  - BEE Assembly Systems
+- Public brand name: **Pending approval and clearance**
+- Final logo: **Pending design and production testing**
+- Current mark: Neutral placeholder only
+
+No founder or private personal name is used in the active website or documentation.
+
+## Website pages
+
+- `/` — Homepage
+- `/bulk-orders` — Bulk-order programs and quote factors
+- `/embroidery` — Embroidery applications, artwork, placement, and production considerations
+- `/graphic-apparel` — Graphic-decoration methods and artwork readiness
+- `/creator-merch` — Creator merchandise development and future program support
+- `/schools-organizations` — Schools, teams, businesses, and community-order programs
+- `/our-work` — Transparent portfolio framework with approved-work placeholders
+- `/about` — Business model, operating values, and DTB partnership
+- `/start-order` — Interactive quote-intake prototype
+
+The Cloudflare Pages `_redirects` file provides fallback routing for direct page visits.
 
 ## Local development
 
@@ -47,77 +35,85 @@ BEE Assembly is being designed to serve schools, teams, organizations, businesse
 - Node.js 20.19 or newer
 - npm 10 or newer
 
-Check your installation:
+Node.js 22.16.0 is pinned through `.node-version` and used by CI.
+
+### Start the project
 
 ```bash
-node --version
-npm --version
-```
-
-### Clean installation
-
-From the repository root:
-
-```bash
-npm cache verify
 npm install
 npm run dev
 ```
 
-The development server will normally open at `http://localhost:5173`.
+The development server normally runs at `http://localhost:5173`.
 
-### If an older failed installation exists
+### Repair an older failed Windows installation
 
-Windows Command Prompt:
+Command Prompt:
 
 ```cmd
-rmdir /s /q node_modules
+rmdir /s /q node_modules 2>nul
 if exist package-lock.json del package-lock.json
 npm cache verify
 npm install
 npm run dev
 ```
 
-PowerShell:
-
-```powershell
-Remove-Item node_modules -Recurse -Force -ErrorAction SilentlyContinue
-Remove-Item package-lock.json -Force -ErrorAction SilentlyContinue
-npm cache verify
-npm install
-npm run dev
-```
-
-### Production validation
+### Validate production
 
 ```bash
 npm run check
 ```
 
-This runs TypeScript validation followed by the Vite production build.
+This runs TypeScript validation and the Vite production build.
 
-## Why the install previously failed
+## Why Vite was not recognized
 
-The original `package.json` referenced `@types/react@19.1.8`, which is no longer available from the active npm registry. Because installation stopped before creating `node_modules`, the local Vite executable was never installed. `npm run dev` then reported that `vite` was not recognized.
-
-The toolchain is now pinned to an installable, mutually compatible set of React, TypeScript, Vite, and React type packages.
+The original dependency set referenced an unavailable React type release. `npm install` stopped before the project-local Vite executable was installed. The dependency versions are now compatible and GitHub Actions verifies installation and production compilation.
 
 ## Repository structure
 
 ```text
 .github/workflows/       Automated install, typecheck, and build validation
-docs/brand/              Brand strategy, naming rationale, and logo usage
+docs/brand/              Temporary-brand rules and final-brand decision requirements
 docs/content/            Sitemap and launch copy
-docs/architecture/       Technical architecture and implementation notes
+docs/development/        Local setup and troubleshooting
 docs/operations/         Quote, proof, production, and reorder workflows
-public/brand/rebrand/    Current logo system and naming concepts
-src/                     Interactive identity and platform prototype
+public/brand/placeholder Neutral temporary identifier
+src/components/          Header, footer, and shared interface components
+src/content/             Centralized site configuration and copy
+src/pages/               Complete customer-facing page set
+src/styles/              Responsive design system
 ```
 
-## Ownership and commercial notes
+## Content standards
 
-Earlier planning discussed a **2% website-sales fee plus a 15% profit-share** for Designed to Breakthrough LLC. That structure remains a planning reference only until responsibilities, eligible revenue, expenses, refunds, chargebacks, reporting, intellectual property, payout timing, and exit terms are defined in a signed agreement.
+The current build intentionally avoids:
 
-## Status
+- Private personal names
+- Unapproved customer names or creator identities
+- Invented testimonials, order counts, or savings claims
+- Guaranteed turnaround without production data
+- Public flat pricing that ignores project variables
+- Presenting placeholder branding as final
 
-This repository is a brand-and-platform foundation, not a public commerce launch. Pricing, policies, production capabilities, naming clearance, legal terms, and customer-service commitments must be finalized before accepting orders.
+## Platform roadmap
+
+The next platform phases can connect:
+
+- Secure quote submission
+- Artwork uploads
+- Customer and order records
+- Proof approval
+- Deposit and payment collection
+- Production status tracking
+- Automated customer notifications
+- Reorders
+- Analytics and conversion tracking
+
+## Commercial notes
+
+Earlier planning discussed a **2% website-sales fee plus a 15% profit-share** for Designed to Breakthrough LLC. That remains a planning reference until responsibilities, qualifying revenue, expenses, refunds, chargebacks, reporting, intellectual property, payout timing, maintenance, and exit terms are defined in a signed agreement.
+
+## Launch limitations
+
+This repository is not yet a public commerce launch. Pricing, policies, production capacity, service availability, public naming, final identity, legal terms, and customer-support commitments must be approved before accepting live orders through the website.
