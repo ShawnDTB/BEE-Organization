@@ -1,15 +1,19 @@
 # Public Name Clearance Checklist
 
-Before BEE Assembly becomes the official customer-facing name, complete and document the following checks:
+Before any new customer-facing name becomes official, complete and document the following checks:
 
 - Pennsylvania business-name and fictitious-name search
 - USPTO trademark search for identical and confusingly similar names
-- General web search for apparel, embroidery, promotional-goods, and technology businesses
+- General web search for apparel, embroidery, promotional-goods, creator-merchandise, and technology businesses
 - Domain availability and ownership review
 - Matching or acceptable social handles
 - Local Google Business Profile conflicts
+- Search-engine ambiguity and pronunciation testing
 - Apparel-label and packaging readability
-- Verbal testing with schools, organizations, and creator customers
-- Written approval from Brian Eugene Everson
+- Embroidery and one-color logo testing
+- Verbal testing with schools, organizations, businesses, and creator customers
+- Written approval from the authorized business owner
+
+Do not publish personal-name explanations as part of the brand story without separate written approval.
 
 This checklist supports business planning and is not a substitute for legal advice or a professional trademark clearance opinion.
