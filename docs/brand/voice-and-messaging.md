@@ -2,11 +2,11 @@
 
 ## Primary message
 
-**Custom apparel, built for your people.**
+**Custom apparel built around your group, brand, or idea.**
 
 ## Supporting message
 
-Affordable, dependable embroidery and graphic apparel for schools, organizations, creators, teams, businesses, events, and individuals.
+Organized embroidery and graphic apparel for schools, organizations, creators, teams, businesses, events, and individuals.
 
 ## Brand voice
 
@@ -23,19 +23,22 @@ Affordable, dependable embroidery and graphic apparel for schools, organizations
 2. Show real production quality.
 3. Explain pricing and turnaround without exaggeration.
 4. Make reordering easier than starting again.
-5. Feature the customer or creator rather than making Brian the center of every message.
+5. Feature the customer, group, or creator rather than private ownership details.
+6. Separate active capabilities from future platform plans.
 
 ## Approved lines
 
-- Built together. Made to represent.
-- Custom apparel, built for your people.
-- One proof. One organized order. Easy reorders.
-- Quality bulk apparel without an inflated process.
-- Your group, your identity, properly produced.
+- Custom apparel built around your group, brand, or idea.
+- Approve the proof before production begins.
+- Reorder without rebuilding the project.
+- Clear details before production commitments.
+- The right decoration method for the actual order.
+- One organized request from idea through delivery.
 
 ## Avoid
 
-- Buzzing, hive, swarm, queen, sting, or honey puns
+- Buzzing, hive, swarm, queen, sting, hornet, or honey puns
+- Personal-name explanations
 - Claims such as “best quality” without evidence
 - Guaranteed turnaround before production capacity is documented
 - “Cheap” as a primary value proposition
