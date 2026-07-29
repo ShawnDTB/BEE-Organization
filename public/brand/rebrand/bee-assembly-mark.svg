@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-labelledby="title desc">
+  <title id="title">BEE Assembly modular mark</title>
+  <desc id="desc">Three engineered bars and a copper joining piece form an abstract E-shaped assembly.</desc>
+  <g fill="#F5F2EA">
+    <path d="M20 20h88l22 20-22 20H48V48H20z"/>
+    <path d="M20 68h70l20 18-20 18H48V92H20z"/>
+    <path d="M20 112h88l22 20-22 8H20z"/>
+  </g>
+  <path fill="#C8793A" d="M95 68h18l27 44h-24L89 82z"/>
+</svg>
