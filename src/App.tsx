@@ -5,53 +5,71 @@ import { brandDirections } from './content/brandDirections';
 import type { BrandDirection } from './types/brand';
 
 const launchPillars = [
-  ['Bulk', 'Schools, teams, organizations, businesses, events, and community groups.'],
-  ['Creators', 'Streamer and content-creator collections with spotlight and reorder support.'],
-  ['Custom', 'Individual apparel, personal designs, gifts, and limited-run pieces.'],
+  ['Bulk programs', 'Affordable, dependable apparel for schools, teams, businesses, events, and community organizations.'],
+  ['Creator goods', 'Custom collections for streamers and creators with reusable artwork, featured launches, and easy reorders.'],
+  ['Individual custom', 'One-off garments and small runs without making personal customers feel secondary.'],
+] as const;
+
+const brandPrinciples = [
+  ['Initials, not insects', 'BEE stands for Brian Eugene Everson. The identity should behave like a founder mark, not a hornet mascot.'],
+  ['Built for production', 'Every core mark must survive embroidery, print, garment labels, invoices, social avatars, and one-color use.'],
+  ['Expandable by design', 'The umbrella must support apparel now while leaving a credible path into creator services, hardware, or systems.'],
 ] as const;
 
 function App() {
-  const [selected, setSelected] = useState<BrandDirection>(brandDirections[0]!);
+  const [selected, setSelected] = useState<BrandDirection>(brandDirections[1]!);
 
   return (
     <div id="top" className="site-shell">
       <header className="topbar">
         <LogoLockup />
         <nav aria-label="Primary">
-          <a href="#directions">Directions</a>
+          <a href="#directions">Name routes</a>
           <a href="#recommendation">Recommendation</a>
-          <a href="#foundation">Foundation</a>
+          <a href="#foundation">Business foundation</a>
         </nav>
-        <a className="button button--small" href="#decision">Review direction</a>
+        <a className="button button--small" href="#decision">Review the system</a>
       </header>
 
       <main>
         <section className="hero">
-          <div className="hero__eyebrow"><span /> Identity milestone 01</div>
-          <h1>A brand built like the products behind it.</h1>
+          <div className="hero__eyebrow"><span /> Brand reset · milestone 02</div>
+          <h1>Custom apparel, built for your people.</h1>
           <p>
-            Three scalable directions for BEE Organization LLC—designed to move beyond a classic hornet mascot and establish a modern identity for apparel, creators, bulk clients, and future technology opportunities.
+            A founder-led identity for Brian Eugene Everson—positioned to earn bulk orders from schools and organizations, create memorable merchandise for creators, and expand beyond apparel without starting over.
           </p>
           <div className="hero__actions">
-            <a className="button" href="#directions">Explore directions</a>
-            <a className="text-link" href="/brand/reference/identity-board-production.png" target="_blank" rel="noreferrer">Open concept board ↗</a>
+            <a className="button" href="#directions">Compare name routes</a>
+            <a className="text-link" href="#recommendation">Why BEE Assembly? ↘</a>
           </div>
           <div className="hero__mark" aria-hidden="true">
-            <img src="/brand/final/bee-works-mark.svg" alt="" />
+            <img src="/brand/rebrand/bee-assembly-mark.svg" alt="" />
           </div>
         </section>
 
         <section className="strategy-strip" aria-label="Brand strategy summary">
-          <div><small>Legal entity</small><strong>BEE Organization LLC</strong></div>
-          <div><small>Working public brand</small><strong>BEE Works</strong></div>
-          <div><small>Core promise</small><strong>Quality without inflated bulk pricing</strong></div>
-          <div><small>Primary direction</small><strong>Engineered Monogram</strong></div>
+          <div><small>Legal owner</small><strong>BEE Organization LLC</strong></div>
+          <div><small>Recommended public brand</small><strong>BEE Assembly</strong></div>
+          <div><small>Founder meaning</small><strong>Brian Eugene Everson</strong></div>
+          <div><small>Core promise</small><strong>Built together. Made to represent.</strong></div>
+        </section>
+
+        <section className="section principles" aria-label="Brand principles">
+          <div className="section-heading">
+            <div><span className="kicker">Non-negotiables</span><h2>A brand system that can do real work.</h2></div>
+            <p>The visual identity is being rebuilt around the business model, production process, and Brian’s actual personality.</p>
+          </div>
+          <div className="principle-grid">
+            {brandPrinciples.map(([title, description], index) => (
+              <article key={title}><span>0{index + 1}</span><h3>{title}</h3><p>{description}</p></article>
+            ))}
+          </div>
         </section>
 
         <section id="directions" className="section section--board">
           <div className="section-heading">
-            <div><span className="kicker">Three-direction board</span><h2>Distinct expressions. One strategic foundation.</h2></div>
-            <p>Select a card to update the comparison panel below.</p>
+            <div><span className="kicker">Naming exploration</span><h2>Three credible routes. No mascot dependency.</h2></div>
+            <p>Select a route to compare its position, audience, voice, and visual direction.</p>
           </div>
           <div className="direction-grid">
             {brandDirections.map((direction) => (
@@ -61,11 +79,11 @@ function App() {
 
           <div id="decision" className="selected-direction">
             <div className="selected-direction__visual">
-              <span>Selected direction</span>
-              <img src={selected.logo} alt={`${selected.name} selected logo`} />
+              <span>Currently reviewing</span>
+              <img src={selected.logo} alt={`${selected.name} logo concept`} />
             </div>
             <div>
-              <span className="kicker">{selected.number}</span>
+              <span className="kicker">Route {selected.number}</span>
               <h3>{selected.name}</h3>
               <p>{selected.thesis}</p>
               <blockquote>“{selected.tagline}”</blockquote>
@@ -76,26 +94,26 @@ function App() {
         <section id="recommendation" className="section recommendation">
           <div className="recommendation__copy">
             <span className="kicker">DTB recommendation</span>
-            <h2>Lead with the Engineered Monogram.</h2>
+            <h2>Build the public brand around BEE Assembly.</h2>
             <p>
-              It feels closest to Brian: a hands-on builder, hardware enthusiast, gamer, and production-minded business owner. The mark is structured enough for schools and organizations, distinct enough for creator merchandise, and flexible enough to expand into technology later.
+              “Assembly” connects the audiences and the process: groups assemble around a shared identity, apparel is assembled and decorated to order, and Brian is naturally a builder who enjoys hardware and systems. BEE remains meaningful because it is his name—not because the company needs a cartoon bee.
             </p>
             <ul>
-              <li>Reduces cleanly for embroidery and garment labels.</li>
-              <li>Works in one color before relying on gradients or effects.</li>
-              <li>Uses the bee reference as subtle geometry, not a cartoon mascot.</li>
-              <li>Creates a recognizable B icon independent of the final public name.</li>
+              <li>Clear separation between the public brand and BEE Organization LLC.</li>
+              <li>Memorable enough for creator merchandise while credible for school proposals.</li>
+              <li>Expandable into Apparel, Creator Goods, Programs, and future Systems divisions.</li>
+              <li>Flat modular mark designed for embroidery before digital effects.</li>
             </ul>
           </div>
           <div className="recommendation__lockup">
-            <img src="/brand/final/bee-works-horizontal-dark.svg" alt="BEE Works engineered monogram logo" />
-            <div className="application-row"><span>CAP</span><span>CHEST</span><span>TAG</span><span>DIGITAL</span></div>
+            <img src="/brand/rebrand/bee-assembly-horizontal-dark.svg" alt="BEE Assembly modular identity" />
+            <div className="application-row"><span>CAP</span><span>POLO</span><span>LABEL</span><span>DIGITAL</span></div>
           </div>
         </section>
 
         <section id="foundation" className="section section--foundation">
           <div className="section-heading">
-            <div><span className="kicker">Platform foundation</span><h2>Designed around the customer journey.</h2></div>
+            <div><span className="kicker">Business foundation</span><h2>Three customers. One repeatable order system.</h2></div>
           </div>
           <div className="pillar-grid">
             {launchPillars.map(([title, description]) => (
@@ -112,7 +130,7 @@ function App() {
 
       <footer>
         <LogoLockup compact />
-        <p>Working identity for BEE Organization LLC · Strategy and platform by Designed to Breakthrough LLC</p>
+        <p>BEE Assembly is a working public identity operated by BEE Organization LLC · Strategy and platform by Designed to Breakthrough LLC</p>
       </footer>
     </div>
   );
