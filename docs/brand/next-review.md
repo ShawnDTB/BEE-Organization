@@ -1,12 +1,14 @@
 # Next Brand Review
 
-Review these items with Brian before merging the identity into `main`:
+Review these items before replacing the temporary BEE Organization presentation:
 
-1. Does BEE Assembly feel like him personally?
-2. Does “Assembly” make sense for both apparel customers and possible future technology work?
-3. Is Everson Supply Co. more trustworthy for the schools and groups he expects to approach?
-4. Does the modular mark feel distinctive without looking like a gaming-team logo?
-5. Can the one-color mark be embroidered cleanly at practical sizes?
-6. Which descriptor should lead: Custom Apparel, Embroidery, or Creator Goods?
+1. Does the name sound credible when introduced to a school, organization, business, creator, and individual customer?
+2. Is the name flexible enough for apparel now without becoming meaningless if the company expands later?
+3. Is the mark recognizable without insect imagery, gradients, bevels, or visual effects?
+4. Can the one-color mark be embroidered cleanly at practical sizes?
+5. Does the identity work on a polo, hat, garment label, invoice, proposal, social avatar, website header, and packaging sticker?
+6. Which descriptor should lead: Custom Apparel, Embroidery, Graphic Goods, or another approved phrase?
+7. Are personal names and founder details excluded unless publication is explicitly approved?
+8. Have domain, social, business-name, and trademark checks been documented?
 
-Record the decision in `decision-record.md`, then update the active assets and site copy before public launch.
+Record the final decision in `decision-record.md`, update `src/content/siteContent.ts`, replace the placeholder assets, and rerun production validation before public launch.
