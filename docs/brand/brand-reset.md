@@ -1,86 +1,83 @@
 # BEE Organization Brand Reset
 
-## Recommended public identity
+## Current decision
 
-**BEE Assembly**
+The final public name and logo are intentionally undecided.
 
-- Legal owner: BEE Organization LLC
-- Founder meaning: Brian Eugene Everson
-- Primary descriptor: Custom Apparel · Embroidery · Creator Goods
-- Brand promise: Built together. Made to represent.
+- Legal owner: **BEE Organization LLC**
+- Temporary website label: **BEE Organization**
+- Primary descriptor: **Custom Apparel · Embroidery · Graphic Goods**
+- Public name: Pending
+- Final logo: Pending
 
-## Why the previous direction changed
+## Why the identity remains open
 
-“BEE Works” retained too much of the original insect-led concept while also sounding generic. Its metallic gaming-style mark did not translate confidently to school proposals, invoices, polos, hats, woven labels, or small embroidery.
+Earlier concepts leaned too heavily toward insect imagery, generic maker naming, or visually complex marks that could become difficult to reproduce across embroidery, garment labels, school proposals, invoices, digital interfaces, and future business categories.
 
-The reset separates three ideas:
+Rather than force a weak decision into the website, the platform now separates identity from structure:
 
-1. **BEE is a founder mark.** It represents Brian Eugene Everson.
-2. **Assembly is the operating idea.** People, garments, artwork, components, and communities come together.
-3. **The legal company remains stable.** BEE Organization LLC can own the public brand and any later divisions.
+1. The legal company remains stable.
+2. The customer journey and business pages can be completed now.
+3. The final public name, mark, descriptor, and palette can be replaced centrally later.
+4. Personal founder details remain private unless explicitly approved for publication.
 
-## Naming routes considered
+## Temporary identity rules
 
-### Everson Supply Co.
+The current website uses a neutral framed identifier under `public/brand/placeholder/`.
 
-The most established and institution-friendly direction. It earns trust quickly and leaves broad room for product expansion, but it reduces the connection to the legal BEE name.
+It must not be described as:
 
-### BEE Assembly — recommended
+- The final logo
+- A trademark-cleared public identity
+- An embroidery-approved production mark
+- A permanent garment-label design
+- A founder monogram
 
-The strongest balance of personal meaning, group-focused sales, apparel production, creator communities, and future technical expansion.
+## Brand personality to preserve
 
-### BEE Foundry
-
-The most industrial and maker-driven route. It is distinctive but may feel heavier than the approachable tone needed for schools and community organizations.
-
-## Identity concept
-
-The BEE Assembly mark is an abstract modular E made from three horizontal components and a joining piece.
-
-The three primary components represent:
-
-- Brian
-- Eugene
-- Everson
-
-They also represent the company’s initial customer paths:
-
-- Bulk programs
-- Creator goods
-- Individual custom work
-
-The copper joint communicates assembly, connection, fabrication, and forward movement. The symbol intentionally avoids wings, antennae, stingers, honey, and cartoon character features.
-
-## Brand personality
+Regardless of the final name, the business should feel:
 
 - Capable, not corporate
-- Technical, not futuristic for its own sake
 - Crafted, not rustic
-- Premium, not overpriced
+- Organized, not complicated
+- Premium, not inflated
 - Approachable, not childish
-- Flexible, not generic
+- Technical where useful, not futuristic for its own sake
+- Expandable without becoming vague
 
-## Initial voice
+## Messaging foundation
 
-Use direct, confident language centered on the customer’s group and outcome.
+Use direct language centered on the customer and the order.
 
 Preferred examples:
 
-- Custom apparel, built for your people.
-- Built together. Made to represent.
-- Quality bulk apparel without an inflated process.
+- Custom apparel built around your group, brand, or idea.
 - Approve the proof before production begins.
-- Reorder without rebuilding your project.
+- Reorder without rebuilding the project.
+- Clear details before production commitments.
+- The right decoration method for the actual order.
 
 Avoid:
 
-- Bee puns
-- Hive language
-- Aggressive hornet language
-- Unverified quality or turnaround guarantees
-- “Cheapest” positioning
+- Bee, hive, honey, swarm, or stinger puns
+- Personal-name explanations
+- Unverified quality, savings, volume, or turnaround claims
+- “Cheapest” as the main value proposition
 - Technical language customers do not need
+- Presenting possible future services as active capabilities
 
-## Clearance before launch
+## Final identity requirements
 
-The recommended name remains a working identity until domain, social-handle, state registration, and trademark screening are complete. Final legal clearance should be performed by a qualified professional.
+Before adoption, the final name and logo should pass:
+
+- Stakeholder approval
+- Domain and social-handle review
+- State business-name review when applicable
+- Trademark screening
+- One-color reproduction
+- Embroidery testing
+- Small digital-size testing
+- School and organization credibility review
+- Creator and apparel-label usability review
+
+Final legal clearance should be performed by a qualified professional.
