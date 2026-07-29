@@ -4,13 +4,13 @@
 
 **BEE Organization LLC**
 
-The legal company name remains stable regardless of the final public-facing identity.
+The legal company name remains stable regardless of the final customer-facing identity.
 
-## Recommended public brand
+## Temporary website presentation
 
-**BEE Assembly**
+**BEE Organization**
 
-BEE represents Brian Eugene Everson. Assembly represents people, production, and components coming together.
+This is a neutral working label, not a final public brand recommendation. The website uses a placeholder identifier and a centralized configuration file so the approved name and logo can be introduced later without restructuring the platform.
 
 ## Initial offers
 
@@ -18,15 +18,15 @@ BEE represents Brian Eugene Everson. Assembly represents people, production, and
 - Embroidery
 - Graphic apparel
 - Creator merchandise
+- Schools and organization programs
 - Individual custom garments
 - Artwork preparation and proofing
 - Reorders
 
-## Possible future extensions
+## Future-compatible structure
 
-- BEE Assembly Apparel
-- BEE Assembly Creator Goods
-- BEE Assembly Programs
-- BEE Assembly Systems
+Any future divisions should be created only after a corresponding service, customer base, operational owner, and financial model exist. The legal umbrella can support later apparel, creator, production, or technology offerings without forcing those ideas into the launch identity.
 
-Extensions should only be introduced when there is a real customer offer behind them. Avoid creating empty sub-brands at launch.
+## Privacy rule
+
+Personal names and founder details are excluded from the customer-facing brand by default. They should only be introduced when explicitly approved and when they serve a necessary business purpose.
