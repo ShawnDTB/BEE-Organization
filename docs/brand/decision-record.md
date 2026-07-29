@@ -2,25 +2,29 @@
 
 ## Status
 
-Proposed for review
+Temporary decision approved for website development
 
-## Recommendation
+## Decision
 
-Adopt **BEE Assembly** as the working public identity while retaining **BEE Organization LLC** as the legal owner.
+Use **BEE Organization** as a neutral website label while retaining **BEE Organization LLC** as the legal owner. Do not treat the temporary label or placeholder mark as the final public identity.
 
 ## Decision drivers
 
-- BEE has personal meaning as Brian Eugene Everson.
-- Assembly communicates groups, production, components, and community.
-- The name can serve schools and businesses without losing creator appeal.
-- The system can expand into apparel, creator goods, programs, and technology.
-- The logo can remain flat, one-color, and embroidery-safe.
+- The website and operating structure should continue without forcing an unapproved name.
+- The final identity must work for schools, organizations, creators, businesses, individuals, and possible future expansion.
+- The final mark must reproduce cleanly in embroidery, one-color printing, labels, proposals, and small digital sizes.
+- Public materials should not depend on personal founder information.
+- Branding is centralized in code so an approved identity can replace the temporary presentation efficiently.
 
-## Alternatives retained
+## Deferred decisions
 
-- Everson Supply Co. remains the strongest institution-first alternative.
-- BEE Foundry remains the strongest maker-first alternative.
+- Final customer-facing name
+- Final logo and production variants
+- Final color system
+- Final descriptor and tagline
+- Domain and social-handle selection
+- Trademark and business-name clearance
 
 ## Approval required
 
-The recommendation is not final until Brian approves the name, tone, and identity and the clearance checklist is completed.
+A final identity should only be adopted after stakeholder approval, clearance review, and physical production testing.
