@@ -265,21 +265,6 @@ src/pages/               Customer-facing page set
 src/styles/              Responsive design system
 ```
 
-## Partnership and commercial guardrails
-
-Earlier planning discussed a **2% website-sales fee plus a 15% profit-share** for Designed to Breakthrough LLC. Those figures remain planning references unless and until a signed agreement clearly defines:
-
-- Responsibilities and decision-making authority
-- Qualifying revenue and excluded revenue
-- Expenses, refunds, discounts, taxes, and chargebacks
-- Reporting and payment timing
-- Website, code, content, data, account, and intellectual-property ownership
-- Hosting, maintenance, security, and support expectations
-- Access credentials and continuity procedures
-- Termination, transition, buyout, and exit terms
-
-The partnership should avoid unclear ownership, mixed expenses, undocumented systems, unlimited unpaid labor, or incentives that do not reflect actual responsibilities. The purpose of written guardrails is to protect both businesses while allowing their work to compound over time.
-
 ## Launch limitations
 
 This repository is not yet a public commerce launch. Pricing, policies, production capacity, service availability, public naming, final identity, legal terms, payment handling, privacy requirements, and customer-support commitments must be approved before the platform accepts live orders.
