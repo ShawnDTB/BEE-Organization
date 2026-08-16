@@ -2,6 +2,13 @@ import type { ComponentType } from 'react';
 import { SiteFooter } from './components/SiteFooter';
 import { SiteHeader } from './components/SiteHeader';
 import {
+  AccountPage,
+  CartPage,
+  CheckoutPage,
+  ShopPage,
+  ShopProductPage,
+} from './pages/CommercePages';
+import {
   AboutPage,
   BulkOrdersPage,
   CreatorMerchPage,
@@ -16,6 +23,10 @@ import {
 
 const routeMap: Record<string, ComponentType> = {
   '/': HomePage,
+  '/shop': ShopPage,
+  '/cart': CartPage,
+  '/checkout': CheckoutPage,
+  '/account': AccountPage,
   '/bulk-orders': BulkOrdersPage,
   '/embroidery': EmbroideryPage,
   '/graphic-apparel': GraphicApparelPage,
@@ -31,9 +42,14 @@ function normalizePath(pathname: string) {
   return pathname.replace(/\/+$/, '');
 }
 
+function resolvePage(currentPath: string): ComponentType {
+  if (currentPath.startsWith('/shop/')) return ShopProductPage;
+  return routeMap[currentPath] ?? NotFoundPage;
+}
+
 function App() {
   const currentPath = normalizePath(window.location.pathname);
-  const Page = routeMap[currentPath] ?? NotFoundPage;
+  const Page = resolvePage(currentPath);
 
   return (
     <div className="site-shell">
