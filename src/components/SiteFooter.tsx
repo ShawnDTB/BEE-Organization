@@ -7,7 +7,7 @@ export function SiteFooter() {
       <div className="site-footer__lead">
         <LogoLockup compact />
         <p>{siteConfig.primaryMessage}</p>
-        <a className="button" href="/start-order">Start a project</a>
+        <a className="button" href="/shop">Explore the shop</a>
       </div>
       <div className="site-footer__grid">
         <div>
@@ -18,22 +18,21 @@ export function SiteFooter() {
           <a href="/creator-merch">Creator merchandise</a>
         </div>
         <div>
+          <h2>Shop & account</h2>
+          <a href="/shop">Shop catalog</a>
+          <a href="/cart">Project bag</a>
+          <a href="/account">Customer dashboard</a>
+          <a href="/start-order">Start a custom request</a>
+        </div>
+        <div>
           <h2>Company</h2>
           {navItems.slice(4).map((item) => <a key={item.href} href={item.href}>{item.label}</a>)}
-          <a href="/start-order">Start an order</a>
         </div>
         <div>
-          <h2>Order support</h2>
-          <span>Quotes and artwork review</span>
-          <span>Proof approval</span>
-          <span>Size and quantity organization</span>
-          <span>Reorder preparation</span>
-        </div>
-        <div>
-          <h2>Status</h2>
+          <h2>Platform status</h2>
           <span>{siteConfig.brandStatus}</span>
-          <span>Commerce and automated submission are in development.</span>
-          <span>No public pricing or turnaround guarantees are published yet.</span>
+          <span>The shopping and customer-account interfaces are in active development.</span>
+          <span>Live inventory, pricing, authentication, payments, and production data are not connected yet.</span>
         </div>
       </div>
       <div className="site-footer__legal">
