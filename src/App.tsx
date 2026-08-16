@@ -8,7 +8,7 @@ import {
   ShopProductPage,
 } from './pages/CommercePages';
 import { ShopV2Page } from './pages/ShopV2';
-import { StudioPage } from './pages/StudioPage';
+import { StudioPage } from './pages/StudioPageV2';
 import {
   AboutPage,
   BulkOrdersPage,
