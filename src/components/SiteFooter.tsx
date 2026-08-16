@@ -7,11 +7,15 @@ export function SiteFooter() {
       <div className="site-footer__lead">
         <LogoLockup compact />
         <p>{siteConfig.primaryMessage}</p>
-        <a className="button" href="/shop">Explore the shop</a>
+        <div className="site-footer__lead-actions">
+          <a className="text-link" href="/shop">Shop collections</a>
+          <a className="button" href="/studio">Open BEE Studio</a>
+        </div>
       </div>
       <div className="site-footer__grid">
         <div>
-          <h2>Services</h2>
+          <h2>Make something</h2>
+          <a href="/studio">BEE Studio</a>
           <a href="/bulk-orders">Bulk orders</a>
           <a href="/embroidery">Embroidery</a>
           <a href="/graphic-apparel">Graphic apparel</a>
@@ -19,7 +23,7 @@ export function SiteFooter() {
         </div>
         <div>
           <h2>Shop & account</h2>
-          <a href="/shop">Shop catalog</a>
+          <a href="/shop">Published collections</a>
           <a href="/cart">Project bag</a>
           <a href="/account">Customer dashboard</a>
           <a href="/start-order">Start a custom request</a>
@@ -31,7 +35,7 @@ export function SiteFooter() {
         <div>
           <h2>Platform status</h2>
           <span>{siteConfig.brandStatus}</span>
-          <span>The shopping and customer-account interfaces are in active development.</span>
+          <span>The Studio, storefront, and customer workspace are active development interfaces.</span>
           <span>Live inventory, pricing, authentication, payments, and production data are not connected yet.</span>
         </div>
       </div>
