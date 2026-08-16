@@ -4,10 +4,12 @@ on:
   push:
     branches:
       - main
+      - dev-0
       - 'agent/**'
   pull_request:
     branches:
       - main
+      - dev-0
 
 permissions:
   contents: read
