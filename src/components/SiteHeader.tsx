@@ -24,6 +24,16 @@ function readCartCount() {
   }
 }
 
+const desktopNavigation = [
+  { label: 'Shop', href: '/shop' },
+  { label: 'Studio', href: '/studio' },
+  { label: 'Bulk', href: '/bulk-orders' },
+  { label: 'Embroidery', href: '/embroidery' },
+  { label: 'Creator Merch', href: '/creator-merch' },
+  { label: 'Our Work', href: '/our-work' },
+  { label: 'About', href: '/about' },
+] as const;
+
 export function SiteHeader({ currentPath }: SiteHeaderProps) {
   const [cartCount, setCartCount] = useState(readCartCount);
 
@@ -39,15 +49,10 @@ export function SiteHeader({ currentPath }: SiteHeaderProps) {
 
   return (
     <header className="site-header">
-      <div className="announcement">
-        <span>Custom orders, bulk programs, creator goods, and embroidery</span>
-        <span className="announcement__status">Brand identity in development</span>
-      </div>
       <div className="site-header__bar">
         <LogoLockup />
         <nav className="desktop-nav" aria-label="Primary navigation">
-          <a className={isCurrentPath(currentPath, '/shop') ? 'is-active' : undefined} href="/shop">Shop</a>
-          {navItems.map((item) => (
+          {desktopNavigation.map((item) => (
             <a
               key={item.href}
               className={isCurrentPath(currentPath, item.href) ? 'is-active' : undefined}
@@ -61,16 +66,17 @@ export function SiteHeader({ currentPath }: SiteHeaderProps) {
           <a className={`header-commerce__link${isCurrentPath(currentPath, '/account') ? ' is-active' : ''}`} href="/account"><span>Account</span></a>
           <a className={`header-commerce__link${isCurrentPath(currentPath, '/cart') || isCurrentPath(currentPath, '/checkout') ? ' is-active' : ''}`} href="/cart"><span>Bag</span><b className="header-commerce__count">{cartCount}</b></a>
         </div>
-        <a className="button button--small header-cta" href="/start-order">Start an order</a>
+        <a className="button button--small header-cta" href="/start-order">Start project</a>
         <details className="mobile-menu">
           <summary aria-label="Open navigation">Menu</summary>
           <nav aria-label="Mobile navigation">
             <a href="/">Home</a>
             <a href="/shop">Shop</a>
+            <a href="/studio">BEE Studio</a>
             <a href="/account">Customer dashboard</a>
             <a href="/cart">Project bag ({cartCount})</a>
             {navItems.map((item) => <a key={item.href} href={item.href}>{item.label}</a>)}
-            <a className="mobile-menu__cta" href="/start-order">Start an order</a>
+            <a className="mobile-menu__cta" href="/start-order">Start a project</a>
           </nav>
         </details>
       </div>
