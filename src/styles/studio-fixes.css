@@ -1,0 +1,17 @@
+.studio-surface-hint {
+  position: absolute;
+  z-index: 4;
+  left: 50%;
+  bottom: 26px;
+  transform: translateX(-50%);
+  padding: 9px 12px;
+  border: 1px solid var(--line);
+  background: rgba(8, 12, 15, .82);
+  color: #8e9aa2;
+  font-size: .64rem;
+  white-space: nowrap;
+}
+
+@media (max-width: 700px) {
+  .studio-surface-hint { bottom: 18px; white-space: normal; text-align: center; }
+}
