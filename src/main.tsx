@@ -8,6 +8,7 @@ import './styles/shop-v2.css';
 import './styles/studio.css';
 import './styles/density.css';
 import './styles/footer-v2.css';
+import './styles/studio-fixes.css';
 
 const root = document.getElementById('root');
 if (!root) throw new Error('Root element was not found.');
