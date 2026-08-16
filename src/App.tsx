@@ -5,9 +5,10 @@ import {
   AccountPage,
   CartPage,
   CheckoutPage,
-  ShopPage,
   ShopProductPage,
 } from './pages/CommercePages';
+import { ShopV2Page } from './pages/ShopV2';
+import { StudioPage } from './pages/StudioPage';
 import {
   AboutPage,
   BulkOrdersPage,
@@ -23,7 +24,8 @@ import {
 
 const routeMap: Record<string, ComponentType> = {
   '/': HomePage,
-  '/shop': ShopPage,
+  '/shop': ShopV2Page,
+  '/studio': StudioPage,
   '/cart': CartPage,
   '/checkout': CheckoutPage,
   '/account': AccountPage,
