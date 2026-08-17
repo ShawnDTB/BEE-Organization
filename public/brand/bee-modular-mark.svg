@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">BEE Organization modular mark</title>
+  <desc id="desc">A geometric modular B built from fabrication-inspired blocks inside an open technical frame.</desc>
+  <rect x="5.5" y="5.5" width="53" height="53" rx="2.5" fill="#0b0d0e" stroke="#747d81"/>
+  <path d="M15 14h7v36h-7z" fill="#eee7da"/>
+  <path d="M22 14h20l7 7v8l-6 5H22zm7 7v7h11l2-2v-3l-2-2z" fill="#eee7da"/>
+  <path d="M22 34h21l6 5v6l-7 5H22zm7 7v3h11l2-1.5L40 41z" fill="#eee7da"/>
+  <rect x="10" y="10" width="3" height="3" fill="#bf7d35"/>
+  <rect x="51" y="51" width="3" height="3" fill="#bf7d35"/>
+  <path d="M5.5 20h4M54.5 44h4M20 5.5v4M44 54.5v4" stroke="#bf7d35" stroke-width="1"/>
+</svg>
