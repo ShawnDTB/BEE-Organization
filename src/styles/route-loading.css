@@ -1,5 +1,0 @@
-.route-loading { min-height: 55vh; display: grid; place-content: center; gap: 12px; color: #8f9799; text-align: center; font-size: .62rem; letter-spacing: .12em; text-transform: uppercase; }
-.route-loading i { width: 120px; height: 2px; display: block; overflow: hidden; background: #202426; }
-.route-loading i::after { content: ''; width: 45%; height: 100%; display: block; background: var(--brand-copper); animation: bee-route-load 900ms ease-in-out infinite alternate; }
-@keyframes bee-route-load { from { transform: translateX(-10%); } to { transform: translateX(145%); } }
-@media (prefers-reduced-motion: reduce) { .route-loading i::after { animation: none; width: 100%; opacity: .45; } }

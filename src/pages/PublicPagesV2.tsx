@@ -120,8 +120,8 @@ export function PortfolioPageV2() {
     <>
       <CompactHero
         eyebrow="Work"
-        title="Real samples and finished work belong here."
-        description="BEE is still building its first physical samples. This page stays small until there is real embroidery, print work, and finished apparel worth showing."
+        title="Samples first. Customer work when it is ready."
+        description="The library starts with BEE-owned stitch, print, and garment tests. Approved customer work can be added as it is completed."
         primary={{ label: 'Start a project', href: '/start-order' }}
       />
 
@@ -141,8 +141,8 @@ export function AboutPageV2() {
     <>
       <CompactHero
         eyebrow="About BEE"
-        title="A new custom apparel shop building the process alongside the equipment."
-        description="BEE Organization is setting up embroidery and graphic apparel production with quoting, proofing, order records, and reorders built into the workflow from the start."
+        title="Custom apparel with the project details kept together."
+        description="BEE Organization is launching embroidery and graphic apparel production with quoting, proofing, order records, and reorders organized from the start."
         primary={{ label: 'Start a project', href: '/start-order' }}
         secondary={{ label: 'See apparel options', href: '/#capabilities' }}
       />
@@ -154,8 +154,8 @@ export function AboutPageV2() {
       </section>
 
       <section className="about-stage">
-        <div><span className="eyebrow">Current stage</span><h2>BEE is preparing for its first official sale.</h2></div>
-        <p>Equipment, production methods, samples, and the customer workflow are still being built and tested. The site does not invent customer history or production claims to make the business look older than it is.</p>
+        <div><span className="eyebrow">Launch phase</span><h2>Building the sample library and production workflow now.</h2></div>
+        <p>Customer work, capacity, timing, and quality claims are only published when they can be supported by real production experience. The goal is a clear process from the first request forward.</p>
       </section>
 
       <ActionBand title="Have something you want made?" copy="Start with the project details you already know." primary={{ label: 'Start a project', href: '/start-order' }} secondary={{ label: 'Design in Studio', href: '/studio' }} />

@@ -33,3 +33,49 @@ jobs:
 
       - name: Typecheck and build
         run: npm run check
+
+      - name: Responsive browser smoke
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run preview -- --host 127.0.0.1 --port 4173 > /tmp/bee-preview.log 2>&1 &
+          PREVIEW_PID=$!
+          trap 'kill "$PREVIEW_PID" 2>/dev/null || true' EXIT
+
+          for attempt in {1..30}; do
+            if curl -fsS http://127.0.0.1:4173/ > /dev/null; then
+              break
+            fi
+            if [ "$attempt" -eq 30 ]; then
+              cat /tmp/bee-preview.log
+              exit 1
+            fi
+            sleep 0.5
+          done
+
+          BROWSER="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
+          if [ -z "$BROWSER" ]; then
+            echo "No Chrome/Chromium executable found on the runner."
+            exit 1
+          fi
+
+          render() {
+            local name="$1"
+            local size="$2"
+            local path="$3"
+            "$BROWSER" \
+              --headless=new \
+              --no-sandbox \
+              --disable-gpu \
+              --hide-scrollbars \
+              --virtual-time-budget=2000 \
+              --window-size="$size" \
+              --screenshot="/tmp/${name}.png" \
+              "http://127.0.0.1:4173${path}"
+            test -s "/tmp/${name}.png"
+          }
+
+          render home-desktop 1440,900 /
+          render bulk-medium 1024,768 /bulk-orders
+          render studio-tablet 820,1180 /studio
+          render account-phone 390,844 /account
