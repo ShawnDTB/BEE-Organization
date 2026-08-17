@@ -1,6 +1,10 @@
 # BEE Organization — Site Identity System
 
-This document defines the development identity currently used across the BEE Organization platform. It is intentionally strong enough to create a coherent customer experience while the final public-facing name and production logo remain subject to approval.
+> **Status: LOCKED BASELINE**
+>
+> The visual style and color system defined in this document are the approved baseline for the website. Future feature work should extend this system rather than introduce a new palette, mascot direction, or unrelated visual language. Changes to these foundations should be intentional brand decisions, not page-level experimentation.
+
+This document defines the site identity used across the BEE Organization platform. The final public-facing business name or production logo may still evolve, but the visual language below is the locked design foundation for the website.
 
 ## Brand position
 
@@ -17,9 +21,10 @@ BEE should feel like a place where garments, artwork, equipment, and systems are
 - Warm material contrast rather than neon color
 - Small registration/alignment details instead of decorative clutter
 - Sharp geometry with occasional cut-corner controls
-- Photography and real finished work should eventually carry most of the storefront personality
+- Photography and real finished work should carry most of the storefront personality as those assets become available
+- Content density should remain deliberate: visual hierarchy is not permission to make every section a hero
 
-## Core palette
+## Locked core palette
 
 | Token | Value | Use |
 | --- | --- | --- |
@@ -32,7 +37,11 @@ BEE should feel like a place where garments, artwork, equipment, and systems are
 | Copper | `#B97732` | Primary production accent |
 | Copper Bright | `#D59A52` | Hover, active, and editorial accent |
 
-Copper is intentionally restrained. It should identify actions, active states, registration details, and important production information rather than fill large areas of the interface.
+Copper is intentionally restrained. It identifies actions, active states, registration details, and important production information rather than filling large areas of the interface.
+
+### Palette rule
+
+Feature branches should use these tokens instead of introducing one-off accent colors. Product photography and creator collections may introduce their own artwork colors inside media, but the BEE interface shell remains Carbon / Graphite / Bone / Steel / Copper.
 
 ## Typography
 
@@ -43,13 +52,13 @@ Headings should feel editorial and streetwear-aware. Small labels may use techni
 
 ## Mark direction
 
-The current development mark uses a modular geometric **B** assembled from fabrication-like blocks inside a technical frame. Small copper registration points provide the subtle BEE reference through repetition/structure rather than depicting an insect.
+The current site mark uses a modular geometric **B** assembled from fabrication-like blocks inside a technical frame. Small copper registration points provide the subtle BEE reference through repetition and structure rather than depicting an insect.
 
-The mark is a development identity and should remain easy to replace if the final public name changes.
+The mark should remain technically replaceable if the final public name changes; replacing the mark must not require replacing the entire visual system.
 
 ## Do not use
 
-The following directions were explicitly rejected:
+The following directions are explicitly rejected:
 
 - Hornet or bee mascots
 - Wings
@@ -61,6 +70,7 @@ The following directions were explicitly rejected:
 - Insect-heavy iconography
 - Generic black/yellow sports-team branding
 - Neon gamer aesthetics as the primary identity
+- Page-specific palettes that break the shared site shell
 
 ## Interface behavior
 
@@ -78,7 +88,11 @@ Prioritize project status, proofs, saved designs, reorders, and next actions. Co
 
 ### Service pages
 
-Keep sections compact and practical. Use production photography/details as they become available rather than filling space with oversized brand statements.
+Keep sections compact and practical. Use production photography and details as they become available rather than filling space with oversized brand statements.
+
+### Mobile
+
+The same identity must survive small screens without shrinking controls or text into decorative UI. Mobile should reduce composition complexity, not simply compress desktop layouts.
 
 ## Brand integrity
 
