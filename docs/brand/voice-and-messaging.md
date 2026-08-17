@@ -2,11 +2,11 @@
 
 ## Primary message
 
-**Custom apparel built around your group, brand, or idea.**
+**Custom apparel for teams, brands, creators, and personal projects.**
 
 ## Supporting message
 
-Organized embroidery and graphic apparel for schools, organizations, creators, teams, businesses, events, and individuals.
+Choose a garment, bring your artwork, or start with a rough idea. BEE organizes the quote, proof, production, and reorder around one project.
 
 ## Brand voice
 
@@ -19,16 +19,18 @@ Organized embroidery and graphic apparel for schools, organizations, creators, t
 
 ## Message priorities
 
-1. Make the process easy to understand.
-2. Show real production quality.
-3. Explain pricing and turnaround without exaggeration.
-4. Make reordering easier than starting again.
-5. Feature the customer, group, or creator rather than private ownership details.
-6. Separate active capabilities from future platform plans.
+1. Tell the customer what they can make or do next.
+2. Use plain language before brand language.
+3. Show real production quality instead of describing hypothetical quality.
+4. Explain pricing and turnaround without exaggeration.
+5. Make reordering easier than starting again.
+6. Feature the customer, group, or creator rather than private ownership details.
+7. Separate active capabilities from future platform plans.
+8. Keep operational/development caveats inside the relevant tool instead of repeating them across public marketing pages.
 
 ## Approved lines
 
-- Custom apparel built around your group, brand, or idea.
+- Custom apparel for teams, brands, creators, and personal projects.
 - Approve the proof before production begins.
 - Reorder without rebuilding the project.
 - Clear details before production commitments.
@@ -43,3 +45,5 @@ Organized embroidery and graphic apparel for schools, organizations, creators, t
 - Guaranteed turnaround before production capacity is documented
 - “Cheap” as a primary value proposition
 - Technical jargon that does not help the customer place an order
+- Marketing copy that narrates the website or repeatedly explains that a feature is a prototype
+- Headlines that exist only to fill space
