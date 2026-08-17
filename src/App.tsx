@@ -7,6 +7,7 @@ import {
   ProjectReviewPage,
   RetailCheckoutPage,
 } from './pages/CommercePages';
+import { GroupCollectorPage } from './pages/GroupCollectorPage';
 import { ShopV2Page } from './pages/ShopV2';
 import { StudioPage } from './pages/StudioPageV2';
 import {
@@ -31,6 +32,7 @@ const routeMap: Record<string, ComponentType> = {
   '/checkout': RetailCheckoutPage,
   '/account': AccountPage,
   '/bulk-orders': BulkOrdersPage,
+  '/group-collector': GroupCollectorPage,
   '/embroidery': EmbroideryPage,
   '/graphic-apparel': GraphicApparelPage,
   '/creator-merch': CreatorMerchPage,
