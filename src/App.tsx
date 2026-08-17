@@ -2,31 +2,21 @@ import { lazy, Suspense, type ComponentType, type LazyExoticComponent } from 're
 import { SiteFooter } from './components/SiteFooter';
 import { SiteHeader } from './components/SiteHeader';
 
-function lazyNamed<T extends Record<string, ComponentType>, K extends keyof T>(loader: () => Promise<T>, name: K) {
-  return lazy(async () => {
-    const module = await loader();
-    return { default: module[name] };
-  });
-}
+const HomePage = lazy(() => import('./pages/SitePages').then((module) => ({ default: module.HomePage })));
+const BulkOrdersPage = lazy(() => import('./pages/SitePages').then((module) => ({ default: module.BulkOrdersPage })));
+const EmbroideryPage = lazy(() => import('./pages/SitePages').then((module) => ({ default: module.EmbroideryPage })));
+const GraphicApparelPage = lazy(() => import('./pages/SitePages').then((module) => ({ default: module.GraphicApparelPage })));
+const CreatorMerchPage = lazy(() => import('./pages/SitePages').then((module) => ({ default: module.CreatorMerchPage })));
+const OrganizationsPage = lazy(() => import('./pages/SitePages').then((module) => ({ default: module.OrganizationsPage })));
+const PortfolioPage = lazy(() => import('./pages/SitePages').then((module) => ({ default: module.PortfolioPage })));
+const AboutPage = lazy(() => import('./pages/SitePages').then((module) => ({ default: module.AboutPage })));
+const StartOrderPage = lazy(() => import('./pages/SitePages').then((module) => ({ default: module.StartOrderPage })));
+const NotFoundPage = lazy(() => import('./pages/SitePages').then((module) => ({ default: module.NotFoundPage })));
 
-const sitePages = () => import('./pages/SitePages');
-const commercePages = () => import('./pages/CommercePages');
-
-const HomePage = lazyNamed(sitePages, 'HomePage');
-const BulkOrdersPage = lazyNamed(sitePages, 'BulkOrdersPage');
-const EmbroideryPage = lazyNamed(sitePages, 'EmbroideryPage');
-const GraphicApparelPage = lazyNamed(sitePages, 'GraphicApparelPage');
-const CreatorMerchPage = lazyNamed(sitePages, 'CreatorMerchPage');
-const OrganizationsPage = lazyNamed(sitePages, 'OrganizationsPage');
-const PortfolioPage = lazyNamed(sitePages, 'PortfolioPage');
-const AboutPage = lazyNamed(sitePages, 'AboutPage');
-const StartOrderPage = lazyNamed(sitePages, 'StartOrderPage');
-const NotFoundPage = lazyNamed(sitePages, 'NotFoundPage');
-
-const CartPage = lazyNamed(commercePages, 'CartPage');
-const ProjectReviewPage = lazyNamed(commercePages, 'ProjectReviewPage');
-const RetailCheckoutPage = lazyNamed(commercePages, 'RetailCheckoutPage');
-const AccountPage = lazyNamed(commercePages, 'AccountPage');
+const CartPage = lazy(() => import('./pages/CommercePages').then((module) => ({ default: module.CartPage })));
+const ProjectReviewPage = lazy(() => import('./pages/CommercePages').then((module) => ({ default: module.ProjectReviewPage })));
+const RetailCheckoutPage = lazy(() => import('./pages/CommercePages').then((module) => ({ default: module.RetailCheckoutPage })));
+const AccountPage = lazy(() => import('./pages/CommercePages').then((module) => ({ default: module.AccountPage })));
 
 const ShopV2Page = lazy(() => import('./pages/ShopV2').then((module) => ({ default: module.ShopV2Page })));
 const StudioPage = lazy(() => import('./pages/StudioPageV2').then((module) => ({ default: module.StudioPage })));
