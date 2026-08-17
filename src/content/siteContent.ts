@@ -7,8 +7,8 @@ export const siteConfig = {
   workingName: 'BEE Organization',
   legalName: 'BEE Organization LLC',
   descriptor: 'Custom Apparel · Embroidery · Graphic Goods',
-  primaryMessage: 'Custom apparel built around your group, brand, or idea.',
-  supportingMessage: 'Custom embroidery and graphic apparel for individual pieces, creator merch, and group orders—designed, approved, and organized in one place.',
+  primaryMessage: 'Custom apparel for teams, brands, creators, and personal projects.',
+  supportingMessage: 'Choose a garment, bring your artwork, or start with a rough idea. BEE organizes the quote, proof, production, and reorder around one project.',
   email: '',
   phone: '',
   serviceArea: 'Schools, teams, organizations, businesses, creators, events, and individual projects.',
@@ -24,10 +24,10 @@ export const navItems: NavItem[] = [
 ];
 
 export const orderSteps = [
-  ['01', 'Design or request', 'Start in Studio or tell us what you need. Rough quantities and unfinished artwork are okay.'],
-  ['02', 'Review the details', 'Garment, artwork, placement, quantity, timing, and fulfillment are organized around the project.'],
-  ['03', 'Approve quote + proof', 'Pricing and the production proof are explicit checkpoints before anything is made.'],
-  ['04', 'Produce, deliver, reorder', 'The approved project moves through production and its key details remain useful for future orders.'],
+  ['01', 'Start the project', 'Build a mockup in Studio or send the details you already have.'],
+  ['02', 'Confirm the order', 'Garment, decoration, quantity, pricing, timing, and fulfillment are confirmed together.'],
+  ['03', 'Approve the proof', 'Artwork and placement are approved before production begins.'],
+  ['04', 'Make it, deliver it, reorder it', 'The finished project keeps the useful details needed for a future reorder.'],
 ] as const;
 
 export const faqs = [
