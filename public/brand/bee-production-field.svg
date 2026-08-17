@@ -1,32 +1,54 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1200" fill="none">
-  <g opacity=".18" stroke="#EEE7DA" stroke-width="1">
-    <path d="M-40 250C210 120 420 160 560 360S900 650 1190 470s430-120 510 10"/>
-    <path d="M120 990c210-230 430-310 655-170s460 165 770-65"/>
-    <path d="M230-80c20 210 95 370 250 495s210 255 168 455"/>
-    <path d="M1280-40c-80 180-98 340-20 485s112 310 40 530"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1400" fill="none">
+  <defs>
+    <pattern id="weave" width="18" height="18" patternUnits="userSpaceOnUse" patternTransform="rotate(18)">
+      <path d="M0 4H18M0 13H18" stroke="#EEE7DA" stroke-width="0.7" opacity="0.035"/>
+    </pattern>
+    <linearGradient id="edgeFadeL" x1="0" x2="1">
+      <stop stop-color="#747D81" stop-opacity=".16"/>
+      <stop offset="1" stop-color="#747D81" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="edgeFadeR" x1="1" x2="0">
+      <stop stop-color="#747D81" stop-opacity=".16"/>
+      <stop offset="1" stop-color="#747D81" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1920" height="1400" fill="url(#weave)"/>
+
+  <g stroke="#747D81" stroke-width="1" opacity=".22">
+    <path d="M-40 180C120 210 205 310 236 468c27 139 1 272-98 398"/>
+    <path d="M-20 238C98 268 165 348 186 474c20 118 3 224-67 329" stroke-dasharray="9 13"/>
+    <path d="M1960 122C1792 176 1713 299 1696 488c-14 160 19 303 111 437"/>
+    <path d="M1940 184C1813 224 1752 325 1739 490c-11 133 15 251 77 354" stroke-dasharray="9 13"/>
+    <path d="M72 1090c112-92 219-119 324-81 76 28 128 83 158 166"/>
+    <path d="M1860 1128c-103-78-201-99-295-62-68 27-113 74-141 144"/>
   </g>
-  <g opacity=".13" stroke="#A5ADAF" stroke-width="1" stroke-dasharray="8 12">
-    <path d="M18 430c310-150 570-105 760 95s420 230 805 45"/>
-    <path d="M-30 760c250 90 420 62 610-48s440-130 760-20 420 74 520-8"/>
-    <path d="M515 60c-90 170-78 310 36 420s160 260 88 455"/>
+
+  <g opacity=".13">
+    <rect x="0" y="0" width="270" height="1400" fill="url(#edgeFadeL)"/>
+    <rect x="1650" y="0" width="270" height="1400" fill="url(#edgeFadeR)"/>
   </g>
-  <g stroke="#B97732" stroke-width="1.2" opacity=".28">
-    <path d="M184 196h34m-17-17v34"/>
-    <circle cx="201" cy="196" r="7"/>
-    <path d="M1394 334h34m-17-17v34"/>
-    <circle cx="1411" cy="334" r="7"/>
-    <path d="M1042 1014h34m-17-17v34"/>
-    <circle cx="1059" cy="1014" r="7"/>
-    <path d="M426 814h34m-17-17v34"/>
-    <circle cx="443" cy="814" r="7"/>
+
+  <g stroke="#B97732" stroke-width="1.1" opacity=".38">
+    <path d="M132 274h32m-16-16v32"/>
+    <circle cx="148" cy="274" r="6.5"/>
+    <path d="M1761 390h32m-16-16v32"/>
+    <circle cx="1777" cy="390" r="6.5"/>
+    <path d="M196 1088h26m-13-13v26"/>
+    <circle cx="209" cy="1088" r="5"/>
+    <path d="M1698 1136h26m-13-13v26"/>
+    <circle cx="1711" cy="1136" r="5"/>
   </g>
-  <g fill="#747D81" opacity=".16">
-    <path d="M681 300l9 14-18 0z"/>
-    <path d="M1192 706l9 14-18 0z"/>
-    <path d="M302 1050l9 14-18 0z"/>
+
+  <g fill="#747D81" opacity=".2">
+    <path d="M252 535l8 13h-16z"/>
+    <path d="M1668 620l8 13h-16z"/>
+    <path d="M320 1188l8 13h-16z"/>
+    <path d="M1594 1206l8 13h-16z"/>
   </g>
-  <g opacity=".08" stroke="#EEE7DA">
-    <path d="M90 104h180M90 112h105"/>
-    <path d="M1328 1090h180M1403 1082h105"/>
+
+  <g stroke="#EEE7DA" opacity=".07">
+    <path d="M90 104h120M90 112h72"/>
+    <path d="M1710 1296h120M1758 1288h72"/>
   </g>
 </svg>
