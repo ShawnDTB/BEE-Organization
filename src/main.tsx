@@ -9,6 +9,7 @@ import './styles/studio.css';
 import './styles/density.css';
 import './styles/footer-v2.css';
 import './styles/studio-fixes.css';
+import './styles/brand-system.css';
 
 const root = document.getElementById('root');
 if (!root) throw new Error('Root element was not found.');
