@@ -33,10 +33,11 @@ export function SiteFooter() {
           {navItems.slice(4).map((item) => <a key={item.href} href={item.href}>{item.label}</a>)}
         </div>
         <div>
-          <h2>Platform status</h2>
-          <span>{siteConfig.brandStatus}</span>
-          <span>The Studio, storefront, and customer workspace are active development interfaces.</span>
-          <span>Live inventory, pricing, authentication, payments, and production data are not connected yet.</span>
+          <h2>Built for</h2>
+          <span>Schools, teams, and organizations</span>
+          <span>Businesses and staff programs</span>
+          <span>Creators and online communities</span>
+          <span>Individuals and custom projects</span>
         </div>
       </div>
       <div className="site-footer__legal">
