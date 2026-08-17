@@ -8,7 +8,7 @@ export const siteConfig = {
   legalName: 'BEE Organization LLC',
   descriptor: 'Custom Apparel · Embroidery · Graphic Goods',
   primaryMessage: 'Custom apparel built around your group, brand, or idea.',
-  supportingMessage: 'Embroidery and graphic apparel with a clear path from design through approval, production, and reorder.',
+  supportingMessage: 'Custom embroidery and graphic apparel for individual pieces, creator merch, and group orders—designed, approved, and organized in one place.',
   email: '',
   phone: '',
   serviceArea: 'Schools, teams, organizations, businesses, creators, events, and individual projects.',
