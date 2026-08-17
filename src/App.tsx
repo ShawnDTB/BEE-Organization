@@ -4,8 +4,8 @@ import { SiteHeader } from './components/SiteHeader';
 import {
   AccountPage,
   CartPage,
-  CheckoutPage,
-  ShopProductPage,
+  ProjectReviewPage,
+  RetailCheckoutPage,
 } from './pages/CommercePages';
 import { ShopV2Page } from './pages/ShopV2';
 import { StudioPage } from './pages/StudioPageV2';
@@ -27,7 +27,8 @@ const routeMap: Record<string, ComponentType> = {
   '/shop': ShopV2Page,
   '/studio': StudioPage,
   '/cart': CartPage,
-  '/checkout': CheckoutPage,
+  '/project-review': ProjectReviewPage,
+  '/checkout': RetailCheckoutPage,
   '/account': AccountPage,
   '/bulk-orders': BulkOrdersPage,
   '/embroidery': EmbroideryPage,
@@ -44,14 +45,9 @@ function normalizePath(pathname: string) {
   return pathname.replace(/\/+$/, '');
 }
 
-function resolvePage(currentPath: string): ComponentType {
-  if (currentPath.startsWith('/shop/')) return ShopProductPage;
-  return routeMap[currentPath] ?? NotFoundPage;
-}
-
 function App() {
   const currentPath = normalizePath(window.location.pathname);
-  const Page = resolvePage(currentPath);
+  const Page = routeMap[currentPath] ?? NotFoundPage;
 
   return (
     <div className="site-shell">
