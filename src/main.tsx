@@ -14,6 +14,7 @@ import './styles/experience-overhaul.css';
 import './styles/group-collector.css';
 import './styles/route-loading.css';
 import './styles/customer-clarity.css';
+import './styles/menu-accessibility.css';
 
 const root = document.getElementById('root');
 if (!root) throw new Error('Root element was not found.');

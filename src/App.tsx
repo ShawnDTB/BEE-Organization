@@ -4,21 +4,21 @@ import { SiteHeader } from './components/SiteHeader';
 
 const HomePage = lazy(() => import('./pages/HomePageV4').then((module) => ({ default: module.HomePageV4 })));
 const BulkOrdersPage = lazy(() => import('./pages/BulkOrdersPageV2').then((module) => ({ default: module.BulkOrdersPageV2 })));
-const EmbroideryPage = lazy(() => import('./pages/SitePages').then((module) => ({ default: module.EmbroideryPage })));
-const GraphicApparelPage = lazy(() => import('./pages/SitePages').then((module) => ({ default: module.GraphicApparelPage })));
-const CreatorMerchPage = lazy(() => import('./pages/SitePages').then((module) => ({ default: module.CreatorMerchPage })));
-const PortfolioPage = lazy(() => import('./pages/SitePages').then((module) => ({ default: module.PortfolioPage })));
-const AboutPage = lazy(() => import('./pages/SitePages').then((module) => ({ default: module.AboutPage })));
+const EmbroideryPage = lazy(() => import('./pages/PublicPagesV2').then((module) => ({ default: module.EmbroideryPageV2 })));
+const GraphicApparelPage = lazy(() => import('./pages/PublicPagesV2').then((module) => ({ default: module.GraphicApparelPageV2 })));
+const CreatorMerchPage = lazy(() => import('./pages/PublicPagesV2').then((module) => ({ default: module.CreatorMerchPageV2 })));
+const PortfolioPage = lazy(() => import('./pages/PublicPagesV2').then((module) => ({ default: module.PortfolioPageV2 })));
+const AboutPage = lazy(() => import('./pages/PublicPagesV2').then((module) => ({ default: module.AboutPageV2 })));
 const StartOrderPage = lazy(() => import('./pages/SitePages').then((module) => ({ default: module.StartOrderPage })));
 const NotFoundPage = lazy(() => import('./pages/SitePages').then((module) => ({ default: module.NotFoundPage })));
 
 const CartPage = lazy(() => import('./pages/CommercePages').then((module) => ({ default: module.CartPage })));
 const ProjectReviewPage = lazy(() => import('./pages/CommercePages').then((module) => ({ default: module.ProjectReviewPage })));
 const RetailCheckoutPage = lazy(() => import('./pages/CommercePages').then((module) => ({ default: module.RetailCheckoutPage })));
-const AccountPage = lazy(() => import('./pages/CommercePages').then((module) => ({ default: module.AccountPage })));
+const AccountPage = lazy(() => import('./pages/AccountPageV4').then((module) => ({ default: module.AccountPageV4 })));
 
 const ShopV2Page = lazy(() => import('./pages/ShopV2').then((module) => ({ default: module.ShopV2Page })));
-const StudioPage = lazy(() => import('./pages/StudioPageV2').then((module) => ({ default: module.StudioPage })));
+const StudioPage = lazy(() => import('./pages/StudioPageV3').then((module) => ({ default: module.StudioPageV3 })));
 const GroupCollectorPage = lazy(() => import('./pages/GroupCollectorPage').then((module) => ({ default: module.GroupCollectorPage })));
 
 type PageComponent = LazyExoticComponent<ComponentType>;
@@ -57,8 +57,9 @@ function App() {
 
   return (
     <div className="site-shell">
+      <a className="skip-link" href="#main-content">Skip to content</a>
       <SiteHeader currentPath={currentPath} />
-      <main>
+      <main id="main-content" tabIndex={-1}>
         <Suspense fallback={<RouteLoading />}>
           <Page />
         </Suspense>
