@@ -2,12 +2,11 @@ import { lazy, Suspense, type ComponentType, type LazyExoticComponent } from 're
 import { SiteFooter } from './components/SiteFooter';
 import { SiteHeader } from './components/SiteHeader';
 
-const HomePage = lazy(() => import('./pages/SitePages').then((module) => ({ default: module.HomePage })));
-const BulkOrdersPage = lazy(() => import('./pages/SitePages').then((module) => ({ default: module.BulkOrdersPage })));
+const HomePage = lazy(() => import('./pages/HomePageV4').then((module) => ({ default: module.HomePageV4 })));
+const BulkOrdersPage = lazy(() => import('./pages/BulkOrdersPageV2').then((module) => ({ default: module.BulkOrdersPageV2 })));
 const EmbroideryPage = lazy(() => import('./pages/SitePages').then((module) => ({ default: module.EmbroideryPage })));
 const GraphicApparelPage = lazy(() => import('./pages/SitePages').then((module) => ({ default: module.GraphicApparelPage })));
 const CreatorMerchPage = lazy(() => import('./pages/SitePages').then((module) => ({ default: module.CreatorMerchPage })));
-const OrganizationsPage = lazy(() => import('./pages/SitePages').then((module) => ({ default: module.OrganizationsPage })));
 const PortfolioPage = lazy(() => import('./pages/SitePages').then((module) => ({ default: module.PortfolioPage })));
 const AboutPage = lazy(() => import('./pages/SitePages').then((module) => ({ default: module.AboutPage })));
 const StartOrderPage = lazy(() => import('./pages/SitePages').then((module) => ({ default: module.StartOrderPage })));
@@ -37,7 +36,7 @@ const routeMap: Record<string, PageComponent> = {
   '/embroidery': EmbroideryPage,
   '/graphic-apparel': GraphicApparelPage,
   '/creator-merch': CreatorMerchPage,
-  '/schools-organizations': OrganizationsPage,
+  '/schools-organizations': BulkOrdersPage,
   '/our-work': PortfolioPage,
   '/about': AboutPage,
   '/start-order': StartOrderPage,
