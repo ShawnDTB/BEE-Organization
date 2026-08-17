@@ -1,0 +1,442 @@
+/*
+  BEE Organization development identity
+  Engineered production studio × modern streetwear × boutique technology workshop.
+  The system deliberately avoids mascot/insect motifs and uses fabrication geometry,
+  restrained copper registration details, graphite surfaces, and warm bone typography.
+*/
+
+:root {
+  --bg: #090b0c;
+  --surface: #101315;
+  --surface-2: #15191b;
+  --surface-3: #1c2225;
+  --line: rgba(238, 231, 218, 0.115);
+  --line-strong: rgba(238, 231, 218, 0.22);
+  --muted: #929a9d;
+  --text: #eee7da;
+  --accent: #b97732;
+  --accent-bright: #d59a52;
+  --accent-soft: rgba(185, 119, 50, 0.115);
+  --danger-soft: rgba(165, 99, 59, 0.13);
+  --brand-carbon: #090b0c;
+  --brand-graphite: #101315;
+  --brand-graphite-2: #171b1d;
+  --brand-bone: #eee7da;
+  --brand-steel: #747d81;
+  --brand-steel-light: #a5adaf;
+  --brand-copper: #b97732;
+  --brand-copper-bright: #d59a52;
+}
+
+html { background: var(--brand-carbon); }
+body {
+  color: var(--brand-bone);
+  background:
+    radial-gradient(circle at 82% -8%, rgba(185, 119, 50, .105), transparent 31rem),
+    radial-gradient(circle at 8% 28%, rgba(116, 125, 129, .055), transparent 28rem),
+    linear-gradient(180deg, #080a0b 0%, #0d1012 48%, #080a0b 100%);
+}
+
+::selection { background: rgba(185, 119, 50, .34); color: #fff8eb; }
+
+.site-shell {
+  position: relative;
+  background:
+    linear-gradient(rgba(238, 231, 218, .013) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(238, 231, 218, .013) 1px, transparent 1px),
+    rgba(9, 11, 12, .42);
+  background-size: 72px 72px;
+}
+
+.site-shell::before {
+  content: '';
+  position: fixed;
+  inset: 0 auto 0 max(0px, calc(50% - (var(--max) / 2)));
+  width: 1px;
+  pointer-events: none;
+  background: linear-gradient(transparent, rgba(185,119,50,.12) 18%, rgba(185,119,50,.12) 82%, transparent);
+  z-index: 100;
+}
+
+/* Header / mark ----------------------------------------------------------- */
+.site-header {
+  border-bottom: 1px solid rgba(238,231,218,.09);
+  background: rgba(9, 11, 12, .91);
+  backdrop-filter: blur(22px) saturate(115%);
+}
+.site-header__bar { background: linear-gradient(180deg, rgba(255,255,255,.018), transparent); }
+.logo-lockup { gap: 11px; }
+.logo-lockup img {
+  border: 1px solid rgba(238,231,218,.12);
+  background: #0b0d0e;
+  box-shadow: 0 0 0 1px rgba(0,0,0,.6), 0 10px 26px rgba(0,0,0,.22);
+}
+.logo-lockup strong {
+  color: var(--brand-bone);
+  letter-spacing: .115em;
+}
+.logo-lockup small {
+  color: var(--brand-steel-light);
+  letter-spacing: .14em;
+}
+.desktop-nav a { color: #969ea0; }
+.desktop-nav a:hover,
+.desktop-nav a.is-active { color: var(--brand-bone); }
+.desktop-nav a.is-active::after { background: var(--brand-copper); }
+
+.header-commerce__link {
+  border-color: rgba(238,231,218,.12);
+  background: rgba(255,255,255,.012);
+  color: #a9b0b2;
+}
+.header-commerce__link:hover,
+.header-commerce__link.is-active {
+  border-color: rgba(185,119,50,.48);
+  background: rgba(185,119,50,.08);
+  color: var(--brand-bone);
+}
+.header-commerce__count {
+  background: var(--brand-copper);
+  color: #110c07;
+}
+
+/* Fabrication controls ---------------------------------------------------- */
+.button,
+.mobile-menu__cta {
+  position: relative;
+  border-color: #c1884a;
+  border-radius: 0;
+  background: linear-gradient(135deg, #cc8b45, #aa6829);
+  color: #130d07;
+  box-shadow: 0 13px 34px rgba(130, 78, 27, .18);
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+  letter-spacing: .015em;
+}
+.button:hover,
+.mobile-menu__cta:hover {
+  filter: brightness(1.08) saturate(1.03);
+  box-shadow: 0 16px 38px rgba(150, 88, 28, .24);
+}
+.text-link { color: #d5c9b8; }
+.text-link:hover { color: var(--brand-copper-bright); }
+
+.eyebrow { color: var(--brand-copper-bright); }
+.eyebrow::before { background: var(--brand-copper); }
+
+h1, h2, h3, h4,
+.page-hero h1,
+.commerce-hero h1,
+.account-hero h1,
+.product-detail__copy h1,
+.studio-heading h1 { color: var(--brand-bone); }
+
+/* Surfaces and repeated content ----------------------------------------- */
+.page-hero,
+.commerce-hero,
+.account-hero {
+  background:
+    radial-gradient(circle at 78% 14%, rgba(185,119,50,.075), transparent 24rem),
+    linear-gradient(135deg, rgba(238,231,218,.018), transparent 52%);
+}
+.page-hero::before {
+  background-image:
+    linear-gradient(rgba(238,231,218,.022) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(238,231,218,.022) 1px, transparent 1px);
+  background-size: 64px 64px;
+}
+
+.section--contrast {
+  background:
+    linear-gradient(110deg, rgba(185,119,50,.025), transparent 38%),
+    #0d1012;
+}
+
+.interim-panel,
+.hero-dashboard,
+.commerce-hero__panel,
+.account-identity-card,
+.account-panel,
+.account-navigation,
+.bag-summary,
+.checkout-summary,
+.product-builder,
+.project-detail-panel,
+.proof-detail,
+.proof-preview {
+  border-color: var(--line-strong);
+  background:
+    linear-gradient(145deg, rgba(238,231,218,.028), rgba(238,231,218,.006)),
+    #0d1012;
+}
+
+.metric-strip > div,
+.service-card,
+.audience-grid a,
+.process-grid article,
+.trust-grid article,
+.feature-grid article,
+.portfolio-preview a,
+.store-collection-grid > a,
+.product-card,
+.attention-card,
+.project-list article,
+.reorder-grid article,
+.saved-design-grid article {
+  border-color: rgba(238,231,218,.105);
+}
+
+.service-card,
+.audience-grid a,
+.feature-grid article,
+.trust-grid article,
+.product-card,
+.attention-card,
+.reorder-grid article,
+.saved-design-grid article {
+  background: linear-gradient(145deg, rgba(238,231,218,.022), rgba(238,231,218,.005));
+}
+
+.service-card:hover,
+.audience-grid a:hover,
+.product-card:hover,
+.store-collection-grid > a:hover {
+  border-color: rgba(185,119,50,.42);
+  background:
+    linear-gradient(145deg, rgba(185,119,50,.09), rgba(238,231,218,.008));
+}
+
+.service-card > span,
+.process-grid span,
+.feature-grid article > span,
+.trust-grid article > span,
+.values-stack article > span,
+.product-card__meta b,
+.product-detail__badge,
+.account-navigation__support a,
+.attention-card > span,
+.project-selector span,
+.project-detail-panel__heading span,
+.reorder-grid article > span {
+  color: var(--brand-copper-bright);
+}
+
+/* Subtle fabrication registration detail on major modules. */
+.service-card,
+.product-card,
+.attention-card,
+.reorder-grid article,
+.account-panel,
+.product-builder,
+.studio-controls,
+.shop-feature-panel {
+  position: relative;
+}
+.service-card::after,
+.product-card::after,
+.attention-card::after,
+.reorder-grid article::after,
+.account-panel::after,
+.product-builder::after,
+.studio-controls::after,
+.shop-feature-panel::after {
+  content: '';
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  width: 18px;
+  height: 18px;
+  pointer-events: none;
+  border-top: 1px solid rgba(185,119,50,.62);
+  border-right: 1px solid rgba(185,119,50,.62);
+}
+
+/* Forms ------------------------------------------------------------------ */
+input,
+select,
+textarea,
+.product-configurator select,
+.product-configurator input,
+.checkout-form input,
+.checkout-form select,
+.checkout-form textarea,
+.order-form input,
+.order-form select,
+.order-form textarea,
+.request-summary textarea,
+.quantity-control input {
+  border-color: rgba(238,231,218,.17);
+  border-radius: 0;
+  background: #0b0e10;
+  color: var(--brand-bone);
+}
+input:focus,
+select:focus,
+textarea:focus,
+.checkout-form input:focus,
+.checkout-form select:focus,
+.checkout-form textarea:focus,
+.order-form input:focus,
+.order-form select:focus,
+.order-form textarea:focus {
+  border-color: var(--brand-copper);
+  box-shadow: 0 0 0 3px rgba(185,119,50,.095);
+  outline: none;
+}
+
+/* Shop ------------------------------------------------------------------- */
+.shop-v2,
+.shop-page,
+.shop-catalog { color: var(--brand-bone); }
+.shop-feature-banner,
+.shop-feature-panel,
+.commerce-featured-product {
+  border-color: rgba(238,231,218,.16);
+  background:
+    radial-gradient(circle at 80% 20%, rgba(185,119,50,.12), transparent 26rem),
+    linear-gradient(140deg, #141719, #0c0f10 64%);
+}
+.shop-feature-banner::before,
+.shop-feature-panel::before {
+  content: '';
+  position: absolute;
+  inset: 16px;
+  pointer-events: none;
+  border: 1px solid rgba(238,231,218,.045);
+}
+.shop-feature-tabs button,
+.shop-filters button,
+.choice-group button {
+  border-color: rgba(238,231,218,.14);
+  border-radius: 0;
+  background: #101416;
+  color: #a0a8aa;
+}
+.shop-feature-tabs button:hover,
+.shop-feature-tabs button.is-active,
+.shop-filters button:hover,
+.shop-filters button.is-active,
+.choice-group button:hover,
+.choice-group button.is-active {
+  border-color: rgba(185,119,50,.55);
+  background: rgba(185,119,50,.11);
+  color: var(--brand-bone);
+  box-shadow: inset 3px 0 var(--brand-copper);
+}
+.product-media {
+  border-color: rgba(238,231,218,.12);
+  background:
+    radial-gradient(circle at 50% 20%, rgba(185,119,50,.065), transparent 40%),
+    linear-gradient(145deg, #15191b, #0b0e10);
+}
+.product-media__top span,
+.demo-chip {
+  border-color: rgba(185,119,50,.3);
+  background: rgba(12,14,15,.78);
+  color: #d8c6ad;
+}
+.product-detail__pricing { border-left-color: var(--brand-copper); }
+
+/* Studio ----------------------------------------------------------------- */
+.studio-page {
+  background:
+    radial-gradient(circle at 30% 4%, rgba(185,119,50,.055), transparent 28rem),
+    transparent;
+}
+.studio-heading {
+  border-bottom-color: rgba(238,231,218,.095);
+}
+.studio-shell { border-color: rgba(238,231,218,.12); }
+.studio-toolbar,
+.studio-controls__section,
+.studio-controls__footer {
+  border-color: rgba(238,231,218,.11);
+}
+.studio-viewport {
+  background:
+    linear-gradient(rgba(238,231,218,.028) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(238,231,218,.028) 1px, transparent 1px),
+    radial-gradient(circle at 50% 42%, rgba(185,119,50,.065), transparent 30%),
+    #0b0e10;
+  background-size: 54px 54px, 54px 54px, auto, auto;
+}
+.studio-viewport-grid { opacity: .55; }
+.studio-view-switch button,
+.studio-garment-options button,
+.studio-placement-options button {
+  border-color: rgba(238,231,218,.14);
+  border-radius: 0;
+  background: #101416;
+  color: #9ba2a5;
+}
+.studio-view-switch button:hover,
+.studio-view-switch button.is-active,
+.studio-garment-options button:hover,
+.studio-garment-options button.is-active,
+.studio-placement-options button:hover,
+.studio-placement-options button.is-active {
+  border-color: rgba(185,119,50,.58);
+  background: rgba(185,119,50,.105);
+  color: var(--brand-bone);
+}
+.studio-safe-area { border-color: rgba(185,119,50,.52); }
+.studio-safe-area span { color: #d49b5b; background: #0b0e10; }
+.studio-art-layer--embroidery {
+  filter: drop-shadow(0 1px 0 rgba(255,255,255,.18)) drop-shadow(0 2px 1px rgba(0,0,0,.65));
+}
+.studio-controls__title span,
+.studio-status,
+.studio-mobile-status span { color: var(--brand-copper-bright); }
+.studio-swatches button.is-active,
+.studio-text-swatches button.is-active { box-shadow: 0 0 0 2px #0c0e0f, 0 0 0 3px var(--brand-copper-bright); }
+
+/* Account / project workspace ------------------------------------------- */
+.account-navigation button.is-active {
+  color: var(--brand-bone);
+  background: rgba(185,119,50,.105);
+  box-shadow: inset 3px 0 var(--brand-copper);
+}
+.account-metrics strong { color: var(--brand-bone); }
+.attention-card--priority {
+  border-color: rgba(185,119,50,.34);
+  background: linear-gradient(145deg, rgba(185,119,50,.11), rgba(238,231,218,.008));
+}
+.project-progress i,
+.customer-timeline li.is-complete i { background: var(--brand-copper); }
+.customer-timeline li.is-complete i,
+.customer-timeline li.is-current i { border-color: var(--brand-copper-bright); }
+.customer-timeline li.is-current i { box-shadow: 0 0 0 5px rgba(185,119,50,.12); }
+.project-detail-panel__next { border-left-color: var(--brand-copper); background: rgba(185,119,50,.065); }
+
+/* Footer ----------------------------------------------------------------- */
+.site-footer {
+  background:
+    linear-gradient(180deg, rgba(185,119,50,.025), transparent 22%),
+    #07090a;
+}
+.site-footer__lead,
+.site-footer__grid,
+.site-footer__legal { border-color: rgba(238,231,218,.09); }
+.site-footer__grid h2 { color: #d8ccbc; }
+.site-footer__grid a:hover { color: var(--brand-copper-bright); }
+
+/* Mobile ----------------------------------------------------------------- */
+.mobile-menu summary {
+  border-color: rgba(238,231,218,.16);
+  background: #0c0f10;
+}
+.mobile-menu nav {
+  border-color: rgba(238,231,218,.18);
+  background: #0b0e10;
+}
+
+@media (max-width: 700px) {
+  .site-shell::before { display: none; }
+  .logo-lockup img { width: 38px; height: 38px; }
+  .page-hero,
+  .commerce-hero,
+  .account-hero {
+    background:
+      radial-gradient(circle at 75% 8%, rgba(185,119,50,.07), transparent 20rem),
+      linear-gradient(145deg, rgba(238,231,218,.014), transparent 58%);
+  }
+}
