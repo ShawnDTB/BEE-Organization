@@ -1,21 +1,270 @@
 /*
-  Selective customer clarity pass.
-  This does NOT globally shrink the site. It removes repeated explanation from
-  public marketing surfaces while preserving depth in Studio, project review,
-  product decisions, group collection, and the customer workspace.
+  Customer clarity + frame refinement.
+  The locked Carbon / Graphite / Bone / Steel / Copper identity stays intact.
+  This layer fixes the page frame, responsive navigation, public background,
+  Studio overflow, and customer-workspace refinements without globally
+  shrinking decision-heavy surfaces.
 */
 
-/* Public background: garment-pattern / production field ----------------- */
-.site-shell {
-  background:
-    linear-gradient(180deg, rgba(9,11,12,.18), rgba(9,11,12,.44)),
-    url('/brand/bee-production-field.svg') center top / 1600px auto repeat-y,
-    rgba(9,11,12,.5);
+/* Full-width site frame --------------------------------------------------- */
+html,
+body {
+  background: #090b0c;
 }
+
+body {
+  background:
+    radial-gradient(circle at 50% -8%, rgba(185,119,50,.055), transparent 36rem),
+    linear-gradient(180deg, #090b0c 0%, #0c0f10 52%, #080a0b 100%);
+}
+
+.site-shell {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  overflow: clip;
+  background:
+    linear-gradient(180deg, rgba(9,11,12,.1), rgba(9,11,12,.34)),
+    url('/brand/bee-production-field.svg') center top / 1920px 1400px repeat-y,
+    transparent;
+}
+
 .site-shell::before { display: none; }
 .page-hero::before { background-image: none; }
 
-/* Keep the working grid where it has a functional purpose: Studio. */
+.site-header {
+  width: 100%;
+}
+
+.site-header__bar {
+  width: min(calc(100% - 40px), 1400px);
+  margin: 0 auto;
+  padding-inline: 0;
+}
+
+main {
+  width: 100%;
+}
+
+/* Focus treatment -------------------------------------------------------- */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+summary:focus-visible {
+  outline: 2px solid var(--brand-copper-bright);
+  outline-offset: 3px;
+}
+
+.skip-link {
+  position: fixed;
+  z-index: 1000;
+  top: 10px;
+  left: 10px;
+  padding: 10px 14px;
+  transform: translateY(-160%);
+  background: var(--brand-bone);
+  color: #090b0c;
+  font-weight: 700;
+}
+.skip-link:focus { transform: translateY(0); }
+
+/* Responsive navigation ------------------------------------------------- */
+.mobile-menu { display: none; }
+.mobile-menu__trigger {
+  min-width: 82px;
+  min-height: 44px;
+  padding: 0 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border: 1px solid rgba(238,231,218,.16);
+  background: #0b0e10;
+  color: var(--brand-bone);
+  cursor: pointer;
+}
+.mobile-menu__trigger span { font-size: .72rem; font-weight: 650; }
+.mobile-menu__trigger b { color: var(--brand-copper-bright); font-size: 1rem; font-weight: 500; }
+.mobile-menu__panel[hidden] { display: none !important; }
+.mobile-menu__panel {
+  position: absolute;
+  z-index: 90;
+  right: 0;
+  top: calc(100% + 10px);
+  width: min(420px, calc(100vw - 32px));
+  border: 1px solid rgba(238,231,218,.18);
+  background: rgba(10,12,13,.985);
+  box-shadow: 0 28px 70px rgba(0,0,0,.55);
+}
+.mobile-menu__panel nav { display: grid; padding: 10px; }
+.mobile-menu__primary,
+.mobile-menu__secondary,
+.mobile-menu__utility { display: grid; }
+.mobile-menu__primary a,
+.mobile-menu__secondary a,
+.mobile-menu__utility a {
+  min-height: 46px;
+  padding: 0 13px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid rgba(238,231,218,.08);
+  color: #c3bbb0;
+  font-size: .82rem;
+}
+.mobile-menu__primary a[aria-current='page'] {
+  color: var(--brand-bone);
+  background: rgba(185,119,50,.08);
+  box-shadow: inset 3px 0 var(--brand-copper);
+}
+.mobile-menu__secondary,
+.mobile-menu__utility {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(238,231,218,.1);
+}
+.mobile-menu__secondary a,
+.mobile-menu__utility a { min-height: 40px; color: #929a9d; font-size: .74rem; }
+.mobile-menu__cta {
+  min-height: 46px;
+  margin-top: 10px;
+  padding: 0 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--brand-copper);
+  color: #100b06 !important;
+  font-weight: 750;
+}
+
+/* Keep desktop navigation when it still fits. */
+@media (min-width: 901px) and (max-width: 1179px) {
+  .site-header__bar { gap: 13px; }
+  .logo-lockup small { display: none; }
+  .desktop-nav { display: flex; gap: clamp(8px, 1vw, 13px); }
+  .desktop-nav a { font-size: .66rem; }
+  .header-commerce { display: flex; }
+  .header-commerce__link { min-height: 34px; padding-inline: 8px; font-size: .65rem; }
+  .header-cta { display: none; }
+  .mobile-menu { display: none; }
+}
+
+@media (max-width: 900px) {
+  .site-header__bar { width: calc(100% - 32px); min-height: 64px; }
+  .desktop-nav,
+  .header-commerce,
+  .header-cta { display: none; }
+  .mobile-menu { position: relative; display: block; margin-left: auto; }
+  .logo-lockup small { display: none; }
+}
+
+/* Public material field -------------------------------------------------- */
+/* The public canvas references fabric grain and edge seam/cut marks.
+   The center is intentionally quiet so content does not compete with it. */
+.home-hero-v3,
+.compact-hero,
+.capability-mosaic,
+.order-mode-grid,
+.group-feature,
+.faq-split,
+.shop-v3,
+.action-band,
+.fit-comparison,
+.placement-visual,
+.method-use-grid,
+.artwork-readiness,
+.creator-paths,
+.creator-flow,
+.sample-lab-plan,
+.about-principles,
+.about-stage {
+  position: relative;
+}
+
+.home-hero-v3 { min-height: min(610px, calc(100vh - 68px)); padding-block: clamp(48px, 6vw, 82px); }
+.home-hero-v3__actions { gap: 10px; }
+.home-hero-v3__actions > a:not(.button) {
+  min-height: 44px;
+  padding: 0 16px;
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid rgba(238,231,218,.14);
+  background: rgba(10,12,13,.72);
+  color: #c5bbaa;
+}
+.home-hero-v3__actions > a:not(.button):hover { border-color: rgba(185,119,50,.48); background: rgba(185,119,50,.075); color: var(--brand-bone); }
+.capability-mosaic { margin-top: 14px; }
+.capability-tile--wide { min-height: 520px; }
+
+/* Public sections should feel anchored rather than like cards floating on
+   an unrelated canvas. */
+.order-mode-grid,
+.fit-comparison,
+.method-use-grid,
+.creator-paths,
+.sample-lab-plan,
+.about-principles {
+  background: rgba(10,12,13,.74);
+  backdrop-filter: blur(3px);
+}
+
+.group-feature,
+.faq-split,
+.placement-visual,
+.artwork-readiness,
+.about-stage,
+.home-process {
+  padding-top: 4px;
+}
+
+/* Shop: one concise pre-launch statement + custom path. */
+.shop-v3--concise .shop-v3__feature { margin-top: 0; }
+.shop-v3--concise .shop-v3__copy p { max-width: 620px; }
+.shop-v3__feature-actions { margin-top: 26px; display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+.shop-v3__studio--prelaunch { margin-top: clamp(42px, 6vw, 76px); }
+.shop-v3__studio--prelaunch .button { margin-top: 14px; }
+
+/* Studio: preserve control depth; simplify only the framing copy. -------- */
+.studio-v3-shell { width: 100%; }
+.studio-v3-intro {
+  width: min(calc(100% - 48px), 1320px);
+  margin: 0 auto;
+  padding: 38px 0 22px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, .55fr);
+  gap: 48px;
+  align-items: end;
+  border-bottom: 1px solid var(--line);
+}
+.studio-v3-intro h1 { max-width: 720px; margin: 8px 0 0; font: 600 clamp(2.2rem, 4vw, 4.2rem)/.98 "Space Grotesk", sans-serif; letter-spacing: -.05em; }
+.studio-v3-intro p { margin: 0; max-width: 520px; font-size: .78rem; line-height: 1.65; }
+.studio-v3-shell .studio-page { padding-top: 22px; }
+.studio-v3-shell .studio-page > .studio-heading,
+.studio-v3-shell .studio-page > .studio-footnote { display: none; }
+.studio-controls { min-width: 0; overflow-x: hidden; }
+.studio-controls__section,
+.studio-controls__actions,
+.studio-garment-options,
+.studio-two-up,
+.studio-field,
+.studio-upload { min-width: 0; }
+.studio-two-up { grid-template-columns: minmax(0, 1fr) minmax(78px, 110px); }
+.studio-upload input[type='file'] { min-width: 0; max-width: 100%; overflow: hidden; }
+.studio-v3-note {
+  width: min(calc(100% - 48px), 1320px);
+  margin: 18px auto 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.studio-v3-note > div { padding: 18px 20px; display: grid; gap: 4px; }
+.studio-v3-note > div + div { border-left: 1px solid var(--line); }
+.studio-v3-note strong { font-size: .72rem; }
+.studio-v3-note span { color: #7f8789; font-size: .66rem; line-height: 1.55; }
+
+/* Keep the functional alignment grid inside Studio only. */
 .studio-viewport {
   background:
     linear-gradient(rgba(238,231,218,.028) 1px, transparent 1px),
@@ -25,141 +274,139 @@
   background-size: 54px 54px, 54px 54px, auto, auto;
 }
 
-/* Homepage: one decision point, then useful visual information. --------- */
-.home-hero-v3 {
-  min-height: min(610px, calc(100vh - 68px));
-  padding-block: clamp(48px, 6vw, 82px);
-}
-
-.home-hero-v3__actions {
-  gap: 10px;
-}
-.home-hero-v3__actions > a:not(.button) {
-  min-height: 44px;
-  padding: 0 16px;
-  display: inline-flex;
-  align-items: center;
-  border: 1px solid rgba(238,231,218,.14);
-  background: rgba(10,12,13,.56);
-  color: #c5bbaa;
-}
-.home-hero-v3__actions > a:not(.button):hover {
-  border-color: rgba(185,119,50,.48);
-  background: rgba(185,119,50,.075);
-  color: var(--brand-bone);
-}
-
-/* These repeat choices already available in the hero or explain a
-   pre-launch limitation rather than helping the customer act. */
-.intent-paths,
-.feature-story,
-.sample-lab-teaser {
-  display: none;
-}
-
-/* Let the capability mosaic become the first scroll destination. */
-.capability-mosaic {
-  margin-top: 14px;
-}
-
-/* The capability imagery is useful evidence/navigation, so keep it roomy. */
-.capability-tile--wide { min-height: 520px; }
-
-/* Bulk: keep ordering modes, the collector, process, and answers.
-   The four-factor strip repeats information captured in the request flow. */
-.bulk-quote-strip { display: none; }
-.order-mode-grid { margin-bottom: clamp(56px, 7vw, 88px); }
-
-/* Pre-launch Shop: one clear message, then a useful alternative. -------- */
-.shop-v3--concise .shop-v3__feature {
-  margin-top: 0;
-}
-.shop-v3--concise .shop-v3__copy p {
-  max-width: 650px;
-}
-.shop-v3__feature-actions {
-  margin-top: 26px;
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  flex-wrap: wrap;
-}
-.shop-v3__catalog--concise header {
-  margin-bottom: 24px;
-}
-.shop-v3__catalog--concise header p {
-  max-width: 560px;
-}
-.shop-v3__empty--actionable {
-  grid-template-columns: minmax(260px,.8fr) minmax(0,1.2fr);
-  align-items: center;
-}
-.shop-v3__empty--actionable > div:first-child {
-  max-width: 500px;
-}
-.shop-v3__empty--actionable .button {
-  margin-top: 8px;
-}
-.shop-v3__empty--actionable .shop-v3__studio-options {
-  min-height: 260px;
-}
-
-/* Preserve detailed work surfaces. Do not globally compress these. */
-.studio-page,
+/* Detailed workspaces intentionally keep their information density. ------ */
 .project-bag-page,
 .project-review-page,
 .account-workspace-v3,
+.account-workspace-v4,
 .group-collector-page {
   --section-gap: clamp(56px, 7vw, 92px);
 }
 
-/* Public-page surfaces feel lighter against the production field. */
-.compact-hero,
-.home-process,
-.faq-split,
-.placement-visual,
-.artwork-readiness,
-.creator-paths,
-.about-principles,
-.about-stage {
-  position: relative;
+.account-workspace-v4 { width: var(--content-wide); margin: 0 auto; padding: 48px 0 var(--section-gap); }
+.attention-strip--four { grid-template-columns: repeat(4, 1fr); }
+.workspace-quick-actions { display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid var(--line); }
+.workspace-quick-actions a,
+.workspace-quick-actions button {
+  min-height: 92px;
+  padding: 15px;
+  display: grid;
+  align-content: center;
+  gap: 5px;
+  border: 0;
+  border-right: 1px solid var(--line);
+  background: rgba(255,255,255,.012);
+  color: var(--brand-bone);
+  text-align: left;
+  cursor: pointer;
 }
+.workspace-quick-actions > :last-child { border-right: 0; }
+.workspace-quick-actions span { color: #777f81; font-size: .56rem; text-transform: uppercase; letter-spacing: .08em; }
+.workspace-quick-actions strong { font-size: .75rem; }
+.workspace-quick-actions a:hover,
+.workspace-quick-actions button:hover { background: rgba(185,119,50,.06); }
 
-.compact-hero::after,
-.home-process::after,
-.faq-split::after {
-  content: '';
-  position: absolute;
-  pointer-events: none;
-  width: 30px;
-  height: 30px;
-  right: 0;
-  bottom: -1px;
-  border-right: 1px solid rgba(185,119,50,.22);
-  border-bottom: 1px solid rgba(185,119,50,.22);
-}
+.workspace-state-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.workspace-state-grid article { min-height: 230px; padding: 22px; border: 1px solid var(--line); background: #0d1012; }
+.workspace-state-grid article > span { color: var(--brand-copper-bright); font-size: .58rem; text-transform: uppercase; }
+.workspace-state-grid article > strong { margin-top: 7px; display: block; font-size: 1.15rem; }
+.workspace-state-grid article p { font-size: .73rem; }
+.workspace-state-grid dl { margin: 18px 0; }
+.workspace-state-grid dl > div { padding: 8px 0; display: flex; justify-content: space-between; border-top: 1px solid var(--line); }
+.workspace-state-grid dt { color: #747c7e; font-size: .58rem; text-transform: uppercase; }
+.workspace-state-grid dd { margin: 0; color: #b8b0a5; font-size: .68rem; }
+.workspace-state-grid button { padding: 0; border: 0; background: transparent; color: var(--brand-copper-bright); cursor: pointer; }
 
+.payment-roadmap { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--line); }
+.payment-roadmap > div { min-height: 180px; padding: 20px; border-right: 1px solid var(--line); }
+.payment-roadmap > div:last-child { border-right: 0; }
+.payment-roadmap span { color: var(--brand-copper-bright); font-size: .56rem; }
+.payment-roadmap strong { margin: 28px 0 8px; display: block; font-size: .9rem; }
+.payment-roadmap p { margin: 0; font-size: .7rem; }
+
+.browser-drafts { border: 1px solid var(--line); }
+.browser-drafts > header { padding: 13px 16px; display: flex; justify-content: space-between; border-bottom: 1px solid var(--line); }
+.browser-drafts > header span { color: var(--brand-copper-bright); }
+.browser-drafts > p { margin: 0; padding: 18px; font-size: .72rem; }
+.browser-drafts > div { display: grid; grid-template-columns: repeat(3, 1fr); }
+.browser-drafts article { min-height: 110px; padding: 15px; display: grid; gap: 5px; border-right: 1px solid var(--line); }
+.browser-drafts article:last-child { border-right: 0; }
+.browser-drafts article > span { color: var(--brand-copper-bright); font-size: .54rem; text-transform: uppercase; }
+.browser-drafts article strong { font-size: .78rem; }
+.browser-drafts article small { color: #737b7d; }
+
+.message-workspace-v4 { display: grid; grid-template-columns: 250px 1fr; gap: 12px; }
+.message-workspace-v4 > aside { display: grid; align-content: start; gap: 5px; }
+.message-workspace-v4 > aside button { padding: 14px; display: grid; gap: 4px; border: 1px solid var(--line); background: #0d1012; color: var(--brand-bone); text-align: left; cursor: pointer; }
+.message-workspace-v4 > aside button.is-active { border-color: rgba(185,119,50,.5); background: rgba(185,119,50,.065); }
+.message-workspace-v4 > aside small { color: #777f81; }
+.message-workspace-v4 > section { min-width: 0; border: 1px solid var(--line-strong); }
+.message-workspace-v4 > section > header { padding: 14px 18px; display: flex; justify-content: space-between; gap: 18px; border-bottom: 1px solid var(--line); }
+.message-workspace-v4 > section > header span { color: #747c7e; font-size: .62rem; }
+.message-thread-v4 { min-height: 180px; padding: 18px; display: grid; align-content: start; gap: 10px; background: rgba(0,0,0,.12); }
+.message-thread-v4 > p { margin: 0; font-size: .72rem; }
+.message-thread-v4 article { max-width: 80%; padding: 12px 14px; border: 1px solid var(--line); background: #0b0e10; }
+.message-thread-v4 article p { margin: 0; color: #c0b8ad; font-size: .72rem; }
+.message-thread-v4 article small { margin-top: 7px; display: block; color: #697173; font-size: .56rem; }
+.message-workspace-v4 form { padding: 18px; display: grid; gap: 10px; border-top: 1px solid var(--line); }
+.message-workspace-v4 form label { display: grid; gap: 6px; color: #8b9395; font-size: .64rem; }
+.message-workspace-v4 textarea { width: 100%; padding: 10px; }
+.message-workspace-v4 form .button { justify-self: start; }
+.message-workspace-v4 form > small { color: #686f71; }
+
+/* Tablet ----------------------------------------------------------------- */
 @media (max-width: 980px) {
   .home-hero-v3 { min-height: auto; }
-  .shop-v3__empty--actionable { grid-template-columns: 1fr; }
+  .studio-v3-intro { grid-template-columns: 1fr; gap: 16px; }
+  .attention-strip--four { grid-template-columns: 1fr 1fr; }
+  .attention-strip--four article:nth-child(2) { border-right: 0; }
+  .attention-strip--four article:nth-child(-n + 2) { border-bottom: 1px solid var(--line); }
+  .workspace-quick-actions { grid-template-columns: 1fr 1fr; }
+  .workspace-quick-actions > :nth-child(2) { border-right: 0; }
+  .workspace-quick-actions > :nth-child(-n + 2) { border-bottom: 1px solid var(--line); }
+  .workspace-state-grid { grid-template-columns: 1fr; }
+  .message-workspace-v4 { grid-template-columns: 1fr; }
+  .message-workspace-v4 > aside { display: flex; overflow-x: auto; }
+  .message-workspace-v4 > aside button { min-width: 220px; }
 }
 
 @media (max-width: 700px) {
   .site-shell {
     background:
-      linear-gradient(180deg, rgba(9,11,12,.14), rgba(9,11,12,.5)),
-      url('/brand/bee-production-field.svg') 46% top / 1180px auto repeat-y,
-      rgba(9,11,12,.55);
+      linear-gradient(180deg, rgba(9,11,12,.08), rgba(9,11,12,.4)),
+      url('/brand/bee-production-field.svg') center top / 1420px 1035px repeat-y,
+      transparent;
   }
+  .site-header__bar { width: calc(100% - 28px); }
+  .logo-lockup strong { font-size: .69rem; }
+  .mobile-menu__panel { position: fixed; top: 70px; left: 14px; right: 14px; width: auto; max-height: calc(100vh - 84px); overflow-y: auto; }
 
   .home-hero-v3 { padding-top: 42px; padding-bottom: 48px; }
   .home-hero-v3__actions { display: grid; grid-template-columns: 1fr; }
   .home-hero-v3__actions > a { width: 100%; justify-content: center; }
   .capability-mosaic { margin-top: 0; }
   .capability-tile--wide { min-height: 420px; }
-  .shop-v3__empty--actionable .shop-v3__studio-options { min-height: 0; }
+
+  .studio-v3-intro { width: calc(100% - 32px); padding-top: 26px; }
+  .studio-v3-note { width: calc(100% - 32px); grid-template-columns: 1fr; }
+  .studio-v3-note > div + div { border-left: 0; border-top: 1px solid var(--line); }
+
+  .account-workspace-v4 { width: var(--content-wide); padding-top: 30px; }
+  .attention-strip--four { grid-template-columns: 1fr; }
+  .attention-strip--four article { border-right: 0 !important; border-bottom: 1px solid var(--line); }
+  .attention-strip--four article:last-child { border-bottom: 0; }
+  .workspace-quick-actions { grid-template-columns: 1fr; }
+  .workspace-quick-actions > * { border-right: 0 !important; border-bottom: 1px solid var(--line); }
+  .workspace-quick-actions > :last-child { border-bottom: 0; }
+  .payment-roadmap { grid-template-columns: 1fr; }
+  .payment-roadmap > div { min-height: 0; border-right: 0; border-bottom: 1px solid var(--line); }
+  .payment-roadmap > div:last-child { border-bottom: 0; }
+  .browser-drafts > div { grid-template-columns: 1fr; }
+  .browser-drafts article { border-right: 0; border-bottom: 1px solid var(--line); }
+  .browser-drafts article:last-child { border-bottom: 0; }
+  .message-thread-v4 article { max-width: 100%; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .site-shell { background-attachment: scroll; }
+  html { scroll-behavior: auto; }
 }
