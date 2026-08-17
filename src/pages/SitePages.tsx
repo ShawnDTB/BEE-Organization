@@ -1,97 +1,50 @@
-import { useState, type FormEvent, type ReactNode } from 'react';
-import { faqs, orderSteps, serviceCards, siteConfig, trustPoints } from '../content/siteContent';
+import { useMemo, useState, type FormEvent, type ReactNode } from 'react';
+import { faqs, orderSteps, siteConfig } from '../content/siteContent';
 
-type PageHeroProps = {
-  eyebrow: string;
+type HeroProps = {
+  eyebrow?: string;
   title: string;
   description: string;
-  primaryLabel?: string;
-  primaryHref?: string;
-  secondaryLabel?: string;
-  secondaryHref?: string;
-  aside?: ReactNode;
+  primary?: { label: string; href: string };
+  secondary?: { label: string; href: string };
+  media?: ReactNode;
 };
 
-function PageHero({
-  eyebrow,
-  title,
-  description,
-  primaryLabel = 'Start an order',
-  primaryHref = '/start-order',
-  secondaryLabel,
-  secondaryHref,
-  aside,
-}: PageHeroProps) {
+function CompactHero({ eyebrow, title, description, primary, secondary, media }: HeroProps) {
   return (
-    <section className="page-hero">
-      <div className="page-hero__copy">
-        <span className="eyebrow">{eyebrow}</span>
+    <section className={`compact-hero${media ? ' compact-hero--media' : ''}`}>
+      <div className="compact-hero__copy">
+        {eyebrow && <span className="eyebrow">{eyebrow}</span>}
         <h1>{title}</h1>
         <p>{description}</p>
-        <div className="page-hero__actions">
-          <a className="button" href={primaryHref}>{primaryLabel}</a>
-          {secondaryLabel && secondaryHref && <a className="text-link" href={secondaryHref}>{secondaryLabel} →</a>}
-        </div>
+        {(primary || secondary) && (
+          <div className="compact-hero__actions">
+            {primary && <a className="button" href={primary.href}>{primary.label}</a>}
+            {secondary && <a className="text-link" href={secondary.href}>{secondary.label} →</a>}
+          </div>
+        )}
       </div>
-      <div className="page-hero__aside">{aside ?? <InterimBrandPanel />}</div>
+      {media && <div className="compact-hero__media">{media}</div>}
     </section>
   );
 }
 
-function InterimBrandPanel() {
+function ProcessRail() {
   return (
-    <div className="interim-panel">
-      <img src="/brand/placeholder/bee-organization-mark.svg" alt="Temporary BEE Organization identifier" />
-      <span>Working identity</span>
-      <strong>BEE Organization</strong>
-      <p>The final public name and logo are intentionally not locked yet.</p>
-    </div>
-  );
-}
-
-function SectionHeading({ eyebrow, title, description }: { eyebrow: string; title: string; description?: string }) {
-  return (
-    <div className="section-heading">
-      <div>
-        <span className="eyebrow">{eyebrow}</span>
-        <h2>{title}</h2>
-      </div>
-      {description && <p>{description}</p>}
-    </div>
-  );
-}
-
-function TrustGrid() {
-  return (
-    <div className="trust-grid">
-      {trustPoints.map(([title, description], index) => (
-        <article key={title}>
-          <span>{String(index + 1).padStart(2, '0')}</span>
-          <h3>{title}</h3>
-          <p>{description}</p>
-        </article>
-      ))}
-    </div>
-  );
-}
-
-function ProcessSteps({ compact = false }: { compact?: boolean }) {
-  return (
-    <div className={compact ? 'process-grid process-grid--compact' : 'process-grid'}>
+    <ol className="process-rail">
       {orderSteps.map(([number, title, description]) => (
-        <article key={number}>
+        <li key={number}>
           <span>{number}</span>
-          <h3>{title}</h3>
-          <p>{description}</p>
-        </article>
+          <div><strong>{title}</strong><p>{description}</p></div>
+        </li>
       ))}
-    </div>
+    </ol>
   );
 }
 
 function FaqList({ items = faqs }: { items?: readonly (readonly [string, string])[] }) {
   return (
-    <div className="faq-list">
+    <div className="faq-list faq-list--compact">
       {items.map(([question, answer]) => (
         <details key={question}>
           <summary>{question}</summary>
@@ -102,404 +55,293 @@ function FaqList({ items = faqs }: { items?: readonly (readonly [string, string]
   );
 }
 
-function CtaBand({ title, description, label = 'Start an order', href = '/start-order' }: { title: string; description: string; label?: string; href?: string }) {
+function ActionBand({ title, copy, primary, secondary }: { title: string; copy: string; primary: { label: string; href: string }; secondary?: { label: string; href: string } }) {
   return (
-    <section className="cta-band">
+    <section className="action-band">
+      <div><h2>{title}</h2><p>{copy}</p></div>
       <div>
-        <span className="eyebrow">Next step</span>
-        <h2>{title}</h2>
-        <p>{description}</p>
+        <a className="button" href={primary.href}>{primary.label}</a>
+        {secondary && <a className="text-link" href={secondary.href}>{secondary.label} →</a>}
       </div>
-      <a className="button" href={href}>{label}</a>
     </section>
   );
 }
 
-const audienceCards = [
-  ['Schools & teams', 'Spirit wear, staff apparel, club orders, team programs, events, and organized reorders.', '/schools-organizations'],
-  ['Organizations & businesses', 'Branded uniforms, event apparel, employee pieces, promotional programs, and repeat ordering.', '/schools-organizations'],
-  ['Creators & communities', 'Merchandise concepts, limited runs, community pieces, creator spotlights, and scalable future releases.', '/creator-merch'],
-  ['Individuals & families', 'Custom gifts, personal artwork, celebrations, memorial pieces, reunions, and small-run requests.', '/start-order'],
+const homePaths = [
+  {
+    kicker: 'Create custom',
+    title: 'Design something for you.',
+    copy: 'Start with a tee, hoodie, or polo and build the design visually before asking for production review.',
+    href: '/studio',
+    action: 'Open BEE Studio',
+    art: '/store/tee.svg',
+  },
+  {
+    kicker: 'Order for a group',
+    title: 'Keep the people and sizes organized.',
+    copy: 'Schools, teams, businesses, events, and organizations can start one coordinated project instead of a message thread.',
+    href: '/bulk-orders',
+    action: 'Plan a group order',
+    art: '/store/polo.svg',
+  },
+  {
+    kicker: 'Shop finished merch',
+    title: 'Buy a collection that is ready.',
+    copy: 'Creator drops, BEE originals, and organization storefronts belong here once the merchandise physically exists and is approved.',
+    href: '/shop',
+    action: 'Visit the shop',
+    art: '/store/hoodie.svg',
+  },
 ] as const;
 
 export function HomePage() {
   return (
     <>
-      <PageHero
-        eyebrow="Custom apparel platform"
-        title="Apparel made to represent something real."
-        description="BEE Organization is building a clear, organized way for schools, teams, organizations, creators, businesses, and individuals to order embroidery and graphic apparel without an inflated or confusing process."
-        primaryLabel="Start a project"
-        secondaryLabel="Explore services"
-        secondaryHref="#services"
-        aside={
-          <div className="hero-dashboard">
-            <span className="hero-dashboard__label">Order paths</span>
-            <div><strong>Bulk</strong><small>Groups, programs, teams</small></div>
-            <div><strong>Creator</strong><small>Merchandise and communities</small></div>
-            <div><strong>Custom</strong><small>One-off and small-run work</small></div>
-            <p>Quote → proof → production → reorder</p>
+      <section className="home-hero-v3">
+        <div className="home-hero-v3__copy">
+          <span className="eyebrow">Custom apparel · built clearly</span>
+          <h1>{siteConfig.primaryMessage}</h1>
+          <p>{siteConfig.supportingMessage}</p>
+          <div className="home-hero-v3__actions">
+            <a className="button" href="/studio">Design custom apparel</a>
+            <a href="/bulk-orders">Bulk & team orders</a>
+            <a href="/shop">Shop collections</a>
           </div>
-        }
-      />
-
-      <section className="metric-strip" aria-label="Core service commitments">
-        <div><strong>Structured quotes</strong><span>Project variables organized before production</span></div>
-        <div><strong>Proof approval</strong><span>Placement and artwork reviewed first</span></div>
-        <div><strong>Production-aware</strong><span>Method selected around the actual order</span></div>
-        <div><strong>Reorder-ready</strong><span>Approved details retained for repeat work</span></div>
-      </section>
-
-      <section id="services" className="section">
-        <SectionHeading
-          eyebrow="Services"
-          title="One production partner. Multiple ways to order."
-          description="Each service page explains what information is needed, what affects pricing, and where the method works best."
-        />
-        <div className="service-grid">
-          {serviceCards.map((service) => (
-            <a className="service-card" key={service.title} href={service.href}>
-              <span>{service.code}</span>
-              <h3>{service.title}</h3>
-              <p>{service.description}</p>
-              <small>{service.audience}</small>
-              <b>Explore service →</b>
-            </a>
-          ))}
+        </div>
+        <div className="home-hero-v3__visual" aria-label="Custom apparel pathways">
+          <div className="home-garment home-garment--primary"><img src="/store/hoodie.svg" alt="Heavyweight hoodie development visual" /></div>
+          <div className="home-garment home-garment--secondary"><img src="/store/polo.svg" alt="Performance polo development visual" /></div>
+          <div className="home-hero-v3__note"><span>Design</span><b>→</b><span>Approve</span><b>→</b><span>Produce</span><b>→</b><span>Reorder</span></div>
         </div>
       </section>
 
-      <section className="section section--contrast">
-        <SectionHeading
-          eyebrow="Who it is for"
-          title="Built around the people wearing it."
-          description="The customer is the focus. The site routes each type of buyer into the right information and intake process."
-        />
-        <div className="audience-grid">
-          {audienceCards.map(([title, description, href]) => (
-            <a key={title} href={href}>
-              <h3>{title}</h3>
-              <p>{description}</p>
-              <span>View path →</span>
-            </a>
-          ))}
+      <section className="intent-paths" aria-label="Choose how to start">
+        {homePaths.map((path) => (
+          <a key={path.kicker} href={path.href} className="intent-card">
+            <div className="intent-card__visual"><img src={path.art} alt="" /></div>
+            <div><span>{path.kicker}</span><h2>{path.title}</h2><p>{path.copy}</p><b>{path.action} →</b></div>
+          </a>
+        ))}
+      </section>
+
+      <section className="feature-story">
+        <div className="feature-story__visual">
+          <img src="/store/tee.svg" alt="Custom tee development visual" />
+          <span>Studio preview</span>
+        </div>
+        <div className="feature-story__copy">
+          <span className="eyebrow">Make it before you request it</span>
+          <h2>Start with the garment. Build the idea visually.</h2>
+          <p>BEE Studio lets you choose a garment, change its color, add text or artwork, select embroidery or graphic decoration, and position the design before the project moves into review.</p>
+          <div><a className="button" href="/studio">Open Studio</a><a className="text-link" href="/embroidery">See embroidery options →</a></div>
         </div>
       </section>
 
-      <section className="section">
-        <SectionHeading
-          eyebrow="How ordering works"
-          title="A custom process without unnecessary friction."
-          description="The workflow is designed to protect the customer and production team from vague expectations, missing sizes, and unapproved artwork."
-        />
-        <ProcessSteps />
+      <section className="capability-mosaic">
+        <a href="/embroidery" className="capability-tile capability-tile--wide">
+          <div><span>Embroidery</span><h2>Texture, durability, and a cleaner branded finish.</h2><b>Explore embroidery →</b></div>
+          <img src="/store/polo.svg" alt="Embroidered polo development visual" />
+        </a>
+        <a href="/graphic-apparel" className="capability-tile">
+          <div><span>Graphic apparel</span><h2>Artwork-forward pieces.</h2><b>Explore graphics →</b></div>
+          <img src="/store/tee.svg" alt="Graphic tee development visual" />
+        </a>
+        <a href="/bulk-orders" className="capability-tile">
+          <div><span>Teams & staff</span><h2>Repeatable group systems.</h2><b>Plan a program →</b></div>
+          <img src="/store/layer.svg" alt="Organization layer development visual" />
+        </a>
       </section>
 
-      <section className="section section--split">
+      <section className="sample-lab-teaser">
         <div>
-          <span className="eyebrow">Why the system matters</span>
-          <h2>Good apparel starts before the machine turns on.</h2>
-          <p>Garment choice, artwork condition, decoration method, placement, quantity, deadline, and approval all affect the final result. The website is being built to collect those decisions clearly instead of spreading them across messages.</p>
-          <a className="text-link" href="/start-order">See the order intake →</a>
+          <span className="eyebrow">Sample Lab</span>
+          <h2>Proof comes from what the machines actually produce.</h2>
         </div>
-        <TrustGrid />
+        <p>As BEE completes its own stitch tests, graphic tests, wash checks, and finished samples, those real results will replace development visuals across the site. Nothing will be presented as customer work before it is.</p>
+        <a className="text-link" href="/our-work">See the Sample Lab plan →</a>
       </section>
 
-      <section className="section">
-        <SectionHeading
-          eyebrow="Featured work"
-          title="Real projects will lead the portfolio."
-          description="The launch portfolio will use completed, approved customer work—never invented reviews, fake order counts, or stock examples presented as client results."
-        />
-        <div className="portfolio-preview">
-          {['Embroidery detail', 'Bulk program', 'Creator collection'].map((title, index) => (
-            <a key={title} href="/our-work">
-              <div className="media-placeholder"><span>Portfolio media {String(index + 1).padStart(2, '0')}</span></div>
-              <h3>{title}</h3>
-              <p>Photography and project details pending approved completed work.</p>
-            </a>
-          ))}
-        </div>
+      <section className="home-process">
+        <div><span className="eyebrow">Four clear checkpoints</span><h2>Custom should feel organized, not complicated.</h2></div>
+        <ProcessRail />
       </section>
 
-      <CtaBand
-        title="Have an order in mind? Start with the details you already know."
-        description="Quantity ranges and unfinished artwork are okay. The intake is designed to identify what still needs to be decided."
+      <ActionBand
+        title="Know what you want—or only know that you need apparel?"
+        copy="Both are enough to start. Build it visually or send the details you already have."
+        primary={{ label: 'Start a project', href: '/start-order' }}
+        secondary={{ label: 'Design in Studio', href: '/studio' }}
       />
     </>
   );
 }
 
 export function BulkOrdersPage() {
-  const factors = [
-    ['Garment', 'Brand, style, material, color, size range, and supplier availability.'],
-    ['Quantity', 'Total pieces and whether the artwork or personalization changes between garments.'],
-    ['Decoration', 'Embroidery, transfer, print method, number of locations, and artwork complexity.'],
-    ['Schedule', 'Approval timing, garment availability, production capacity, and delivery requirements.'],
-  ] as const;
-
   return (
     <>
-      <PageHero
-        eyebrow="Bulk orders"
-        title="Group apparel without a scattered ordering process."
-        description="Bulk programs are designed for schools, teams, clubs, businesses, events, organizations, and communities that need consistent apparel, organized quantities, and a dependable path to reorder."
-        secondaryLabel="Schools and organizations"
-        secondaryHref="/schools-organizations"
+      <CompactHero
+        eyebrow="Bulk & organizations"
+        title="Ordering for a team, school, business, event, or group?"
+        description="Choose the ordering structure that fits how your people actually need to participate."
+        primary={{ label: 'Get a bulk quote', href: '/start-order?type=bulk' }}
+        secondary={{ label: 'Design the garment', href: '/studio' }}
       />
-      <section className="section">
-        <SectionHeading eyebrow="Quote structure" title="What determines a bulk quote." description="Public flat pricing would be misleading before these variables are known." />
-        <div className="feature-grid feature-grid--four">
-          {factors.map(([title, description], index) => <article key={title}><span>0{index + 1}</span><h3>{title}</h3><p>{description}</p></article>)}
+
+      <section className="order-mode-grid">
+        <article><span>01</span><h2>One organizer</h2><p>One decision maker, one coordinated size list, one quote, and one bulk invoice.</p><small>Best when the organizer already controls quantities and distribution.</small></article>
+        <article><span>02</span><h2>Shared size collector</h2><p>Participants submit their own size and personalization through one shared project link.</p><small>Planned platform feature for teams, schools, departments, and events.</small></article>
+        <article><span>03</span><h2>Dedicated storefront</h2><p>An approved collection stays available through a focused organization store or order window.</p><small>Best for repeat programs and customers ordering for themselves.</small></article>
+      </section>
+
+      <section className="bulk-quote-strip">
+        <div><span>Garment</span><p>Style, color, size range, and availability.</p></div>
+        <div><span>Quantity</span><p>Estimated pieces and personalization.</p></div>
+        <div><span>Artwork</span><p>Logo, design, placement, and decoration.</p></div>
+        <div><span>Timing</span><p>Approval date, need-by date, and fulfillment.</p></div>
+      </section>
+
+      <section className="group-feature">
+        <div>
+          <span className="eyebrow">Group Collector · planned</span>
+          <h2>Stop collecting sizes in texts and spreadsheets.</h2>
+          <p>An organizer will be able to approve a design, share one link, and watch the roster fill in as participants submit sizes, names, numbers, and other enabled details.</p>
+          <a className="text-link" href="/start-order?type=bulk">Start with a standard group request →</a>
+        </div>
+        <div className="group-collector-demo" aria-label="Group collector interface concept">
+          <div><strong>Team apparel</strong><span>18 / 24 responses</span></div>
+          <i><b style={{ width: '75%' }} /></i>
+          <ul><li><span>Jordan M.</span><b>XL · submitted</b></li><li><span>Taylor R.</span><b>M · submitted</b></li><li><span>6 remaining</span><b>Awaiting response</b></li></ul>
         </div>
       </section>
-      <section className="section section--contrast">
-        <SectionHeading eyebrow="Program support" title="Designed for more than one box of shirts." />
-        <div className="two-column-list">
-          <div>
-            <h3>Order organization</h3>
-            <ul>
-              <li>Garment and color selection</li>
-              <li>Size and quantity breakdowns</li>
-              <li>Multiple decoration locations</li>
-              <li>Names, numbers, or department variants</li>
-              <li>Central proof approval</li>
-            </ul>
-          </div>
-          <div>
-            <h3>Repeat-order preparation</h3>
-            <ul>
-              <li>Reference numbers for prior orders</li>
-              <li>Retained approved artwork</li>
-              <li>Updated size and quantity collection</li>
-              <li>Supplier and pricing reconfirmation</li>
-              <li>Consistent placement references</li>
-            </ul>
-          </div>
-        </div>
+
+      <section className="home-process home-process--compact">
+        <div><span className="eyebrow">From request to distribution</span><h2>One project state from the first count to the reorder.</h2></div>
+        <ProcessRail />
       </section>
-      <section className="section">
-        <SectionHeading eyebrow="Order stages" title="Every approval has a place." />
-        <ProcessSteps compact />
-      </section>
-      <section className="section">
-        <SectionHeading eyebrow="Common questions" title="Bulk-order answers before you begin." />
+
+      <section className="faq-split">
+        <div><span className="eyebrow">Quick answers</span><h2>What groups usually need to know.</h2></div>
         <FaqList />
       </section>
-      <CtaBand title="Build a bulk-order request." description="Provide the estimated quantity, audience, garment type, decoration locations, and target date. Exact sizes can follow when appropriate." />
-    </>
-  );
-}
 
-export function EmbroideryPage() {
-  const placements = ['Left chest', 'Right chest', 'Hat front', 'Hat side', 'Sleeve', 'Upper back', 'Bag or accessory'];
-  const quality = [
-    ['Artwork review', 'Logos are evaluated for small details, thin lines, gradients, and elements that may not translate directly to thread.'],
-    ['Digitizing', 'Artwork must be converted into stitch instructions. Digitizing needs are confirmed before production.'],
-    ['Garment support', 'Fabric weight, stretch, backing, hooping, and garment construction affect the result.'],
-    ['Stitch testing', 'Final production standards should be based on real samples and machine output, not only a screen preview.'],
-  ] as const;
-
-  return (
-    <>
-      <PageHero eyebrow="Embroidery" title="A durable finish for apparel that needs to look established." description="Embroidery is suited for polos, hats, jackets, workwear, bags, uniforms, and branded pieces where texture and long-term wear matter." />
-      <section className="section">
-        <SectionHeading eyebrow="Best uses" title="Where embroidery earns its place." />
-        <div className="tag-cloud">{['Staff apparel', 'Uniforms', 'Polos', 'Hats', 'Outerwear', 'Workwear', 'Team gear', 'Creator caps', 'Bags'].map((item) => <span key={item}>{item}</span>)}</div>
-      </section>
-      <section className="section section--contrast">
-        <SectionHeading eyebrow="Production considerations" title="Thread has different rules than a screen." description="Not every visual effect should be forced into embroidery. The artwork may need to be simplified to preserve clarity." />
-        <div className="feature-grid">{quality.map(([title, description], index) => <article key={title}><span>0{index + 1}</span><h3>{title}</h3><p>{description}</p></article>)}</div>
-      </section>
-      <section className="section section--split">
-        <div>
-          <span className="eyebrow">Placement planning</span>
-          <h2>Choose the location with the garment, logo, and wearer in mind.</h2>
-          <p>Placement size and position are confirmed during proofing. Seams, pockets, panels, closures, and hat construction can limit usable space.</p>
-        </div>
-        <div className="placement-list">{placements.map((placement, index) => <div key={placement}><span>{String(index + 1).padStart(2, '0')}</span><strong>{placement}</strong></div>)}</div>
-      </section>
-      <section className="section">
-        <SectionHeading eyebrow="Before requesting a quote" title="Helpful information to include." />
-        <div className="checklist-grid">
-          <div><b>Garment type</b><span>Hat, polo, jacket, uniform, bag, or customer-supplied item.</span></div>
-          <div><b>Quantity range</b><span>An estimate is useful even before every size is collected.</span></div>
-          <div><b>Logo file</b><span>Vector artwork is preferred, but available files can be reviewed.</span></div>
-          <div><b>Placement</b><span>Identify each intended decoration location.</span></div>
-          <div><b>Thread colors</b><span>Provide brand references where color matching matters.</span></div>
-          <div><b>Target date</b><span>Share the actual event or need-by date, not only a preferred completion date.</span></div>
-        </div>
-      </section>
-      <CtaBand title="Request an embroidery review." description="Send the garment idea, quantity range, logo, placement, and target date so the project can be evaluated correctly." />
-    </>
-  );
-}
-
-export function GraphicApparelPage() {
-  const methods = [
-    ['Direct-to-film and transfer methods', 'Useful for detailed, colorful, and smaller-run graphics. Material, finish, durability, and placement are reviewed per project.'],
-    ['Screen-printing pathways', 'Often appropriate for repeat graphics and larger quantities. Availability and economics depend on colors, locations, and production partner requirements.'],
-    ['Specialty applications', 'Names, numbers, layered placements, sleeves, and nonstandard garments require individual planning and testing.'],
-  ] as const;
-
-  return (
-    <>
-      <PageHero eyebrow="Graphic apparel" title="Artwork-forward apparel matched to the right production method." description="Graphic apparel can support detailed illustrations, creator designs, event pieces, team graphics, business apparel, and individual custom work. The method is selected after reviewing the actual project." />
-      <section className="section">
-        <SectionHeading eyebrow="Method selection" title="The artwork and order decide the process." description="No single decoration method is automatically best for every image, fabric, quantity, or use case." />
-        <div className="feature-grid feature-grid--three">{methods.map(([title, description], index) => <article key={title}><span>0{index + 1}</span><h3>{title}</h3><p>{description}</p></article>)}</div>
-      </section>
-      <section className="section section--contrast">
-        <SectionHeading eyebrow="Artwork readiness" title="Files that produce more predictable results." />
-        <div className="two-column-list">
-          <div>
-            <h3>Preferred</h3>
-            <ul>
-              <li>Vector files when available</li>
-              <li>High-resolution transparent artwork</li>
-              <li>Defined colors and intended print size</li>
-              <li>Original source files for editable designs</li>
-              <li>Clear placement references</li>
-            </ul>
-          </div>
-          <div>
-            <h3>Still reviewable</h3>
-            <ul>
-              <li>Logos from existing websites or documents</li>
-              <li>Sketches and incomplete concepts</li>
-              <li>Low-resolution files needing recreation</li>
-              <li>Designs that require color separation</li>
-              <li>Ideas without finished artwork</li>
-            </ul>
-          </div>
-        </div>
-      </section>
-      <section className="section section--split">
-        <div>
-          <span className="eyebrow">Garment and placement</span>
-          <h2>The same design can behave differently on different materials.</h2>
-          <p>Fabric composition, garment color, stretch, texture, seams, and wash expectations affect method choice. Large front, back, sleeve, pocket, and leg placements each have different practical limits.</p>
-        </div>
-        <TrustGrid />
-      </section>
-      <CtaBand title="Have a design or an idea?" description="Upload-ready artwork is helpful but not required to begin the conversation. Describe the piece, audience, quantity, and intended use." />
-    </>
-  );
-}
-
-export function CreatorMerchPage() {
-  const creatorStages = [
-    ['Pilot', 'Develop one focused piece or a small test run before committing to a broad catalog.'],
-    ['System', 'Organize logos, colors, artwork files, garment standards, placements, and reorder references.'],
-    ['Launch', 'Prepare approved product visuals, release information, and a clear order window or inventory plan.'],
-    ['Grow', 'Use real demand and customer feedback to decide what should be restocked, revised, or expanded.'],
-  ] as const;
-
-  return (
-    <>
-      <PageHero eyebrow="Creator merchandise" title="Merchandise that feels connected to the creator—not pasted onto a blank." description="The creator pathway is designed for streamers, content creators, musicians, artists, gaming communities, and emerging personal brands that need flexible runs and a consistent visual system." />
-      <section className="section">
-        <SectionHeading eyebrow="Creator pathway" title="Start focused. Build what the audience proves it wants." />
-        <div className="feature-grid">{creatorStages.map(([title, description], index) => <article key={title}><span>0{index + 1}</span><h3>{title}</h3><p>{description}</p></article>)}</div>
-      </section>
-      <section className="section section--contrast">
-        <SectionHeading eyebrow="Possible support" title="A merchandise system, not only a print file." description="Final service availability will depend on production capacity and the agreement for each creator." />
-        <div className="checklist-grid">
-          <div><b>Brand-file organization</b><span>Approved logos, colors, placements, and source artwork.</span></div>
-          <div><b>Product development</b><span>Garment and decoration options matched to the audience and run size.</span></div>
-          <div><b>Proof and mockup workflow</b><span>Clear review checkpoints before production or promotion.</span></div>
-          <div><b>Small-run testing</b><span>Validate quality and interest before scaling.</span></div>
-          <div><b>Creator spotlight</b><span>Feature approved collaborations and direct visitors to the creator’s content.</span></div>
-          <div><b>Future storefront support</b><span>Storefront, fulfillment, and revenue-sharing options require separate operational agreements.</span></div>
-        </div>
-      </section>
-      <section className="section section--split">
-        <div>
-          <span className="eyebrow">Creator spotlight</span>
-          <h2>The person and community should remain visible.</h2>
-          <p>Future creator features should explain who the creator is, what the design represents, how the product was developed, and where customers can support their content.</p>
-          <p>No creator names, testimonials, sales claims, or campaign results will be published without approval.</p>
-        </div>
-        <div className="spotlight-placeholder">
-          <span>Creator feature template</span>
-          <div className="media-placeholder"><small>Approved creator photography</small></div>
-          <strong>Story · product · community · links</strong>
-        </div>
-      </section>
-      <CtaBand title="Plan a creator merchandise pilot." description="Share the creator profile, audience, concept, initial quantity, target launch, and any existing artwork or brand files." />
+      <ActionBand title="Have a rough headcount?" copy="That is enough to begin a useful bulk conversation." primary={{ label: 'Get a bulk quote', href: '/start-order?type=bulk' }} />
     </>
   );
 }
 
 export function OrganizationsPage() {
-  const programs = [
-    ['Schools', 'Staff apparel, student groups, clubs, events, spirit wear, graduation programs, and department orders.'],
-    ['Teams', 'Practice apparel, coaching gear, supporter pieces, travel apparel, names, numbers, and seasonal reorders.'],
-    ['Businesses', 'Uniforms, employee apparel, events, client gifts, department pieces, and repeat brand standards.'],
-    ['Community organizations', 'Nonprofits, churches, clubs, reunions, fundraisers, volunteer programs, and local events.'],
-  ] as const;
+  return <BulkOrdersPage />;
+}
 
+export function EmbroideryPage() {
   return (
     <>
-      <PageHero eyebrow="Schools and organizations" title="Custom apparel programs that stay organized as the group grows." description="This pathway prioritizes approvals, rosters, garment consistency, target dates, and reorders—the details that matter when many people are involved." />
-      <section className="section">
-        <SectionHeading eyebrow="Program types" title="Structured for real groups and repeat needs." />
-        <div className="feature-grid">{programs.map(([title, description], index) => <article key={title}><span>0{index + 1}</span><h3>{title}</h3><p>{description}</p></article>)}</div>
+      <CompactHero
+        eyebrow="Embroidery"
+        title="A stitched finish when the apparel needs to feel established."
+        description="Strong for polos, hats, jackets, workwear, uniforms, bags, and compact marks designed to hold up over time."
+        primary={{ label: 'Design with embroidery', href: '/studio?garment=polo' }}
+        secondary={{ label: 'Request a quote', href: '/start-order?type=custom' }}
+        media={<img src="/store/polo.svg" alt="Polo prepared for embroidery" />}
+      />
+
+      <section className="fit-comparison">
+        <div className="fit-comparison__yes"><span>Great fit</span><h2>When texture and repeated wear matter.</h2><ul><li>Staff and uniform apparel</li><li>Polos and outerwear</li><li>Caps and compact branding</li><li>Simple, readable logos</li></ul></div>
+        <div><span>Consider another method</span><h2>When the artwork depends on print behavior.</h2><ul><li>Large photographic artwork</li><li>Fine gradients</li><li>Very small detail</li><li>Oversized full-front graphics</li></ul></div>
       </section>
-      <section className="section section--contrast">
-        <SectionHeading eyebrow="Planning checklist" title="Information that keeps a group order moving." />
-        <div className="checklist-grid">
-          <div><b>Decision maker</b><span>Identify who can approve pricing, artwork, substitutions, and final quantities.</span></div>
-          <div><b>Audience and purpose</b><span>Staff, students, players, supporters, volunteers, or event attendees.</span></div>
-          <div><b>Quantity plan</b><span>Estimate totals and decide when final size collection will close.</span></div>
-          <div><b>Artwork ownership</b><span>Confirm that logos, school marks, sponsors, and partner branding may be used.</span></div>
-          <div><b>Target date</b><span>Provide the actual event or distribution date with enough time for approval and production.</span></div>
-          <div><b>Distribution</b><span>Determine whether the order is bulk-delivered, separated, picked up, or shipped.</span></div>
-        </div>
+
+      <section className="placement-visual">
+        <div><span className="eyebrow">Common placements</span><h2>Placement follows the garment—not a generic coordinate.</h2><p>Chest, sleeve, hat, upper-back, bag, and other locations are reviewed against seams, pockets, panels, and the actual artwork.</p></div>
+        <div className="placement-chips"><span>Left chest</span><span>Right chest</span><span>Hat front</span><span>Hat side</span><span>Sleeve</span><span>Upper back</span><span>Bag / accessory</span></div>
       </section>
-      <section className="section">
-        <SectionHeading eyebrow="Program process" title="A central path from idea to distribution." />
-        <ProcessSteps compact />
+
+      <details className="production-help"><summary>What happens to artwork before embroidery?</summary><p>Artwork is reviewed for detail, thin lines, gradients, and size. Production embroidery requires stitch instructions, backing and hooping decisions, and final confirmation against the actual garment.</p></details>
+
+      <ActionBand title="Want to see the idea on a garment first?" copy="Use Studio for placement and concept planning, then send the project for real production review." primary={{ label: 'Open Studio', href: '/studio?garment=polo' }} secondary={{ label: 'Start a request', href: '/start-order' }} />
+    </>
+  );
+}
+
+export function GraphicApparelPage() {
+  return (
+    <>
+      <CompactHero
+        eyebrow="Graphic apparel"
+        title="For artwork that needs more room to speak."
+        description="Graphic decoration supports creator art, events, communities, team graphics, business pieces, and individual designs where color and scale matter."
+        primary={{ label: 'Design a graphic piece', href: '/studio?garment=tee' }}
+        secondary={{ label: 'Request a quote', href: '/start-order?type=custom' }}
+        media={<img src="/store/tee.svg" alt="Graphic tee development visual" />}
+      />
+
+      <section className="method-use-grid">
+        <article><span>Detailed / colorful</span><h2>Transfer & print pathways</h2><p>Useful when the image contains multiple colors, fine shapes, or artwork-led presentation.</p></article>
+        <article><span>Repeat graphics</span><h2>Production-efficient runs</h2><p>Some projects become more efficient at larger quantities depending on colors, garment, and method.</p></article>
+        <article><span>Names / numbers</span><h2>Personalized pieces</h2><p>Team numbers, names, sleeves, and other variable placements need their own production plan.</p></article>
       </section>
-      <section className="section">
-        <SectionHeading eyebrow="Transparency" title="What the site will not pretend." />
-        <div className="notice-panel">
-          <p>Pricing, turnaround, garment availability, decoration capability, and delivery terms depend on the actual order. Until production data is documented, this site will not publish invented savings percentages, guaranteed completion times, or unsupported volume claims.</p>
-        </div>
+
+      <section className="artwork-readiness">
+        <div><span className="eyebrow">Artwork readiness</span><h2>Bring the best file you have.</h2><p>Vector or high-resolution transparent art is ideal, but a logo, sketch, screenshot, or unfinished concept can still start the review.</p></div>
+        <div><b>Best starting files</b><span>SVG / AI / EPS</span><span>High-resolution PNG</span><span>Original editable artwork</span><span>Defined brand colors</span></div>
       </section>
-      <CtaBand title="Prepare a school or organization request." description="Begin with the group type, estimated quantity, intended use, target date, artwork, and the person authorized to approve the project." />
+
+      <ActionBand title="Have the design but not the garment?" copy="Build the visual in Studio or send the artwork and let the project review determine the best production route." primary={{ label: 'Open Studio', href: '/studio?garment=tee' }} secondary={{ label: 'Start a request', href: '/start-order' }} />
+    </>
+  );
+}
+
+export function CreatorMerchPage() {
+  return (
+    <>
+      <CompactHero
+        eyebrow="Creator merch"
+        title="Build merchandise around the creator—not around a generic catalog."
+        description="BEE's creator path is designed for focused drops, restocks, and future storefronts where the creator and community stay visible."
+        primary={{ label: 'Plan a merch drop', href: '/start-order?type=creator' }}
+        secondary={{ label: 'Design a first piece', href: '/studio?garment=hoodie' }}
+        media={<img src="/store/hoodie.svg" alt="Creator hoodie development visual" />}
+      />
+
+      <section className="creator-paths">
+        <article><span>Launch</span><h2>Build a first drop</h2><p>Start focused with one or two pieces, approve samples, and learn what the audience actually wants.</p></article>
+        <article><span>Restock</span><h2>Bring back what worked</h2><p>Reuse approved design and production context while reconfirming current garment availability and pricing.</p></article>
+        <article><span>Storefront</span><h2>Create a home for the collection</h2><p>Future creator stores can combine campaign identity, products, order status, and community links under BEE's commerce system.</p></article>
+      </section>
+
+      <section className="creator-feature-placeholder">
+        <div><span className="eyebrow">Featured creator</span><h2>The creator becomes the campaign.</h2><p>The first approved creator collaboration will replace this development state with real campaign media, product cards, social links, and a direct collection path.</p></div>
+        <div className="creator-banner-skeleton"><span>Campaign media</span><b>Creator identity + collection</b><small>Real collaboration required before publication</small></div>
+      </section>
+
+      <section className="creator-flow"><span>Concept</span><b>→</b><span>Sample</span><b>→</b><span>Approve</span><b>→</b><span>Launch</span><b>→</b><span>Restock</span></section>
+
+      <ActionBand title="Have an audience and an idea?" copy="Start with the creator, concept, intended products, rough quantity, and target launch." primary={{ label: 'Plan a merch drop', href: '/start-order?type=creator' }} />
     </>
   );
 }
 
 export function PortfolioPage() {
-  const categories = ['Embroidery', 'Graphic apparel', 'Bulk programs', 'Creator merchandise', 'Business apparel', 'Individual custom'];
   return (
     <>
-      <PageHero eyebrow="Our work" title="A portfolio built from approved, completed projects." description="This page is structured for real product photography, close-up production details, customer context, and transparent project notes. Placeholder cards remain until work is approved for publication." primaryLabel="Start a similar project" />
-      <section className="section">
-        <SectionHeading eyebrow="Portfolio filters" title="Work will be organized by service and customer need." />
-        <div className="tag-cloud">{categories.map((category) => <span key={category}>{category}</span>)}</div>
+      <CompactHero
+        eyebrow="Sample Lab / Our Work"
+        title="Show the result. Explain only what helps."
+        description="This page will grow from BEE-owned production tests into approved customer work. Until the physical samples exist, it stays intentionally small."
+        primary={{ label: 'Start a project', href: '/start-order' }}
+      />
+
+      <section className="sample-lab-status">
+        <div><span>Current state</span><h2>Physical sample photography is the next requirement.</h2></div>
+        <p>Planned evidence includes stitch-detail photography, print texture, garment fit, wash testing, placement comparisons, and finished BEE-owned sample pieces. Development mockups will not be presented as completed customer projects.</p>
       </section>
-      <section className="section section--contrast">
-        <div className="portfolio-grid">
-          {Array.from({ length: 9 }, (_, index) => (
-            <article key={index}>
-              <div className="media-placeholder"><span>Approved project media</span><small>Slot {String(index + 1).padStart(2, '0')}</small></div>
-              <div>
-                <span>{categories[index % categories.length]}</span>
-                <h2>Project case study pending</h2>
-                <p>Future entries will identify the objective, garment, decoration method, quantity range when approved, and production considerations.</p>
-              </div>
-            </article>
-          ))}
-        </div>
+
+      <section className="sample-lab-plan">
+        <article><span>01</span><h2>Embroidery detail</h2><p>Macro stitch quality, edge clarity, backing, and small-detail behavior.</p></article>
+        <article><span>02</span><h2>Graphic finish</h2><p>Color, hand feel, detail, stretch behavior, and garment interaction.</p></article>
+        <article><span>03</span><h2>Finished piece</h2><p>Front/back presentation, placement, scale, fit, and real-world photography.</p></article>
       </section>
-      <section className="section">
-        <SectionHeading eyebrow="Publication standard" title="Proof over invented social proof." />
-        <TrustGrid />
-      </section>
-      <CtaBand title="Bring the next portfolio-worthy project." description="Completed customer work is only featured with permission and with details that accurately represent what was produced." />
+
+      <ActionBand title="The next real project can become part of the story." copy="Completed work is featured only with approval and only with details that accurately describe what was produced." primary={{ label: 'Start a project', href: '/start-order' }} />
     </>
   );
 }
@@ -507,119 +349,123 @@ export function PortfolioPage() {
 export function AboutPage() {
   return (
     <>
-      <PageHero eyebrow="About BEE Organization" title="A production business being built around quality, organization, and practical service." description="BEE Organization LLC is developing a custom apparel operation for bulk buyers, creators, organizations, businesses, and individuals. The public brand identity is still being refined; the business foundation is being built now." primaryLabel="Explore services" primaryHref="/#services" secondaryLabel="Start an order" secondaryHref="/start-order" />
-      <section className="section section--split">
-        <div>
-          <span className="eyebrow">Operating idea</span>
-          <h2>Make custom ordering feel deliberate instead of improvised.</h2>
-          <p>The business is being structured around clear intake, artwork review, itemized quotes, proof approval, production records, quality checks, and easier reorders.</p>
-          <p>The long-term opportunity may extend beyond apparel, but the launch focus remains producing dependable embroidery and graphic goods for real customers.</p>
-        </div>
-        <div className="values-stack">
-          <article><span>01</span><h3>Honest communication</h3><p>Set expectations from actual capacity and order details.</p></article>
-          <article><span>02</span><h3>Production-minded decisions</h3><p>Choose methods around materials and use—not trends alone.</p></article>
-          <article><span>03</span><h3>Respect for the customer’s identity</h3><p>The group, creator, business, or person should remain the focus.</p></article>
-          <article><span>04</span><h3>Systems that improve</h3><p>Record what worked so future orders become easier and more consistent.</p></article>
-        </div>
+      <CompactHero
+        eyebrow="About BEE"
+        title="A custom apparel shop being built around better project habits from day one."
+        description="BEE Organization is developing its production setup and customer systems together so clear quoting, proofing, order records, and reorders are part of the operation—not afterthoughts."
+        primary={{ label: 'Start a project', href: '/start-order' }}
+        secondary={{ label: 'See what BEE makes', href: '/#capabilities' }}
+      />
+
+      <section className="about-principles">
+        <article><span>01</span><h2>Clear before committed</h2><p>Garment, artwork, placement, quantity, timing, and pricing should be understood before production starts.</p></article>
+        <article><span>02</span><h2>Make the method fit the project</h2><p>Embroidery and graphic decoration are chosen around the garment and design rather than forcing every request through one process.</p></article>
+        <article><span>03</span><h2>Keep what makes the next order easier</h2><p>Approved artwork and project context should become useful production memory for future work.</p></article>
       </section>
-      <section className="section section--contrast">
-        <SectionHeading eyebrow="Business foundation" title="What is being built behind the website." />
-        <div className="checklist-grid">
-          <div><b>Customer intake</b><span>Structured project, garment, artwork, quantity, and deadline collection.</span></div>
-          <div><b>Artwork records</b><span>Original files, proofs, approvals, and production-ready versions.</span></div>
-          <div><b>Quote and payment workflow</b><span>Clear pricing and deposits before production commitments.</span></div>
-          <div><b>Order tracking</b><span>Statuses from inquiry through completion and delivery.</span></div>
-          <div><b>Reorder system</b><span>Reference prior approved details without assuming supplier conditions are unchanged.</span></div>
-          <div><b>Analytics and improvement</b><span>Measure real inquiries, approvals, order types, and repeat business.</span></div>
-        </div>
+
+      <section className="about-stage">
+        <div><span className="eyebrow">Where the business is now</span><h2>Early stage, deliberately documented.</h2></div>
+        <p>BEE is still acquiring equipment, refining production methods, creating samples, and preparing for its first official sale. The website does not invent testimonials, capacity claims, turnaround promises, or customer history to hide that stage.</p>
       </section>
-      <section className="section">
-        <SectionHeading eyebrow="Partnership" title="Built as DTB’s first flagship post-rebrand client platform." description="Designed to Breakthrough LLC is developing the brand strategy, website, platform architecture, deployment foundation, and future digital workflows." />
-        <div className="notice-panel"><p>Commercial roles, intellectual property, revenue arrangements, maintenance, and ongoing responsibilities should be documented in a signed agreement before public commerce begins.</p></div>
-      </section>
-      <CtaBand title="See whether the project is a fit." description="Start with what you need, who it is for, and when it is needed. The quote process will identify the remaining decisions." />
+
+      <ActionBand title="Have something BEE can help make?" copy="Start with the project, not a perfect brief." primary={{ label: 'Start a project', href: '/start-order' }} secondary={{ label: 'Design in Studio', href: '/studio' }} />
     </>
   );
 }
 
-export function StartOrderPage() {
-  const [summary, setSummary] = useState('');
+type IntakeType = 'custom' | 'bulk' | 'creator' | 'unsure';
+type IntakeState = {
+  type: IntakeType;
+  garment: string;
+  quantity: string;
+  artwork: string;
+  deadline: string;
+  fulfillment: string;
+  personalization: string;
+  name: string;
+  organization: string;
+  email: string;
+  phone: string;
+  notes: string;
+};
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+const emptyIntake: IntakeState = {
+  type: 'custom', garment: '', quantity: '', artwork: '', deadline: '', fulfillment: '', personalization: '', name: '', organization: '', email: '', phone: '', notes: '',
+};
+
+function requestedType(): IntakeType {
+  const value = new URLSearchParams(window.location.search).get('type');
+  return value === 'bulk' || value === 'creator' || value === 'unsure' ? value : 'custom';
+}
+
+export function StartOrderPage() {
+  const [step, setStep] = useState(1);
+  const [data, setData] = useState<IntakeState>(() => ({ ...emptyIntake, type: requestedType() }));
+  const [submitted, setSubmitted] = useState(false);
+
+  const summary = useMemo(() => [
+    ['Project', data.type], ['Garment', data.garment || 'Not decided'], ['Quantity', data.quantity || 'Not decided'], ['Artwork', data.artwork || 'Not decided'], ['Deadline', data.deadline || 'Not provided'], ['Fulfillment', data.fulfillment || 'Not decided'], ['Personalization', data.personalization || 'None noted'], ['Contact', data.name], ['Organization / brand', data.organization || 'Not provided'], ['Email', data.email], ['Phone', data.phone || 'Not provided'], ['Notes', data.notes || 'None'],
+  ], [data]);
+
+  function update<K extends keyof IntakeState>(key: K, value: IntakeState[K]) {
+    setData((current) => ({ ...current, [key]: value }));
+  }
+
+  function submit(event: FormEvent) {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const fields = [
-      ['Contact', data.get('contactName')],
-      ['Organization / brand', data.get('organization') || 'Not provided'],
-      ['Email', data.get('email')],
-      ['Phone', data.get('phone') || 'Not provided'],
-      ['Project type', data.get('projectType')],
-      ['Estimated quantity', data.get('quantity')],
-      ['Target date', data.get('deadline') || 'Not provided'],
-      ['Garment ideas', data.get('garment') || 'Not decided'],
-      ['Decoration', data.get('decoration') || 'Needs recommendation'],
-      ['Artwork status', data.get('artworkStatus')],
-      ['Delivery preference', data.get('delivery') || 'Not decided'],
-      ['Notes', data.get('notes') || 'None'],
-    ];
-    setSummary(fields.map(([label, value]) => `${label}: ${String(value)}`).join('\n'));
+    setSubmitted(true);
+    setStep(4);
   }
 
   return (
-    <>
-      <PageHero eyebrow="Start an order" title="Tell us what you know. The process can organize the rest." description="This intake prototype helps structure a quote request. It does not currently transmit or save personal information; submission integration will be connected before public launch." primaryLabel="Review required details" primaryHref="#order-form" secondaryLabel="How ordering works" secondaryHref="/#services" />
-      <section id="order-form" className="section order-section">
-        <div className="order-section__intro">
-          <span className="eyebrow">Quote intake prototype</span>
-          <h2>Project details</h2>
-          <p>Fields marked required are the minimum needed to prepare a useful request. Exact pricing is not generated automatically.</p>
-          <div className="privacy-note"><strong>Prototype notice</strong><span>This form currently creates a summary in your browser only. It does not send data, upload artwork, or create an order.</span></div>
-        </div>
-        <form className="order-form" onSubmit={handleSubmit}>
-          <fieldset>
-            <legend>Contact</legend>
-            <label>Contact name<input name="contactName" required autoComplete="name" /></label>
-            <label>Organization, team, school, or brand<input name="organization" autoComplete="organization" /></label>
-            <label>Email<input name="email" required type="email" autoComplete="email" /></label>
-            <label>Phone<input name="phone" type="tel" autoComplete="tel" /></label>
-          </fieldset>
-          <fieldset>
-            <legend>Project</legend>
-            <label>Project type<select name="projectType" required defaultValue=""><option value="" disabled>Select one</option><option>Bulk organization order</option><option>Embroidery</option><option>Graphic apparel</option><option>Creator merchandise</option><option>Individual custom work</option><option>Not sure yet</option></select></label>
-            <label>Estimated quantity<input name="quantity" required placeholder="Example: 24–36 pieces" /></label>
-            <label>Target date<input name="deadline" type="date" /></label>
-            <label>Garment ideas<input name="garment" placeholder="Example: black hoodies and tees" /></label>
-            <label>Preferred decoration<select name="decoration" defaultValue=""><option value="">Needs recommendation</option><option>Embroidery</option><option>Graphic transfer / print</option><option>Both embroidery and graphic decoration</option><option>Not sure</option></select></label>
-            <label>Artwork status<select name="artworkStatus" required defaultValue=""><option value="" disabled>Select one</option><option>Production-ready artwork available</option><option>Logo or artwork exists but needs review</option><option>Only a concept or sketch exists</option><option>Design help is needed</option></select></label>
-            <label>Delivery preference<select name="delivery" defaultValue=""><option value="">Not decided</option><option>Pickup</option><option>Bulk delivery</option><option>Shipping</option><option>Individual fulfillment may be needed</option></select></label>
-            <label className="form-wide">Project notes<textarea name="notes" rows={6} placeholder="Describe the audience, garment colors, artwork locations, sizes, event, personalization, or anything unusual about the request." /></label>
-          </fieldset>
-          <button className="button" type="submit">Prepare request summary</button>
-        </form>
-        {summary && (
-          <div className="request-summary" aria-live="polite">
-            <span className="eyebrow">Prepared summary</span>
-            <h2>Review before sending</h2>
-            <textarea readOnly value={summary} rows={14} aria-label="Prepared project request summary" />
-            <p>Copy this summary for internal review. Automated submission, secure artwork upload, notifications, and order-reference creation are planned for the backend phase.</p>
-          </div>
-        )}
-      </section>
-      <section className="section section--contrast">
-        <SectionHeading eyebrow="What happens next" title="The request becomes a quote—not an automatic production order." />
-        <ProcessSteps compact />
-      </section>
-    </>
+    <section className="intake-page">
+      <header className="intake-heading">
+        <div><span className="eyebrow">Start a project</span><h1>Tell BEE what you know. Leave the rest for review.</h1></div>
+        <p>This pre-launch form stays in your browser. The production version will securely create a project, accept files, send confirmation, and place the request into BEE's quote workflow.</p>
+      </header>
+
+      <div className="intake-progress" aria-label={`Step ${step} of 4`}>
+        {[1, 2, 3, 4].map((number) => <button key={number} type="button" className={step === number ? 'is-active' : step > number ? 'is-complete' : undefined} onClick={() => setStep(number)}><span>{number}</span><b>{['Project', 'Details', 'Timing', 'Contact'][number - 1]}</b></button>)}
+      </div>
+
+      <form className="intake-form" onSubmit={submit}>
+        {step === 1 && <fieldset><legend>What are you making?</legend><div className="intake-choice-grid">
+          {([['custom', 'Custom apparel', 'A piece or small project you want designed or produced.'], ['bulk', 'Group / bulk order', 'A coordinated order for a team, school, business, organization, or event.'], ['creator', 'Creator merchandise', 'A drop, restock, or creator collection.'], ['unsure', 'Not sure yet', 'Start with the goal and let the review determine the path.']] as const).map(([value, title, copy]) => <button type="button" key={value} className={data.type === value ? 'is-active' : undefined} onClick={() => update('type', value)}><strong>{title}</strong><span>{copy}</span></button>)}
+        </div><button className="button intake-next" type="button" onClick={() => setStep(2)}>Continue to details</button></fieldset>}
+
+        {step === 2 && <fieldset><legend>What do you already know?</legend><div className="intake-fields">
+          <label>Garment or item<input value={data.garment} onChange={(e) => update('garment', e.target.value)} placeholder="Example: black hoodies and tees" /></label>
+          <label>Estimated quantity<input value={data.quantity} onChange={(e) => update('quantity', e.target.value)} placeholder="Example: 24–36 pieces" /></label>
+          <label className="intake-wide">Artwork status<select value={data.artwork} onChange={(e) => update('artwork', e.target.value)}><option value="">Choose one</option><option>Production-ready artwork available</option><option>Artwork exists but needs review</option><option>Concept or sketch only</option><option>Design help needed</option></select></label>
+        </div><div className="intake-nav"><button type="button" onClick={() => setStep(1)}>Back</button><button className="button" type="button" onClick={() => setStep(3)}>Continue</button></div></fieldset>}
+
+        {step === 3 && <fieldset><legend>When and how does it need to happen?</legend><div className="intake-fields">
+          <label>Need-by date<input type="date" value={data.deadline} onChange={(e) => update('deadline', e.target.value)} /></label>
+          <label>Fulfillment<select value={data.fulfillment} onChange={(e) => update('fulfillment', e.target.value)}><option value="">Not decided</option><option>Pickup</option><option>Bulk delivery</option><option>Shipping</option><option>Individual fulfillment may be needed</option></select></label>
+          <label className="intake-wide">Personalization / roster needs<input value={data.personalization} onChange={(e) => update('personalization', e.target.value)} placeholder="Names, numbers, departments, size collection, or none" /></label>
+        </div><div className="intake-nav"><button type="button" onClick={() => setStep(2)}>Back</button><button className="button" type="button" onClick={() => setStep(4)}>Continue</button></div></fieldset>}
+
+        {step === 4 && !submitted && <fieldset><legend>Who should BEE contact?</legend><div className="intake-fields">
+          <label>Name<input required value={data.name} onChange={(e) => update('name', e.target.value)} autoComplete="name" /></label>
+          <label>Organization / brand<input value={data.organization} onChange={(e) => update('organization', e.target.value)} autoComplete="organization" /></label>
+          <label>Email<input required type="email" value={data.email} onChange={(e) => update('email', e.target.value)} autoComplete="email" /></label>
+          <label>Phone<input type="tel" value={data.phone} onChange={(e) => update('phone', e.target.value)} autoComplete="tel" /></label>
+          <label className="intake-wide">Anything else?<textarea rows={5} value={data.notes} onChange={(e) => update('notes', e.target.value)} placeholder="Sizes, colors, event context, placements, or questions." /></label>
+        </div><div className="intake-nav"><button type="button" onClick={() => setStep(3)}>Back</button><button className="button" type="submit">Prepare request</button></div></fieldset>}
+      </form>
+
+      {submitted && <div className="intake-summary" aria-live="polite"><span className="eyebrow">Request prepared</span><h2>Review the project summary.</h2><dl>{summary.map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl><p>No information was transmitted. Backend submission, secure uploads, project references, notifications, and customer accounts are still required before launch.</p><button className="button" type="button" onClick={() => setSubmitted(false)}>Edit contact details</button></div>}
+    </section>
   );
 }
 
 export function NotFoundPage() {
   return (
-    <section className="not-found">
+    <section className="not-found not-found--v3">
       <span className="eyebrow">404</span>
-      <h1>This page is not part of the current build.</h1>
-      <p>Return to the website or start a project from the order intake.</p>
-      <div><a className="button" href="/">Return home</a><a className="text-link" href="/start-order">Start an order →</a></div>
+      <h1>That route is not part of the current BEE experience.</h1>
+      <p>Return home, design a custom piece, or start a project.</p>
+      <div><a className="button" href="/">Return home</a><a className="text-link" href="/studio">Open Studio →</a></div>
     </section>
   );
 }
