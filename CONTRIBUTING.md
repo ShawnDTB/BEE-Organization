@@ -2,9 +2,7 @@
 
 ## Branches
 
-- `main`: production-ready work
-- `staging`: integrated client-review work
-- `feature/*`: scoped feature development
+Shawn authorized verified changes to be pushed to `main` for live-site review starting September 14, 2026. Preserve history and use ordinary fast-forward pushes. Run `npm run check` before pushing. Do not claim a main push confirms deployment; inspect the hosting result separately. Temporary local working branches are allowed, with the reviewed release pushed to main.
 
 ## Commit style
 

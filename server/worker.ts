@@ -1,0 +1,11 @@
+import { handleIntake, type Env } from "./intake";
+export default {
+  fetch(
+    request: Request,
+    env: Env & { ASSETS: { fetch(request: Request): Promise<Response> } },
+  ) {
+    return new URL(request.url).pathname.startsWith("/api/")
+      ? handleIntake(request, env)
+      : env.ASSETS.fetch(request);
+  },
+};

@@ -1,20 +1,10 @@
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
-import App from './App';
-import './styles/global.css';
-import './styles/commerce.css';
-import './styles/commerce-polish.css';
-import './styles/shop-v2.css';
-import './styles/studio.css';
-import './styles/density.css';
-import './styles/brand-system.css';
-import './styles/experience-overhaul.css';
-import './styles/group-collector.css';
-import './styles/customer-clarity.css';
-import './styles/platform-cohesion.css';
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import App from "./App";
+import "./styles/site.css";
 
-const root = document.getElementById('root');
-if (!root) throw new Error('Root element was not found.');
+const root = document.getElementById("root");
+if (!root) throw new Error("Root element was not found.");
 
 createRoot(root).render(
   <StrictMode>

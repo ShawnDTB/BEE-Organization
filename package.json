@@ -1,28 +1,33 @@
 {
   "name": "bee-organization-platform",
   "private": true,
-  "version": "0.2.0",
+  "version": "0.3.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && vite build && node scripts/metadata.mjs",
     "preview": "vite preview",
-    "typecheck": "tsc -b --pretty false",
-    "check": "npm run typecheck && npm run build"
+    "typecheck": "tsc -b --pretty false && tsc -p tsconfig.server.json",
+    "check": "npm run typecheck && npm run test && npm run build",
+    "test": "vitest run"
   },
   "dependencies": {
     "react": "19.2.8",
     "react-dom": "19.2.8"
   },
   "devDependencies": {
+    "@types/node": "^24.0.0",
     "@types/react": "19.2.17",
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "5.2.0",
+    "jsdom": "^30.0.1",
+    "prettier": "^3.9.6",
     "typescript": "6.0.2",
-    "vite": "7.3.6"
+    "vite": "7.3.6",
+    "vitest": "^4.1.10"
   },
   "engines": {
-    "node": ">=20.19.0",
+    "node": ">=22.16.0",
     "npm": ">=10.0.0"
   }
 }

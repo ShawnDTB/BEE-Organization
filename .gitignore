@@ -10,3 +10,8 @@ Thumbs.db
 .wrangler/
 .dev.vars
 coverage/
+
+*.tsbuildinfo
+.dev.vars.*
+!.dev.vars.example
+dist-server/

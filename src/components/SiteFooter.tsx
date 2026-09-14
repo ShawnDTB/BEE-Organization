@@ -1,21 +1,56 @@
-import { LogoLockup } from './LogoLockup';
-import { siteConfig } from '../content/siteContent';
-
+import { LogoLockup } from "./LogoLockup";
+import { siteConfig } from "../content/siteContent";
 export function SiteFooter() {
   return (
-    <footer className="site-footer site-footer--v3">
-      <div className="site-footer__lead">
-        <div><LogoLockup compact /><p>{siteConfig.primaryMessage}</p></div>
-        <div className="site-footer__lead-actions"><a className="button" href="/studio">Design custom apparel</a><a className="text-link" href="/start-order">Start a project →</a></div>
+    <footer className="bee-footer">
+      <div className="bee-page">
+        <div className="bee-footer-top">
+          <div>
+            <LogoLockup />
+            <p>Build. Empower. Equip.</p>
+            <span>Custom apparel with your people in mind.</span>
+          </div>
+          <a className="button" href="/start-order">
+            Start a project ↗
+          </a>
+        </div>
+        <div className="bee-footer-links">
+          <div>
+            <strong>The work</strong>
+            <a href="/custom-apparel">Custom apparel</a>
+            <a href="/bulk-orders">Groups & businesses</a>
+            <a href="/creator-merch">Creator merchandise</a>
+            <a href="/our-work">Samples & work</a>
+          </div>
+          <div>
+            <strong>Your next project</strong>
+            <a href="/studio">Design studio</a>
+            <a href="/cart">Project bag</a>
+            <a href="/account">My projects</a>
+            <a href="/start-order">Request a quote</a>
+          </div>
+          <div>
+            <strong>Works by BEE</strong>
+            <a href="/about">About the business</a>
+            <a href="/privacy">Project privacy</a>
+            <a href="/shop">Future collections</a>
+            {siteConfig.email && (
+              <a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>
+            )}
+            {siteConfig.phone && (
+              <a href={`tel:${siteConfig.phone.replace(/[^+0-9]/g, "")}`}>
+                {siteConfig.phone}
+              </a>
+            )}
+          </div>
+        </div>
+        <div className="bee-footer-bottom">
+          <span>
+            © {new Date().getFullYear()} {siteConfig.legalName}
+          </span>
+          <span>Digital foundation by Designed to Breakthrough</span>
+        </div>
       </div>
-
-      <div className="site-footer__grid site-footer__grid--v3">
-        <div><h2>Start</h2><a href="/studio">BEE Studio</a><a href="/bulk-orders">Bulk & organizations</a><a href="/group-collector">Group size collector</a><a href="/creator-merch">Creator merch</a><a href="/shop">Shop collections</a></div>
-        <div><h2>Capabilities</h2><a href="/embroidery">Embroidery</a><a href="/graphic-apparel">Graphic apparel</a><a href="/our-work">Sample Lab / Work</a></div>
-        <div><h2>Your project</h2><a href="/cart">Project bag</a><a href="/project-review">Project review</a><a href="/account">Customer workspace</a><a href="/about">About BEE</a></div>
-      </div>
-
-      <div className="site-footer__legal"><span>© {new Date().getFullYear()} {siteConfig.legalName}. All rights reserved.</span><span>{siteConfig.serviceArea}</span></div>
     </footer>
   );
 }

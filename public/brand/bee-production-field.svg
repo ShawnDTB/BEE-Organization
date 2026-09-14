@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1400" fill="none">
   <defs>
     <pattern id="weave" width="18" height="18" patternUnits="userSpaceOnUse" patternTransform="rotate(18)">
-      <path d="M0 4H18M0 13H18" stroke="#EEE7DA" stroke-width="0.7" opacity="0.035"/>
+      <path d="M0 4H18M0 13H18" stroke="#f2f8ff" stroke-width="0.7" opacity="0.035"/>
     </pattern>
     <linearGradient id="edgeFadeL" x1="0" x2="1">
       <stop stop-color="#747D81" stop-opacity=".16"/>
@@ -29,7 +29,7 @@
     <rect x="1650" y="0" width="270" height="1400" fill="url(#edgeFadeR)"/>
   </g>
 
-  <g stroke="#B97732" stroke-width="1.1" opacity=".38">
+  <g stroke="#339cff" stroke-width="1.1" opacity=".38">
     <path d="M132 274h32m-16-16v32"/>
     <circle cx="148" cy="274" r="6.5"/>
     <path d="M1761 390h32m-16-16v32"/>
@@ -47,7 +47,7 @@
     <path d="M1594 1206l8 13h-16z"/>
   </g>
 
-  <g stroke="#EEE7DA" opacity=".07">
+  <g stroke="#f2f8ff" opacity=".07">
     <path d="M90 104h120M90 112h72"/>
     <path d="M1710 1296h120M1758 1288h72"/>
   </g>

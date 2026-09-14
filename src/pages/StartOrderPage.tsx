@@ -1,61 +1,549 @@
-import { useMemo, useState, type FormEvent } from 'react';
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import {
   createProject,
   readBag,
   readProjectDraft,
   saveProjectDraft,
-  type BeeProject,
-  type IntakeType,
+  snapshotItems,
+  readStorage,
+  write,
   type ProjectIntake,
-} from '../data/projectStore';
+} from "../data/projectStore";
+import { validateRequest, type QuoteRequest } from "../../shared/request";
+import { downloadText } from "../data/download";
+import { Turnstile } from "../components/Turnstile";
+import { siteConfig } from "../content/siteContent";
 
-function requestedType(): IntakeType {
-  const value = new URLSearchParams(window.location.search).get('type');
-  return value === 'bulk' || value === 'creator' || value === 'unsure' ? value : 'custom';
-}
-
+type Receipt = { reference: string; receivedAt: string };
+const types = [
+  ["bulk", "Group / business"],
+  ["creator", "Creator merchandise"],
+  ["custom", "Personal project"],
+  ["unsure", "Help me choose"],
+] as const;
 export function StartOrderPage() {
-  const [step, setStep] = useState(1);
   const [data, setData] = useState<ProjectIntake>(() => {
     const saved = readProjectDraft();
-    const requested = requestedType();
-    const shouldUseRequested = new URLSearchParams(window.location.search).has('type');
-    return shouldUseRequested ? { ...saved, type: requested } : saved;
+    const type = new URLSearchParams(window.location.search).get("type");
+    return types.some(([key]) => key === type)
+      ? { ...saved, type: type as ProjectIntake["type"] }
+      : saved;
   });
-  const [submitted, setSubmitted] = useState<BeeProject | null>(null);
-
-  const summary = useMemo(() => [
-    ['Project', data.type], ['Garment', data.garment || 'Not decided'], ['Quantity', data.quantity || 'Not decided'], ['Artwork', data.artwork || 'Not decided'], ['Deadline', data.deadline || 'Not provided'], ['Fulfillment', data.fulfillment || 'Not decided'], ['Personalization', data.personalization || 'None noted'], ['Contact', data.name], ['Organization / brand', data.organization || 'Not provided'], ['Email', data.email], ['Phone', data.phone || 'Not provided'], ['Notes', data.notes || 'None'],
-  ], [data]);
-
-  function update<K extends keyof ProjectIntake>(key: K, value: ProjectIntake[K]) {
+  const [items] = useState(readBag);
+  const [snapshots] = useState(() => snapshotItems(items));
+  const [availability, setAvailability] = useState<{
+    enabled: boolean;
+    siteKey?: string;
+  } | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+  const [consent, setConsent] = useState(false);
+  const [token, setToken] = useState("");
+  const [attempt, setAttempt] = useState(0);
+  const [receipt, setReceipt] = useState<Receipt | null>(null);
+  const [saved, setSaved] = useState(false);
+  const [website, setWebsite] = useState("");
+  const pending = useRef<{ signature: string; id: string } | null>(null);
+  const heading = useRef<HTMLHeadingElement>(null);
+  const [step, setStep] = useState(1);
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch("/api/intake/status", { signal: controller.signal })
+      .then(async (response) => {
+        if (
+          !response.ok ||
+          !response.headers.get("content-type")?.includes("application/json")
+        )
+          throw new Error();
+        return response.json();
+      })
+      .then((value) =>
+        setAvailability({
+          enabled: value.enabled === true && typeof value.siteKey === "string",
+          siteKey: value.siteKey,
+        }),
+      )
+      .catch(() => {
+        if (!controller.signal.aborted) setAvailability({ enabled: false });
+      });
+    return () => controller.abort();
+  }, []);
+  function update<K extends keyof ProjectIntake>(
+    key: K,
+    value: ProjectIntake[K],
+  ) {
     const next = { ...data, [key]: value };
     setData(next);
-    saveProjectDraft({ [key]: value });
+    setSaved(false);
+    try {
+      saveProjectDraft(next);
+    } catch {
+      /* Global notice explains that download remains available. */
+    }
   }
-
-  function submit(event: FormEvent) {
+  function move(next: number) {
+    setStep(next);
+    requestAnimationFrame(() => heading.current?.focus());
+  }
+  const exportRequest = () =>
+    downloadText(
+      "BEE-project-request.json",
+      JSON.stringify(
+        {
+          label: receipt
+            ? "Request recorded by BEE"
+            : "Draft — not sent to BEE",
+          receipt,
+          intake: data,
+          items: snapshots,
+        },
+        null,
+        2,
+      ),
+      "application/json",
+    );
+  function saveDraft() {
+    try {
+      createProject(data, items, undefined, snapshots);
+      setSaved(true);
+      setError("");
+    } catch (e) {
+      setError((e as Error).message);
+    }
+  }
+  async function submit(event: FormEvent) {
     event.preventDefault();
-    setSubmitted(createProject(data, readBag()));
+    if (busy || receipt || !availability?.enabled) return;
+    setError("");
+    setBusy(true);
+    try {
+      const signature = JSON.stringify({ intake: data, items: snapshots });
+      if (!pending.current) {
+        try {
+          pending.current = JSON.parse(
+            readStorage("bee-pending-request") || "null",
+          );
+        } catch {
+          pending.current = null;
+        }
+      }
+      if (!pending.current || pending.current.signature !== signature)
+        pending.current = { signature, id: crypto.randomUUID() };
+      const request: QuoteRequest = validateRequest({
+        requestId: pending.current.id,
+        intake: data,
+        items: snapshots,
+        consent,
+        website,
+      });
+      try {
+        write("bee-pending-request", pending.current);
+      } catch {
+        /* In-memory retry identity is still retained. */
+      }
+      const response = await fetch("/api/requests", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-BEE-Request": "1" },
+        body: JSON.stringify({ ...request, turnstileToken: token }),
+        signal: AbortSignal.timeout(20000),
+      });
+      if (!response.headers.get("content-type")?.includes("application/json"))
+        throw new Error(
+          "The request service did not respond. Your request has not been confirmed.",
+        );
+      const result = await response.json();
+      if (!response.ok)
+        throw new Error(result.error || "We could not confirm the request.");
+      if (
+        typeof result.reference !== "string" ||
+        typeof result.receivedAt !== "string"
+      )
+        throw new Error(
+          "The request service returned an incomplete confirmation. Please retry.",
+        );
+      setReceipt(result);
+      try {
+        createProject(data, items, result, snapshots);
+      } catch {
+        setError(
+          "BEE received your request, but this device could not save its copy. Download your confirmation below.",
+        );
+      }
+    } catch (e) {
+      setError(
+        e instanceof Error
+          ? e.message
+          : "Please retry. Your draft is still available.",
+      );
+      setToken("");
+      setAttempt((n) => n + 1);
+    } finally {
+      setBusy(false);
+    }
   }
-
-  if (submitted) {
-    return <section className="intake-page"><div className="intake-summary intake-summary--submitted"><span className="eyebrow">Request saved</span><h1>{submitted.reference}</h1><p>The request is now part of this browser's Customer Workspace. No payment or production action was triggered.</p><dl>{summary.map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl><div className="intake-nav"><a className="button" href="/account">Open customer workspace</a><a className="text-link" href="/studio">Start another design →</a></div></div></section>;
-  }
-
-  return <section className="intake-page">
-    <header className="intake-heading"><div><span className="eyebrow">Start a project</span><h1>Tell BEE what you know.</h1></div><p>Your progress stays in this browser, so you can move between intake, Studio, the project bag, and review without retyping the same project details.</p></header>
-
-    <div className="intake-progress" aria-label={`Step ${step} of 4`}>{[1, 2, 3, 4].map((number) => <button key={number} type="button" className={step === number ? 'is-active' : step > number ? 'is-complete' : undefined} onClick={() => setStep(number)}><span>{number}</span><b>{['Project', 'Details', 'Timing', 'Contact'][number - 1]}</b></button>)}</div>
-
-    <form className="intake-form" onSubmit={submit}>
-      {step === 1 && <fieldset><legend>What are you making?</legend><div className="intake-choice-grid">{([['custom', 'Custom apparel', 'A piece or small project.'], ['bulk', 'Group / bulk order', 'A coordinated team, school, business, organization, or event order.'], ['creator', 'Creator merchandise', 'A drop, restock, or creator collection.'], ['unsure', 'Not sure yet', 'Start with the goal and let review determine the path.']] as const).map(([value, title, copy]) => <button type="button" key={value} className={data.type === value ? 'is-active' : undefined} onClick={() => update('type', value)}><strong>{title}</strong><span>{copy}</span></button>)}</div><button className="button intake-next" type="button" onClick={() => setStep(2)}>Continue to details</button></fieldset>}
-
-      {step === 2 && <fieldset><legend>What do you already know?</legend><div className="intake-fields"><label>Garment or item<input value={data.garment} onChange={(e) => update('garment', e.target.value)} placeholder="Example: black hoodies and tees" /></label><label>Estimated quantity<input value={data.quantity} onChange={(e) => update('quantity', e.target.value)} placeholder="Example: 24–36 pieces" /></label><label className="intake-wide">Artwork status<select value={data.artwork} onChange={(e) => update('artwork', e.target.value)}><option value="">Choose one</option><option>Production-ready artwork available</option><option>Artwork exists but needs review</option><option>Concept or sketch only</option><option>Design help needed</option></select></label></div><div className="intake-nav"><button type="button" onClick={() => setStep(1)}>Back</button><a className="text-link" href="/studio">Add a design in Studio →</a><button className="button" type="button" onClick={() => setStep(3)}>Continue</button></div></fieldset>}
-
-      {step === 3 && <fieldset><legend>When and how does it need to happen?</legend><div className="intake-fields"><label>Need-by date<input type="date" value={data.deadline} onChange={(e) => update('deadline', e.target.value)} /></label><label>Fulfillment<select value={data.fulfillment} onChange={(e) => update('fulfillment', e.target.value)}><option value="">Not decided</option><option>Pickup</option><option>Bulk delivery</option><option>Shipping</option><option>Individual fulfillment may be needed</option></select></label><label className="intake-wide">Personalization / roster needs<input value={data.personalization} onChange={(e) => update('personalization', e.target.value)} placeholder="Names, numbers, departments, size collection, or none" /></label></div><div className="intake-nav"><button type="button" onClick={() => setStep(2)}>Back</button><button className="button" type="button" onClick={() => setStep(4)}>Continue</button></div></fieldset>}
-
-      {step === 4 && <fieldset><legend>Who should BEE contact?</legend><div className="intake-fields"><label>Name<input required value={data.name} onChange={(e) => update('name', e.target.value)} autoComplete="name" /></label><label>Organization / brand<input value={data.organization} onChange={(e) => update('organization', e.target.value)} autoComplete="organization" /></label><label>Email<input required type="email" value={data.email} onChange={(e) => update('email', e.target.value)} autoComplete="email" /></label><label>Phone<input type="tel" value={data.phone} onChange={(e) => update('phone', e.target.value)} autoComplete="tel" /></label><label className="intake-wide">Anything else?<textarea rows={5} value={data.notes} onChange={(e) => update('notes', e.target.value)} placeholder="Sizes, colors, event context, placements, or questions." /></label></div><div className="intake-nav"><button type="button" onClick={() => setStep(3)}>Back</button><a className="text-link" href="/project-review">Review with project bag →</a><button className="button" type="submit">Create browser project</button></div></fieldset>}
-    </form>
-  </section>;
+  if (receipt)
+    return (
+      <section className="bee-page request-complete">
+        <span className="eyebrow">Request received</span>
+        <h1>One step closer to made.</h1>
+        <p>
+          Your request has been recorded for BEE to review. It is not a
+          confirmed production order or a payment receipt.
+        </p>
+        <dl>
+          <div>
+            <dt>Reference</dt>
+            <dd>{receipt.reference}</dd>
+          </div>
+          <div>
+            <dt>Contact email</dt>
+            <dd>{data.email}</dd>
+          </div>
+        </dl>
+        <p>
+          No confirmation email has been sent by this site. Keep a copy of this
+          reference.
+        </p>
+        {error && <p role="alert">{error}</p>}
+        <div className="bee-actions">
+          <button className="button" onClick={exportRequest}>
+            Download confirmation
+          </button>
+          <a href="/account">My projects →</a>
+        </div>
+      </section>
+    );
+  return (
+    <section className="bee-page quote-page">
+      <header>
+        <span className="eyebrow">Your next project</span>
+        <h1>
+          Start with the idea.
+          <br />
+          We’ll work through the details.
+        </h1>
+        <p>
+          A rough headcount and a direction are enough to start planning. A
+          mockup is optional.
+        </p>
+      </header>
+      {availability?.enabled === false && (
+        <aside className="availability-note">
+          <strong>Online submission is being prepared.</strong>
+          <p>
+            You can plan, save, and download your request today. It will not
+            reach BEE until you send it through an available contact method.
+          </p>
+          {siteConfig.email && (
+            <a href={`mailto:${siteConfig.email}`}>
+              Email {siteConfig.email} →
+            </a>
+          )}
+        </aside>
+      )}
+      <div className="quote-layout">
+        <div>
+          <nav className="quote-steps" aria-label="Request steps">
+            {["Project", "Details", "Contact & review"].map((label, index) => (
+              <button
+                key={label}
+                disabled={busy}
+                aria-current={step === index + 1 ? "step" : undefined}
+                onClick={() => move(index + 1)}
+              >
+                <span>0{index + 1}</span>
+                {label}
+              </button>
+            ))}
+          </nav>
+          <form onSubmit={submit} className="quote-form">
+            <fieldset disabled={busy}>
+              <h2 ref={heading} tabIndex={-1}>
+                {
+                  [
+                    "What are you making?",
+                    "What should we know?",
+                    "Review your request",
+                  ][step - 1]
+                }
+              </h2>
+              {step === 1 && (
+                <>
+                  <div className="project-type-options">
+                    {types.map(([value, label]) => (
+                      <button
+                        key={value}
+                        type="button"
+                        aria-pressed={data.type === value}
+                        onClick={() => update("type", value)}
+                      >
+                        {label}
+                        <span aria-hidden="true">↗</span>
+                      </button>
+                    ))}
+                  </div>
+                  <label>
+                    Garments or items
+                    <input
+                      maxLength={200}
+                      value={data.garment}
+                      onChange={(e) => update("garment", e.target.value)}
+                      placeholder="Polos for the team, hoodies for a merch drop…"
+                    />
+                  </label>
+                  <label>
+                    Estimated quantity
+                    <input
+                      maxLength={80}
+                      value={data.quantity}
+                      onChange={(e) => update("quantity", e.target.value)}
+                      placeholder="About 30 pieces, or still deciding"
+                    />
+                  </label>
+                  <button
+                    className="button"
+                    type="button"
+                    onClick={() => move(2)}
+                  >
+                    Continue →
+                  </button>
+                </>
+              )}
+              {step === 2 && (
+                <>
+                  <div className="quote-fields">
+                    <label>
+                      Artwork status
+                      <select
+                        value={data.artwork}
+                        onChange={(e) => update("artwork", e.target.value)}
+                      >
+                        <option value="">Help me choose</option>
+                        <option>Production-ready artwork available</option>
+                        <option>Artwork needs review</option>
+                        <option>Concept only — design help needed</option>
+                      </select>
+                    </label>
+                    <label>
+                      Need-by date
+                      <input
+                        type="date"
+                        value={data.deadline}
+                        onChange={(e) => update("deadline", e.target.value)}
+                      />
+                    </label>
+                    <label>
+                      Fulfillment
+                      <select
+                        value={data.fulfillment}
+                        onChange={(e) => update("fulfillment", e.target.value)}
+                      >
+                        <option value="">To be discussed</option>
+                        <option>Pickup</option>
+                        <option>Bulk delivery</option>
+                        <option>Shipping</option>
+                      </select>
+                    </label>
+                    <label>
+                      Personalization or size breakdown
+                      <input
+                        maxLength={500}
+                        value={data.personalization}
+                        onChange={(e) =>
+                          update("personalization", e.target.value)
+                        }
+                        placeholder="Names, numbers, 10 medium + 15 large…"
+                      />
+                    </label>
+                  </div>
+                  <label>
+                    Project notes
+                    <textarea
+                      rows={5}
+                      maxLength={4000}
+                      value={data.notes}
+                      onChange={(e) => update("notes", e.target.value)}
+                      placeholder="Who it’s for, the occasion, colors, or questions."
+                    />
+                  </label>
+                  <div className="bee-actions">
+                    <button type="button" onClick={() => move(1)}>
+                      Back
+                    </button>
+                    <button
+                      type="button"
+                      className="button"
+                      onClick={() => move(3)}
+                    >
+                      Contact & review →
+                    </button>
+                  </div>
+                </>
+              )}
+              {step === 3 && (
+                <>
+                  <div className="quote-fields">
+                    <label>
+                      Your name
+                      <input
+                        required
+                        maxLength={120}
+                        autoComplete="name"
+                        value={data.name}
+                        onChange={(e) => update("name", e.target.value)}
+                      />
+                    </label>
+                    <label>
+                      Organization or brand
+                      <input
+                        maxLength={160}
+                        autoComplete="organization"
+                        value={data.organization}
+                        onChange={(e) => update("organization", e.target.value)}
+                      />
+                    </label>
+                    <label>
+                      Email
+                      <input
+                        required
+                        type="email"
+                        maxLength={254}
+                        autoComplete="email"
+                        value={data.email}
+                        onChange={(e) => update("email", e.target.value)}
+                      />
+                    </label>
+                    <label>
+                      Phone (optional)
+                      <input
+                        type="tel"
+                        maxLength={40}
+                        autoComplete="tel"
+                        value={data.phone}
+                        onChange={(e) => update("phone", e.target.value)}
+                      />
+                    </label>
+                  </div>
+                  <div className="bee-honeypot" aria-hidden="true">
+                    <label>
+                      Website
+                      <input
+                        tabIndex={-1}
+                        autoComplete="off"
+                        value={website}
+                        onChange={(e) => setWebsite(e.target.value)}
+                      />
+                    </label>
+                  </div>
+                  <label className="quote-consent">
+                    <input
+                      type="checkbox"
+                      checked={consent}
+                      onChange={(e) => setConsent(e.target.checked)}
+                    />
+                    <span>
+                      BEE may review these details and contact me about this
+                      project. I have permission to use any attached artwork.{" "}
+                      <a href="/privacy">How your information is used</a>.
+                    </span>
+                  </label>
+                  {availability?.enabled && availability.siteKey && (
+                    <Turnstile
+                      siteKey={availability.siteKey}
+                      onToken={setToken}
+                      attempt={attempt}
+                    />
+                  )}
+                  <p className="quote-note">
+                    Pricing, garment availability, artwork, and timing need
+                    confirmation before production. Only PNG, JPEG and WebP
+                    mockup previews are attached here; original production files
+                    are arranged during review.
+                  </p>
+                  <button
+                    className="button"
+                    disabled={
+                      !availability?.enabled || !consent || !token || busy
+                    }
+                    type="submit"
+                  >
+                    {busy
+                      ? "Confirming your request…"
+                      : availability === null
+                        ? "Checking availability…"
+                        : availability.enabled
+                          ? "Send request to BEE"
+                          : "Online submission unavailable"}
+                  </button>
+                </>
+              )}
+              {error && (
+                <p className="form-error" role="alert">
+                  {error}
+                </p>
+              )}
+            </fieldset>
+          </form>
+          <div className="request-save-tools">
+            <button disabled={busy || saved} onClick={saveDraft}>
+              {saved
+                ? "Draft saved on this device"
+                : "Save a local project draft"}
+            </button>
+            <button onClick={exportRequest}>Download request</button>
+            <span>
+              Your contact details remain on this device until you submit.
+              Downloads may contain personal information and artwork.
+            </span>
+          </div>
+        </div>
+        <aside className="quote-summary">
+          <span className="eyebrow">At a glance</span>
+          <h2>{data.organization || "Your project"}</h2>
+          <dl>
+            <div>
+              <dt>Project</dt>
+              <dd>{types.find(([type]) => type === data.type)?.[1]}</dd>
+            </div>
+            <div>
+              <dt>Garment</dt>
+              <dd>{data.garment || "To be discussed"}</dd>
+            </div>
+            <div>
+              <dt>Quantity</dt>
+              <dd>
+                {data.quantity ||
+                  items.reduce((n, item) => n + item.quantity, 0) ||
+                  "To be discussed"}
+              </dd>
+            </div>
+            <div>
+              <dt>Need-by date</dt>
+              <dd>{data.deadline || "Flexible / not set"}</dd>
+            </div>
+          </dl>
+          {snapshots.map((item) => (
+            <div className="quote-design" key={item.id}>
+              {item.design?.artworkData && (
+                <img src={item.design.artworkData} alt="Your artwork preview" />
+              )}
+              <strong>{item.design?.name || item.productSlug}</strong>
+              <span>
+                {item.quantity} × {item.size} · {item.color}
+              </span>
+              {item.design?.text && <small>{item.design.text}</small>}
+            </div>
+          ))}
+          <a href="/cart">Review attached designs →</a>
+          <div className="quote-next">
+            <strong>What happens next?</strong>
+            <p>
+              Once received, BEE reviews the fit, clarifies the details, and
+              prepares a quote. You approve the final proof before production.
+            </p>
+          </div>
+        </aside>
+      </div>
+    </section>
+  );
 }
