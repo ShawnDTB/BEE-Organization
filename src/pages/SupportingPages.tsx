@@ -56,10 +56,10 @@ export function PrivacyPage() {
       <p>Works by BEE is the public website of BEE Organization LLC.</p>
       <h2>When you plan a project</h2>
       <p>
-        The site stores project drafts, contact fields you enter, mockup
-        previews, and private notes in your browser so you can return to them on
-        the same device. They are not an online account. Anyone using that
-        browser profile may be able to access them.
+        The site stores group size plans, project drafts, contact fields you
+        enter, mockup previews, and private notes in your browser so you can
+        return to them on the same device. They are not an online account.
+        Anyone using that browser profile may be able to access them.
       </p>
       <h2>When you send a request</h2>
       <p>

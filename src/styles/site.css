@@ -4266,4 +4266,204 @@ h3 {
   gap: 22px;
 }
 
-:root { color-scheme: dark; }
+:root {
+  color-scheme: dark;
+}
+
+/* Post-launch identity and project-planning components. */
+.logo-lockup .bee-brand-signature {
+  gap: 0;
+}
+.logo-lockup .bee-brand-signature small {
+  display: block;
+  font-size: 9px;
+  letter-spacing: 0.24em;
+  color: var(--text);
+  padding-left: 3px;
+}
+.logo-lockup img.bee-wordmark,
+.bee-header .logo-lockup img.bee-wordmark {
+  width: 90px;
+  height: 36px;
+  border: 0;
+  padding: 0;
+  background: none;
+  border-radius: 0;
+}
+.logo-lockup .bee-brand-descriptor {
+  border-left: 1px solid var(--line-strong);
+  padding-left: 12px;
+}
+.bee-header .logo-lockup .bee-brand-descriptor strong,
+.bee-footer .logo-lockup .bee-brand-descriptor strong,
+.bee-menu-heading .logo-lockup .bee-brand-descriptor strong {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+}
+.logo-lockup .bee-brand-descriptor small {
+  font-size: 10px;
+  letter-spacing: 0.08em;
+}
+.planning-status {
+  padding: 14px 32px;
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  color: #b9e8ff;
+  background: #101d2d;
+  border-bottom: 1px solid #294664;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.planning-status a {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.planner-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  gap: 48px;
+  margin-top: 40px;
+  align-items: start;
+}
+.planner-layout form {
+  display: grid;
+  gap: 22px;
+  min-width: 0;
+}
+.size-planner label {
+  display: grid;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--text);
+}
+.size-planner input {
+  width: 100%;
+  min-width: 0;
+  min-height: 48px;
+  border: 1px solid var(--line-strong);
+  border-radius: 4px;
+  background: #0c1320;
+  color: #f2f8ff;
+  padding: 12px;
+}
+.size-counts {
+  border: 1px solid var(--line-strong);
+  padding: 22px;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+}
+.size-counts legend {
+  padding: 0 10px;
+  color: #b9e8ff;
+}
+.planner-summary {
+  background: #111827;
+  border: 1px solid var(--line-strong);
+  padding: 28px;
+}
+.planner-summary .planner-total {
+  display: block;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: clamp(3rem, 7vw, 6rem);
+  letter-spacing: -0.06em;
+  color: #b9e8ff;
+}
+.planner-summary > button,
+.request-review > button,
+.request-size-plan > button,
+.workspace-detail > button {
+  min-height: 44px;
+  border: 1px solid var(--line-strong);
+  border-radius: 3px;
+  color: var(--text);
+  background: #19263a;
+  padding: 10px 16px;
+  cursor: pointer;
+}
+.request-review {
+  padding: 24px;
+  border: 1px solid var(--line-strong);
+  background: #101827;
+}
+.request-review h3 {
+  margin-top: 0;
+}
+.request-review dl {
+  margin: 0 0 20px;
+}
+.request-review dl > div {
+  display: grid;
+  grid-template-columns: minmax(110px, 0.6fr) minmax(0, 1fr);
+  gap: 20px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+}
+.request-review dt {
+  color: var(--muted);
+}
+.request-review dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  line-height: 1.6;
+}
+.request-size-plan {
+  border-top: 1px solid var(--line-strong);
+  padding: 18px 0;
+}
+.request-size-plan > a {
+  display: block;
+  margin: 18px 0;
+  color: #b9e8ff;
+}
+.request-size-plan p {
+  font-size: 14px;
+}
+.group-planning-checklist {
+  background: #111827;
+  padding: 32px;
+  border: 1px solid var(--line-strong);
+}
+.group-planning-checklist li {
+  padding: 10px 0;
+}
+@media (max-width: 760px) {
+  .planner-layout {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .size-counts {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    padding: 16px;
+    gap: 14px;
+  }
+  .planning-status {
+    padding: 12px 20px;
+  }
+  .request-review dl > div {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+  .bee-header .logo-lockup .bee-brand-descriptor {
+    display: none;
+  }
+  .bee-header .logo-lockup img.bee-wordmark {
+    width: 80px;
+    height: 32px;
+  }
+}
+@media print {
+  .planning-status,
+  .planner-layout button {
+    display: none;
+  }
+  .planner-summary,
+  .request-review {
+    background: white;
+    color: black;
+  }
+}

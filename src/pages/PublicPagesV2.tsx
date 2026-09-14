@@ -340,7 +340,7 @@ export function AboutPageV2() {
         title="Build. Empower. Equip."
         description="Works by BEE brings custom apparel and embroidery to the teams, businesses, creators, and communities with something to represent. Our approach connects the idea, the details, and the people who will wear it."
         primary={{ label: "Start a project", href: "/start-order" }}
-        secondary={{ label: "See apparel options", href: "/#capabilities" }}
+        secondary={{ label: "See apparel options", href: "/custom-apparel" }}
       />
 
       <section className="about-principles">

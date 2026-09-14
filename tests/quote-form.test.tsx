@@ -59,6 +59,26 @@ it("offers drafts without pretending offline requests were sent", async () => {
   expect(readProjects()[0]?.delivery).toBe("draft");
   expect(host.textContent).not.toContain("Request received");
 });
+it("shows all project details and the attached size plan for review", async () => {
+  saveProjectDraft({
+    fulfillment: "Pickup",
+    personalization: "Names on sleeves",
+    notes: "Event in October",
+    sizePlan: { garment: "Polos", color: "Navy", counts: { M: 12, L: 12 } },
+  });
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async () => json({ enabled: false })),
+  );
+  await render();
+  await click("Contact & review");
+  expect(host.textContent).toContain("Names on sleeves");
+  expect(host.textContent).toContain("Event in October");
+  expect(host.textContent).toContain("24 planned pieces");
+  expect(host.textContent).toContain("M: 12 · L: 12");
+  await click("Remove size plan from request");
+  expect(host.textContent).not.toContain("24 planned pieces");
+});
 it("does not treat a static HTML fallback as an available service", async () => {
   vi.stubGlobal(
     "fetch",

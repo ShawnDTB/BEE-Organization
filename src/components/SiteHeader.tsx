@@ -144,6 +144,9 @@ export function SiteHeader({ currentPath }: { currentPath: string }) {
                     </a>
                   ))}
                   <div className="bee-menu-utilities">
+                    <a href="/group-planner" onClick={close}>
+                      Group size planner
+                    </a>
                     <a href="/studio" onClick={close}>
                       Design studio
                     </a>

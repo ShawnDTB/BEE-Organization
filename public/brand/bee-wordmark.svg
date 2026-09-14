@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 120" role="img" aria-labelledby="title">
+  <title id="title">BEE</title>
+  <g fill="#F2F8FF">
+    <path fill-rule="evenodd" d="M8 12H65L84 31V48L73 59L88 74V90L70 108H8ZM28 32V50H58L64 44V38L58 32ZM28 70V88H61L68 81V77L61 70Z"/>
+    <path d="M120 12H192V32H132V88H192V108H112V20Z"/>
+    <path d="M220 12H292V32H232V88H292V108H212V20Z"/>
+  </g>
+  <g fill="#339CFF"><path d="M132 50H176L186 60L176 70H132Z"/><path d="M232 50H276L286 60L276 70H232Z"/></g>
+</svg>

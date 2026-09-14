@@ -1,4 +1,5 @@
 import type { RequestItem } from "../../shared/request";
+import { validateSizePlan, type SizePlan } from "../../shared/sizePlan";
 export const CART_KEY = "bee-project-bag-v1";
 export const CART_EVENT = "bee-cart-updated";
 export const DRAFT_KEY = "bee-studio-drafts-v1";
@@ -46,6 +47,7 @@ export type ProjectBagItem = {
 };
 
 export type ProjectIntake = {
+  sizePlan?: SizePlan;
   type: IntakeType;
   garment: string;
   quantity: string;
@@ -315,10 +317,44 @@ export function upsertBagItem(item: ProjectBagItem) {
 }
 
 export function readProjectDraft(): ProjectIntake {
-  return {
-    ...emptyProjectIntake,
-    ...parseJson<Partial<ProjectIntake>>(readStorage(PROJECT_DRAFT_KEY), {}),
-  };
+  const raw = parseJson<Partial<ProjectIntake> | null>(
+    readStorage(PROJECT_DRAFT_KEY),
+    {},
+  );
+  const result = { ...emptyProjectIntake };
+  for (const key of Object.keys(
+    emptyProjectIntake,
+  ) as (keyof typeof emptyProjectIntake)[]) {
+    if (key !== "sizePlan" && typeof raw?.[key] === "string")
+      (result as Record<string, unknown>)[key] = raw[key];
+  }
+  if (!["bulk", "custom", "creator", "unsure"].includes(result.type))
+    result.type = "custom";
+  if (raw?.sizePlan) {
+    try {
+      result.sizePlan = validateSizePlan(raw.sizePlan);
+    } catch {
+      /* Ignore malformed local plans. */
+    }
+  }
+  return result;
+}
+export function hasCurrentProjectDraft() {
+  return Object.entries(readProjectDraft()).some(
+    ([key, value]) =>
+      key !== "type" && (typeof value === "string" ? !!value.trim() : !!value),
+  );
+}
+export function deleteProjectCopy(id: string) {
+  write(
+    PROJECTS_KEY,
+    readProjects().filter((project) => project.id !== id),
+  );
+  write(
+    PROJECT_NOTES_KEY,
+    readProjectNotes().filter((note) => note.projectId !== id),
+  );
+  window.dispatchEvent(new Event(PROJECT_EVENT));
 }
 export function saveProjectDraft(patch: Partial<ProjectIntake>) {
   const next = { ...readProjectDraft(), ...patch };

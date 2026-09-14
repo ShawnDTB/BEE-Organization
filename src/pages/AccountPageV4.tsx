@@ -13,8 +13,11 @@ import {
   saveBag,
   saveStudioDraft,
   type BeeProject,
+  hasCurrentProjectDraft,
+  deleteProjectCopy,
 } from "../data/projectStore";
 import { downloadText } from "../data/download";
+import { projectBrief } from "../data/projectBrief";
 
 export function AccountPageV4() {
   const [projects, setProjects] = useState(readProjects);
@@ -24,11 +27,14 @@ export function AccountPageV4() {
   const [note, setNote] = useState("");
   const [error, setError] = useState("");
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [deleteProjectId, setDeleteProjectId] = useState<string | null>(null);
+  const [currentDraft, setCurrentDraft] = useState(hasCurrentProjectDraft);
   useEffect(() => {
     const sync = () => {
       setProjects(readProjects());
       setDrafts(readDrafts());
       setNotes(readProjectNotes());
+      setCurrentDraft(hasCurrentProjectDraft());
     };
     [PROJECT_EVENT, "storage", "focus"].forEach((event) =>
       window.addEventListener(event, sync),
@@ -91,6 +97,17 @@ export function AccountPageV4() {
           New project ↗
         </a>
       </header>
+      {currentDraft && (
+        <aside className="availability-note">
+          <strong>Your current request is saved here.</strong>
+          <p>
+            Pick up the details you last entered. It has not been sent to BEE.
+          </p>
+          <a className="text-link" href="/start-order">
+            Continue current request →
+          </a>
+        </aside>
+      )}
       {error && (
         <p role="alert" className="form-error">
           {error}
@@ -173,6 +190,25 @@ export function AccountPageV4() {
               </dl>
               <div className="bee-actions">
                 <button
+                  onClick={() =>
+                    downloadText(
+                      "BEE-project-brief.txt",
+                      projectBrief(
+                        project.intake,
+                        project.snapshotItems || [],
+                        project.delivery === "received"
+                          ? {
+                              reference: project.reference,
+                              receivedAt: project.submittedAt,
+                            }
+                          : null,
+                      ),
+                    )
+                  }
+                >
+                  Download readable brief
+                </button>
+                <button
                   className="button"
                   onClick={() =>
                     project.delivery === "received"
@@ -199,6 +235,36 @@ export function AccountPageV4() {
                   Download project copy
                 </button>
               </div>
+              <button onClick={() => setDeleteProjectId(project.id)}>
+                Remove this local project copy
+              </button>
+              {deleteProjectId === project.id && (
+                <div
+                  className="delete-confirm"
+                  role="group"
+                  aria-label="Confirm local project removal"
+                >
+                  <p>
+                    Remove this saved copy and its local notes? Studio designs
+                    and any request already received by BEE remain unchanged.
+                    Download a copy first if needed.
+                  </p>
+                  <button
+                    onClick={() =>
+                      action(() => {
+                        deleteProjectCopy(project.id);
+                        setDeleteProjectId(null);
+                        setSelected(null);
+                      })
+                    }
+                  >
+                    Remove local copy
+                  </button>
+                  <button onClick={() => setDeleteProjectId(null)}>
+                    Keep project
+                  </button>
+                </div>
+              )}
               <p className="workspace-small">
                 {project.delivery === "received"
                   ? "A similar request is a new quote. Garments, timing and pricing need to be confirmed again."

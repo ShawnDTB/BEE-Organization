@@ -1,7 +1,9 @@
 import { faqs } from "../content/siteContent";
+import { PlanningStatus } from "../components/PlanningStatus";
 export function HomePageV4() {
   return (
     <>
+      <PlanningStatus />
       <section className="bee-hero">
         <div className="bee-hero-copy">
           <span className="eyebrow">Custom apparel & embroidery</span>

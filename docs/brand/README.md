@@ -1,5 +1,7 @@
 # Brand Documentation
 
+**Current direction:** Works by BEE, worksbybee.com, Build. Empower. Equip. See [site-identity.md](site-identity.md) for the authoritative September 2026 palette, new vector wordmark, variants, and usage rules. The historical status and explorations below are archived context and do not override that guide.
+
 This directory defines the temporary BEE Organization presentation and the requirements for selecting a final public name and logo.
 
 ## Current status

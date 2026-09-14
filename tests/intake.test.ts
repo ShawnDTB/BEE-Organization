@@ -82,6 +82,40 @@ beforeEach(() => {
 });
 afterEach(() => sqlite.close());
 describe("Quote intake", () => {
+  it("stores validated group counts in the immutable request snapshot", async () => {
+    const data = payload();
+    const planned = {
+      ...data,
+      intake: {
+        ...data.intake,
+        sizePlan: { garment: "Polos", color: "Navy", counts: { M: 12, L: 12 } },
+      },
+    };
+    expect((await handleIntake(request(planned), env, bot)).status).toBe(201);
+    const row = sqlite
+      .prepare("SELECT snapshot_json FROM quote_requests")
+      .get() as { snapshot_json: string };
+    expect(JSON.parse(row.snapshot_json).intake.sizePlan.counts).toEqual({
+      M: 12,
+      L: 12,
+    });
+    expect(
+      (
+        await handleIntake(
+          request({
+            ...planned,
+            requestId: crypto.randomUUID(),
+            intake: {
+              ...planned.intake,
+              sizePlan: { ...planned.intake.sizePlan, counts: { M: -1 } },
+            },
+          }),
+          env,
+          bot,
+        )
+      ).status,
+    ).toBe(400);
+  });
   it("fails closed without configured storage/contact/operations", async () => {
     for (const patch of [
       { DB: undefined },

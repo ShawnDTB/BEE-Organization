@@ -13,6 +13,8 @@ import { validateRequest, type QuoteRequest } from "../../shared/request";
 import { downloadText } from "../data/download";
 import { Turnstile } from "../components/Turnstile";
 import { siteConfig } from "../content/siteContent";
+import { projectBrief } from "../data/projectBrief";
+import { sizePlanLines, sizePlanTotal } from "../../shared/sizePlan";
 
 type Receipt = { reference: string; receivedAt: string };
 const types = [
@@ -66,7 +68,14 @@ export function StartOrderPage() {
       .catch(() => {
         if (!controller.signal.aborted) setAvailability({ enabled: false });
       });
-    return () => controller.abort();
+    const timeout = window.setTimeout(() => {
+      controller.abort();
+      setAvailability((current) => current ?? { enabled: false });
+    }, 10000);
+    return () => {
+      controller.abort();
+      window.clearTimeout(timeout);
+    };
   }, []);
   function update<K extends keyof ProjectIntake>(
     key: K,
@@ -101,6 +110,11 @@ export function StartOrderPage() {
         2,
       ),
       "application/json",
+    );
+  const exportBrief = () =>
+    downloadText(
+      "BEE-project-brief.txt",
+      projectBrief(data, snapshots, receipt),
     );
   function saveDraft() {
     try {
@@ -206,6 +220,7 @@ export function StartOrderPage() {
         </p>
         {error && <p role="alert">{error}</p>}
         <div className="bee-actions">
+          <button onClick={exportBrief}>Download readable brief</button>
           <button className="button" onClick={exportRequest}>
             Download confirmation
           </button>
@@ -269,6 +284,9 @@ export function StartOrderPage() {
               </h2>
               {step === 1 && (
                 <>
+                  <a className="text-link" href="/group-planner">
+                    Organizing sizes? Use the group planner →
+                  </a>
                   <div className="project-type-options">
                     {types.map(([value, label]) => (
                       <button
@@ -382,6 +400,33 @@ export function StartOrderPage() {
               )}
               {step === 3 && (
                 <>
+                  <section
+                    className="request-review"
+                    aria-label="Project details to review"
+                  >
+                    <h3>Check the details before sharing</h3>
+                    <dl>
+                      {(
+                        [
+                          ["Garments", data.garment],
+                          ["Estimated quantity", data.quantity],
+                          ["Artwork", data.artwork],
+                          ["Need-by date", data.deadline],
+                          ["Fulfillment", data.fulfillment],
+                          ["Personalization", data.personalization],
+                          ["Project notes", data.notes],
+                        ] as const
+                      ).map(([label, value]) => (
+                        <div key={label}>
+                          <dt>{label}</dt>
+                          <dd>{value || "To be discussed"}</dd>
+                        </div>
+                      ))}
+                    </dl>
+                    <button type="button" onClick={() => move(2)}>
+                      Edit project details
+                    </button>
+                  </section>
                   <div className="quote-fields">
                     <label>
                       Your name
@@ -485,6 +530,9 @@ export function StartOrderPage() {
             </fieldset>
           </form>
           <div className="request-save-tools">
+            <button disabled={busy} onClick={exportBrief}>
+              Download readable brief
+            </button>
             <button disabled={busy || saved} onClick={saveDraft}>
               {saved
                 ? "Draft saved on this device"
@@ -522,6 +570,39 @@ export function StartOrderPage() {
               <dd>{data.deadline || "Flexible / not set"}</dd>
             </div>
           </dl>
+          {data.sizePlan && (
+            <section
+              className="request-size-plan"
+              aria-label="Attached group size plan"
+            >
+              <h3>Attached size plan</h3>
+              <p>
+                {data.sizePlan.garment} ·{" "}
+                {data.sizePlan.color || "Color to be discussed"}
+              </p>
+              <p>{sizePlanLines(data.sizePlan)}</p>
+              <strong>{sizePlanTotal(data.sizePlan)} planned pieces</strong>
+              {(data.quantity !== String(sizePlanTotal(data.sizePlan)) ||
+                data.garment !== data.sizePlan.garment) && (
+                <p role="status">
+                  Your project summary differs from this size plan. Review the
+                  totals and garment before sending.
+                </p>
+              )}
+              <p>
+                Size-plan counts describe the group. They are not added to
+                Studio design quantities.
+              </p>
+              <a href="/group-planner">Edit size plan →</a>
+              <button
+                disabled={busy}
+                type="button"
+                onClick={() => update("sizePlan", undefined)}
+              >
+                Remove size plan from request
+              </button>
+            </section>
+          )}
           {snapshots.map((item) => (
             <div className="quote-design" key={item.id}>
               {item.design?.artworkData && (

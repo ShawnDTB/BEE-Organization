@@ -1,5 +1,3 @@
-import { siteConfig } from "../content/siteContent";
-
 type LogoLockupProps = {
   compact?: boolean;
 };
@@ -11,14 +9,19 @@ export function LogoLockup({ compact = false }: LogoLockupProps) {
       href="/"
       aria-label="Works by BEE home"
     >
-      <img src="/brand/bee-modular-mark.svg" alt="" />
-      <span>
-        <strong>{siteConfig.workingName.toUpperCase()}</strong>
-        <small>
-          {compact
-            ? "CUSTOM APPAREL STUDIO"
-            : siteConfig.descriptor.toUpperCase()}
-        </small>
+      <span className="bee-brand-signature">
+        <small>WORKS BY</small>
+        <img
+          className="bee-wordmark"
+          src="/brand/bee-wordmark.svg"
+          width="300"
+          height="120"
+          alt=""
+        />
+      </span>
+      <span className="bee-brand-descriptor">
+        <strong>CUSTOM APPAREL</strong>
+        <small>& EMBROIDERY</small>
       </span>
     </a>
   );

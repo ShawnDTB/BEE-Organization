@@ -46,6 +46,7 @@ const routes = {
   ],
 };
 const privateRoutes = [
+  "/group-planner",
   "/studio",
   "/cart",
   "/project-review",

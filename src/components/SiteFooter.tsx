@@ -25,6 +25,7 @@ export function SiteFooter() {
           <div>
             <strong>Your next project</strong>
             <a href="/studio">Design studio</a>
+            <a href="/group-planner">Group size planner</a>
             <a href="/cart">Project bag</a>
             <a href="/account">My projects</a>
             <a href="/start-order">Request a quote</a>

@@ -1,6 +1,8 @@
+import { validateSizePlan, type SizePlan } from "./sizePlan";
 export const MAX_PREVIEW_BYTES = 350_000;
 export const MAX_REQUEST_BYTES = 2_000_000;
 export type RequestDetails = {
+  sizePlan?: SizePlan;
   type: "custom" | "bulk" | "creator" | "unsure";
   garment: string;
   quantity: string;
@@ -159,6 +161,13 @@ export function validateRequest(value: unknown): QuoteRequest {
     personalization: string(i.personalization, 500),
     notes: string(i.notes, 4000),
   };
+  if (i.sizePlan !== undefined) {
+    try {
+      intake.sizePlan = validateSizePlan(i.sizePlan);
+    } catch (error) {
+      throw new ValidationError((error as Error).message);
+    }
+  }
   if (!Array.isArray(body.items) || body.items.length > 20)
     throw new ValidationError("A request can include up to 20 designs.");
   const items = body.items.map((raw): RequestItem => {
