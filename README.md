@@ -12,7 +12,7 @@ The latest frontend and intake foundation are on `main`, as authorized by Shawn 
 
 ## Local development
 
-Use Node 22.16+ and npm 10+. Run `npm ci`, then `npm run dev`. `npm run check` runs frontend/server TypeScript, workflow tests and the production build. Static output is `dist`. The lockfile is committed; do not delete it as a routine installation repair.
+Use Node 24.19+ and npm 10+. Run `npm ci`, then `npm run dev`. `npm run check` runs frontend/server TypeScript, workflow tests and the production build. Static output is `dist`. The lockfile is committed; do not delete it as a routine installation repair.
 
 ## What works and what needs configuration
 

@@ -27,7 +27,7 @@ npm run dev
 
 ## Node version error
 
-The supported baseline is Node.js 20.19 or newer. Node 22.16 is the repository’s pinned development and CI version.
+The supported baseline is Node.js 24.19 or newer. Node 24.19 is the repository’s pinned development and CI version.
 
 Install the current Node.js LTS release with Windows Package Manager:
 

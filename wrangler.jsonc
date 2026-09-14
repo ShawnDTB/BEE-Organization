@@ -1,0 +1,20 @@
+{
+  "name": "bee-organization",
+  "main": "server/worker.ts",
+  "compatibility_date": "2026-09-14",
+  "build": {
+    "command": "npm run build"
+  },
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": [
+      "/api/*"
+    ]
+  },
+  "vars": {
+    "APP_ORIGIN": "https://worksbybee.com",
+    "INTAKE_ENABLED": "false"
+  }
+}

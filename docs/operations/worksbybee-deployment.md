@@ -2,13 +2,17 @@
 
 ## Frontend on Cloudflare Pages
 
-Connect the existing site project to ShawnDTB/BEE-Organization, main. Use repository root, Node 22.16 or newer, `npm ci` for installation, `npm run build` for build, and `dist` as output. Keep dev dependencies available during build. The functions/api/[[path]].ts adapter handles API requests when deployed through Pages with Functions support. A static-only upload of dist does not include Functions.
+Connect the existing site project to ShawnDTB/BEE-Organization, main. Use repository root, Node 24.19 or newer, `npm ci` for installation, `npm run build` for build, and `dist` as output. Keep dev dependencies available during build. The functions/api/[[path]].ts adapter handles API requests when deployed through Pages with Functions support. A static-only upload of dist does not include Functions.
 
 No database or secret is needed for the public frontend and local tools. Intake availability stays false without its full server configuration. Do not use `vite preview` as a production server.
 
 ## If the existing domain uses a Worker
 
-The observed `Hello world` response is compatible with an unconfigured starter Worker, but the project identity must be inspected. Preserve its existing hostname and Worker name. Copy wrangler.example.jsonc to wrangler.jsonc, replace the example name with that existing Worker name, retain the server/worker.ts entry and ASSETS binding, and use the reviewed Cloudflare project's deployment command. The frontend build must run first. Do not create an unrelated Worker or move the custom domain based only on this template.
+GitHub's Cloudflare check identifies the existing Worker as `bee-organization`. The committed wrangler.jsonc now targets that service, builds the frontend with `npm run build`, and binds dist to ASSETS with server/worker.ts as the API entry point. Use repository root and `npx wrangler deploy` as the deployment command. Existing domain assignments remain managed in Cloudflare; no DNS change is declared here.
+
+The initial release c757d53 passed the frontend build, then failed Workers deployment with error 100324: the legacy `/* /index.html 200` rule in public/_redirects caused an infinite loop under Workers asset canonicalization. That file has been removed. The committed SPA fallback handles client routes without a redirect rule. The explicit Wrangler configuration also prevents deployment-time framework auto-configuration. Node 24.19.0 is pinned to satisfy the installed test dependencies; remove any older NODE_VERSION override in the Cloudflare build settings.
+
+Validation: Wrangler 4.131.2 successfully built and bundled the Worker and 69 static files locally in dry-run mode after the redirect removal. Remote deployment acceptance is verified separately.
 
 The adapter directs /api/* to the server before asset fallback; the remainder goes to ASSETS. Ensure asset security headers are applied on the selected hosting path. Verify /api/intake/status returns JSON, not index.html or Hello world. Both Pages and Workers paths still require a real hosted-runtime acceptance check.
 
