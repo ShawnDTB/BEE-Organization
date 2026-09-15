@@ -16,6 +16,7 @@ export async function makeObject(l: StudioLayer): Promise<FabricObject> {
     originX: "left" as const,
     originY: "top" as const,
     fill: l.fill,
+    strokeWidth: 0,
     visible: !l.hidden,
     selectable: !l.locked,
     evented: !l.locked,
