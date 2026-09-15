@@ -12,6 +12,7 @@ let host: HTMLDivElement, root: Root;
 beforeEach(() => {
   Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true });
   localStorage.clear();
+  localStorage.setItem("bee-studio-mode", "advanced");
   history.replaceState({}, "", "/studio");
   vi.useFakeTimers();
   host = document.createElement("div");
@@ -81,4 +82,30 @@ it("recovers newer edits after explicitly reopening a saved draft", async () => 
   await act(async () => root.render(<StudioPageV4 />));
   expect(host.textContent).toContain("Front 2");
   expect(host.textContent).toContain("Recovered your latest studio work");
+});
+
+it("starts new visitors guided and preserves template work across modes and undo", async () => {
+  localStorage.removeItem("bee-studio-mode");
+  await act(async () => root.render(<StudioPageV4 />));
+  expect(host.textContent).toContain("How would you like to begin?");
+  expect(host.textContent).not.toContain("Export front SVG");
+  await click("Use a templateChoose a layout, then make it your own.");
+  await act(async () =>
+    host
+      .querySelector("form")!
+      .dispatchEvent(new Event("submit", { bubbles: true, cancelable: true })),
+  );
+  expect(host.textContent).toContain("Make it yours.");
+  await click("Make larger");
+  await click("Advanced");
+  await click("Save to My projects");
+  const larger = readDrafts()[0]!.document!.surfaces.front;
+  expect(larger[0]!.width).toBeGreaterThan(480);
+  await click("Undo");
+  await click("Save to My projects");
+  expect(readDrafts()[0]!.document!.surfaces.front[0]!.width).toBe(480);
+  await click("Guided");
+  await click("Review & continue →");
+  expect(host.textContent).toContain("Ready for BEE?");
+  expect(host.textContent).toContain("2 visible design elements");
 });

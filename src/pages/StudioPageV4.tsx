@@ -1,5 +1,12 @@
-import { useEffect, useRef, useState, type ChangeEvent } from "react";
-import { StaticCanvas, type Canvas } from "fabric";
+import {
+  Suspense,
+  lazy,
+  useEffect,
+  useRef,
+  useState,
+  type ChangeEvent,
+} from "react";
+import type { StaticCanvas, Canvas } from "fabric";
 import { validateDesign } from "../../shared/request";
 import {
   emptyDocument,
@@ -17,7 +24,9 @@ import {
   type StudioDraft,
 } from "../data/projectStore";
 import { downloadText } from "../data/download";
-import { FabricBoard, makeObject } from "../studio/FabricBoard";
+const FabricBoard = lazy(() =>
+  import("../studio/FabricBoard").then((m) => ({ default: m.FabricBoard })),
+);
 import {
   changeDocument,
   migrateDraft,
@@ -27,6 +36,12 @@ import {
 } from "../studio/document";
 import { GarmentSvg } from "./StudioPageV3";
 import "../styles/studio.css";
+import { GuidedStudio } from "../studio/GuidedStudio";
+import {
+  parseGuideCommand,
+  templateLayers,
+  transformDesign,
+} from "../studio/guide";
 const RECOVERY = "bee-studio-recovery-v2";
 const colors = [
   ["Black", "#15191d"],
@@ -123,6 +138,21 @@ function initial() {
 }
 export function StudioPageV4() {
   const [start] = useState(initial);
+  const [mode, setMode] = useState<"guided" | "advanced">(() => {
+    try {
+      return localStorage.getItem("bee-studio-mode") === "advanced"
+        ? "advanced"
+        : "guided";
+    } catch {
+      return "guided";
+    }
+  });
+  function changeMode(next: "guided" | "advanced") {
+    setMode(next);
+    try {
+      localStorage.setItem("bee-studio-mode", next);
+    } catch {}
+  }
   const [draft, setDraft] = useState(start.draft);
   const [history, setHistory] = useState<History>({
     past: [],
@@ -232,7 +262,7 @@ export function StudioPageV4() {
     setSelected(l.id);
     setPreview(false);
   }
-  function save(toBag = false) {
+  function save(toBag = false): boolean {
     try {
       const result = saveStudioDraft({
         ...working,
@@ -253,8 +283,10 @@ export function StudioPageV4() {
           ? "Both sides saved to your project bag. Review the project to request a quote."
           : "Design saved to My projects on this browser.",
       );
+      return true;
     } catch (e) {
       setStatus((e as Error).message);
+      return false;
     }
   }
   async function upload(e: ChangeEvent<HTMLInputElement>) {
@@ -351,6 +383,10 @@ export function StudioPageV4() {
     setBusy(true);
     let c: StaticCanvas | undefined;
     try {
+      const [{ StaticCanvas }, { makeObject }] = await Promise.all([
+        import("fabric"),
+        import("../studio/FabricBoard"),
+      ]);
       c = new StaticCanvas(undefined, { width: 600, height: 800 });
       const objects = await Promise.all(layers.map(makeObject));
       c.add(...objects);
@@ -419,452 +455,548 @@ export function StudioPageV4() {
           <h1>Make it yours.</h1>
           <p>Build your artwork. Try it on. Keep every detail.</p>
         </div>
-        <a href="/start-order">Prefer help from BEE? →</a>
-      </header>
-      <div className="bee-projectbar">
-        <label>
-          Design name
-          <input
-            maxLength={120}
-            value={draft.name}
-            onChange={(e) => setDraft({ ...draft, name: e.target.value })}
-          />
-        </label>
-        <span role="status">{saveState}</span>
-        <button onClick={() => save()}>Save to My projects</button>
         <button
-          onClick={() =>
-            downloadText(
-              "BEE-design.json",
-              JSON.stringify(
-                {
-                  ...working,
-                  name: working.name.trim() || "My apparel design",
-                },
-                null,
-                2,
-              ),
-              "application/json",
-            )
-          }
+          onClick={() => {
+            if (save(true)) window.location.assign("/start-order");
+          }}
         >
-          Download editable file
+          Prefer help from BEE? →
         </button>
-        <button onClick={() => importInput.current?.click()}>Open file</button>
-        <button onClick={newDesign}>New</button>
-        <input
-          hidden
-          ref={importInput}
-          type="file"
-          accept=".json,application/json"
-          onChange={importDesign}
-        />
+      </header>
+      <div className="bee-stagebar" role="group" aria-label="Studio mode">
+        <button
+          aria-pressed={mode === "guided"}
+          onClick={() => changeMode("guided")}
+        >
+          Guided
+        </button>
+        <button
+          aria-pressed={mode === "advanced"}
+          onClick={() => changeMode("advanced")}
+        >
+          Advanced
+        </button>
       </div>
-      <div className="bee-editor-grid">
-        <aside className="bee-tools" aria-label="Design tools">
-          <h2>Add to your design</h2>
-          <div className="bee-tool-buttons">
-            <button onClick={() => add("text")}>＋ Text</button>
-            <button
-              onClick={() => uploadInput.current?.click()}
-              disabled={busy}
-            >
-              ＋ Artwork
-            </button>
-            <button onClick={() => add("rect")}>＋ Rectangle</button>
-            <button onClick={() => add("ellipse")}>＋ Ellipse</button>
-          </div>
-          <input
-            hidden
-            type="file"
-            ref={uploadInput}
-            accept="image/png,image/jpeg,image/webp"
-            onChange={upload}
-          />
-          <p className="bee-hint">
-            PNG, JPEG or WebP · up to 250 KB per image. 20 layers per side.
-          </p>
-          <h2>Layers · {surface}</h2>
-          <p className="bee-hint">Top of this list is the frontmost layer.</p>
-          <div className="bee-layers">
-            {[...layers].reverse().map((l) => (
-              <button
-                key={l.id}
-                className={l.id === selected ? "is-selected" : ""}
-                aria-pressed={l.id === selected}
-                onClick={() => {
-                  setSelected(l.id);
-                  setPreview(false);
-                }}
-              >
-                {l.kind === "text"
-                  ? l.text || "Empty text"
-                  : l.kind === "image"
-                    ? "Uploaded artwork"
-                    : l.kind}
-                <small>
-                  {l.hidden ? "Hidden" : l.locked ? "Locked" : "Editable"}
-                </small>
-              </button>
-            ))}
-            {!layers.length && (
-              <p>Start with a word, a shape, or your artwork.</p>
-            )}
-          </div>
-          <details>
-            <summary>Garment & quantity</summary>
-            <label>
-              Garment
-              <select
-                value={draft.garment}
-                onChange={(e) =>
-                  setDraft({
-                    ...draft,
-                    garment: e.target.value as StudioDraft["garment"],
-                  })
-                }
-              >
-                <option value="tee">Tee</option>
-                <option value="hoodie">Hoodie</option>
-                <option value="polo">Polo</option>
-              </select>
-            </label>
-            <label>
-              Color
-              <select
-                value={draft.color}
-                onChange={(e) => setDraft({ ...draft, color: e.target.value })}
-              >
-                {colors.map(([name, value]) => (
-                  <option key={value} value={value}>
-                    {name}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label>
-              Decoration
-              <select
-                value={draft.decoration}
-                onChange={(e) =>
-                  setDraft({
-                    ...draft,
-                    decoration: e.target.value as StudioDraft["decoration"],
-                  })
-                }
-              >
-                <option value="graphic">Graphic / print</option>
-                <option value="embroidery">Embroidery</option>
-              </select>
-            </label>
-            <label>
-              Starting size
-              <select
-                value={draft.size}
-                onChange={(e) => setDraft({ ...draft, size: e.target.value })}
-              >
-                {["XS", "S", "M", "L", "XL", "2XL", "3XL"].map((s) => (
-                  <option key={s}>{s}</option>
-                ))}
-              </select>
-            </label>
-            <label>
-              Quantity
-              <input
-                type="number"
-                min={1}
-                max={10000}
-                value={draft.quantity}
-                onChange={(e) =>
-                  setDraft({
-                    ...draft,
-                    quantity: safeQuantity(Number(e.target.value)),
-                  })
-                }
-              />
-            </label>
-            <p className="bee-hint">
-              Availability, sizes and decoration are confirmed with BEE.
-            </p>
-          </details>
-        </aside>
-        <div className="bee-stage" aria-label="Artwork workspace">
-          <div className="bee-stagebar">
-            <div role="group" aria-label="Design side">
-              {(["front", "back"] as const).map((s) => (
-                <button
-                  key={s}
-                  aria-pressed={surface === s}
-                  onClick={() => {
-                    setSurface(s);
-                    setSelected(null);
-                  }}
-                >
-                  {s === "front" ? "Front" : "Back"}{" "}
-                  <small>{doc.surfaces[s].length}</small>
-                </button>
-              ))}
-            </div>
-            <div>
-              <button
-                disabled={!history.past.length}
-                onClick={() => setHistory((h) => travel(h, "undo"))}
-              >
-                Undo
-              </button>
-              <button
-                disabled={!history.future.length}
-                onClick={() => setHistory((h) => travel(h, "redo"))}
-              >
-                Redo
-              </button>
-            </div>
-          </div>
-          <div className="bee-viewbar" role="group" aria-label="Preview mode">
-            <button aria-pressed={!preview} onClick={() => setPreview(false)}>
-              Artwork
-            </button>
-            <button aria-pressed={preview} onClick={() => setPreview(true)}>
-              On garment
-            </button>
-            <span>12 × 16 in artwork board</span>
-          </div>
-          {preview ? (
-            <div className="bee-garment-preview">
-              <GarmentSvg
-                garment={draft.garment}
-                color={draft.color}
-                view={surface}
-              />
-              <img
-                src={surfacePreview(doc, surface)}
-                alt={`${surface} artwork on approximate garment preview`}
-              />
-              <p>Approximate placement · edit in Artwork view</p>
-            </div>
-          ) : (
-            <FabricBoard
-              layers={layers}
-              selected={selected}
-              onSelect={setSelected}
-              onChange={patch}
-              onReady={setCanvas}
-            />
-          )}
-          {!preview && !canvas && (
-            <p role="status">
-              Preparing artwork… If it does not appear, download your editable
-              file and reload.
-            </p>
-          )}
-          <div className="bee-exportbar">
-            <button disabled={busy} onClick={() => exportArtwork("svg")}>
-              Export {surface} SVG
-            </button>
-            <button disabled={busy} onClick={() => exportArtwork("png")}>
-              Export {surface} PNG
-            </button>
-            <span>Transparent artwork only · r{doc.revision}</span>
-          </div>
-          <p className="bee-hint">
-            PNG: 1800 × 2400 pixels (150 PPI at board size). SVG text uses the
-            selected system font. Neither export is a production approval.
-          </p>
-        </div>
-        <aside className="bee-properties" aria-label="Layer properties">
-          <h2>{active ? "Selected layer" : "Your design, your way"}</h2>
-          {active ? (
-            <>
-              <div className="bee-inline">
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={active.locked}
-                    onChange={(e) =>
-                      patch(active.id, { locked: e.target.checked })
-                    }
-                  />{" "}
-                  Lock
-                </label>
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={active.hidden}
-                    onChange={(e) =>
-                      patch(active.id, { hidden: e.target.checked })
-                    }
-                  />{" "}
-                  Hide
-                </label>
-              </div>
-              <fieldset disabled={active.locked}>
-                <legend className="sr-only">Edit selected layer</legend>
-                {active.kind === "text" && (
-                  <>
-                    <label>
-                      Text
-                      <input
-                        maxLength={200}
-                        value={active.text}
-                        onChange={(e) =>
-                          patch(active.id, { text: e.target.value })
-                        }
-                      />
-                    </label>
-                    <label>
-                      Font
-                      <select
-                        value={active.font}
-                        onChange={(e) =>
-                          patch(active.id, {
-                            font: e.target.value as StudioLayer["font"],
-                          })
-                        }
-                      >
-                        {["Arial", "Georgia", "Courier New"].map((f) => (
-                          <option key={f}>{f}</option>
-                        ))}
-                      </select>
-                    </label>
-                  </>
-                )}
-                {active.kind !== "image" && (
-                  <label>
-                    Layer color
-                    <input
-                      type="color"
-                      value={active.fill}
-                      onChange={(e) =>
-                        patch(active.id, { fill: e.target.value })
-                      }
-                    />
-                  </label>
-                )}
-                <div className="bee-property-grid">
-                  {(["x", "y", "width", "height"] as const).map((k) => (
-                    <label key={k}>
-                      {
-                        {
-                          x: "Left",
-                          y: "Top",
-                          width: "Width",
-                          height: "Height",
-                        }[k]
-                      }{" "}
-                      (in)
-                      <input
-                        type="number"
-                        step="0.1"
-                        value={Math.round((active[k] / 50) * 100) / 100}
-                        onChange={(e) => {
-                          if (e.target.value !== "")
-                            patch(active.id, {
-                              [k]: Number(e.target.value) * 50,
-                            });
-                        }}
-                      />
-                    </label>
-                  ))}
-                </div>
-                <label>
-                  Rotation (degrees)
-                  <input
-                    type="number"
-                    min={-360}
-                    max={360}
-                    value={active.angle}
-                    onChange={(e) =>
-                      patch(active.id, { angle: Number(e.target.value) })
-                    }
-                  />
-                </label>
-                <div className="bee-tool-buttons">
-                  <button
-                    onClick={() =>
-                      patch(active.id, { x: (600 - active.width) / 2 })
-                    }
-                  >
-                    Center horizontally
-                  </button>
-                  <button
-                    onClick={() =>
-                      patch(active.id, { y: (800 - active.height) / 2 })
-                    }
-                  >
-                    Center vertically
-                  </button>
-                  <button
-                    disabled={layers.indexOf(active) === layers.length - 1}
-                    onClick={() => orderLayer(1)}
-                  >
-                    Bring forward
-                  </button>
-                  <button
-                    disabled={layers.indexOf(active) === 0}
-                    onClick={() => orderLayer(-1)}
-                  >
-                    Send backward
-                  </button>
-                  <button
-                    disabled={layers.length >= 20}
-                    onClick={() => {
-                      const copy = { ...active, id: crypto.randomUUID() };
-                      commit([...layers, copy]);
-                      setSelected(copy.id);
-                    }}
-                  >
-                    Duplicate
-                  </button>
-                  <button
-                    onClick={() => {
-                      commit(layers.filter((l) => l.id !== active.id));
-                      setSelected(null);
-                    }}
-                  >
-                    Remove layer
-                  </button>
-                </div>
-              </fieldset>
-            </>
-          ) : (
-            <p>
-              Select a layer to change its text, size, color or position. Drag
-              the artwork directly, or use the fields here.
-            </p>
-          )}
-          <div className="bee-quality">
-            <h2>Before you send</h2>
-            {warnings.length > 0 && (
-              <p role="status">
-                Check {warnings.length} rotated or edge-crossing layer
-                {warnings.length === 1 ? "" : "s"}. Artwork beyond the board is
-                cropped in exports.
-              </p>
-            )}
-            <p>
-              The board is a starting size, not a verified print area. Garment
-              previews are approximate.
-            </p>
-            {draft.decoration === "embroidery" && (
-              <p>
-                Embroidery needs digitizing and BEE review. These files contain
-                artwork, not machine stitches.
-              </p>
-            )}
-            <p>
-              Check your spelling and keep the original artwork. BEE confirms
-              dimensions, materials and the final proof.
-            </p>
-          </div>
-          <button className="bee-primary" onClick={() => save(true)}>
-            Save both sides + add to bag
-          </button>
-          <a href="/cart">Review project bag →</a>
-        </aside>
-      </div>
+      <input
+        hidden
+        type="file"
+        ref={uploadInput}
+        accept="image/png,image/jpeg,image/webp"
+        onChange={upload}
+      />
       <p className="bee-feedback" role="status">
         {status}
       </p>
+      {mode === "guided" && (
+        <>
+          <p role="status">{saveState}</p>
+          <GuidedStudio
+            draft={draft}
+            doc={doc}
+            surface={surface}
+            setSurface={(s) => {
+              setSurface(s);
+              setSelected(null);
+            }}
+            update={(p) => setDraft((d) => ({ ...d, ...p }))}
+            patch={patch}
+            command={(input) => {
+              const cmd = parseGuideCommand(input);
+              if (!cmd) {
+                setStatus(
+                  "Try “center the design”, “make it larger”, “make it smaller” or “fit to board”. Other requests need BEE’s help for now.",
+                );
+                return;
+              }
+              try {
+                commit(transformDesign(layers, cmd));
+                setStatus(
+                  "Design adjusted on this side. Use Undo to restore it.",
+                );
+              } catch (e) {
+                setStatus((e as Error).message);
+              }
+            }}
+            applyTemplate={(id, title, detail, color) => {
+              commit(templateLayers(id, title, detail, color));
+              setStatus(
+                "Layout added. Edit the wording and colors, or undo to restore the previous design.",
+              );
+            }}
+            upload={() => uploadInput.current?.click()}
+            advanced={() => changeMode("advanced")}
+            save={save}
+            undo={() => setHistory((h) => travel(h, "undo"))}
+            redo={() => setHistory((h) => travel(h, "redo"))}
+            canUndo={!!history.past.length}
+            canRedo={!!history.future.length}
+            busy={busy}
+            hasWork={Object.values(doc.surfaces).some((ls) => ls.length > 0)}
+            initialStep={
+              Object.values(doc.surfaces).some((ls) => ls.length > 0)
+                ? "edit"
+                : "choose"
+            }
+          />
+        </>
+      )}
+      {mode === "advanced" && (
+        <>
+          <div className="bee-projectbar">
+            <label>
+              Design name
+              <input
+                maxLength={120}
+                value={draft.name}
+                onChange={(e) => setDraft({ ...draft, name: e.target.value })}
+              />
+            </label>
+            <span role="status">{saveState}</span>
+            <button onClick={() => save()}>Save to My projects</button>
+            <button
+              onClick={() =>
+                downloadText(
+                  "BEE-design.json",
+                  JSON.stringify(
+                    {
+                      ...working,
+                      name: working.name.trim() || "My apparel design",
+                    },
+                    null,
+                    2,
+                  ),
+                  "application/json",
+                )
+              }
+            >
+              Download editable file
+            </button>
+            <button onClick={() => importInput.current?.click()}>
+              Open file
+            </button>
+            <button onClick={newDesign}>New</button>
+            <input
+              hidden
+              ref={importInput}
+              type="file"
+              accept=".json,application/json"
+              onChange={importDesign}
+            />
+          </div>
+          <div className="bee-editor-grid">
+            <aside className="bee-tools" aria-label="Design tools">
+              <h2>Add to your design</h2>
+              <div className="bee-tool-buttons">
+                <button onClick={() => add("text")}>＋ Text</button>
+                <button
+                  onClick={() => uploadInput.current?.click()}
+                  disabled={busy}
+                >
+                  ＋ Artwork
+                </button>
+                <button onClick={() => add("rect")}>＋ Rectangle</button>
+                <button onClick={() => add("ellipse")}>＋ Ellipse</button>
+              </div>
+
+              <p className="bee-hint">
+                PNG, JPEG or WebP · up to 250 KB per image. 20 layers per side.
+              </p>
+              <h2>Layers · {surface}</h2>
+              <p className="bee-hint">
+                Top of this list is the frontmost layer.
+              </p>
+              <div className="bee-layers">
+                {[...layers].reverse().map((l) => (
+                  <button
+                    key={l.id}
+                    className={l.id === selected ? "is-selected" : ""}
+                    aria-pressed={l.id === selected}
+                    onClick={() => {
+                      setSelected(l.id);
+                      setPreview(false);
+                    }}
+                  >
+                    {l.kind === "text"
+                      ? l.text || "Empty text"
+                      : l.kind === "image"
+                        ? "Uploaded artwork"
+                        : l.kind}
+                    <small>
+                      {l.hidden ? "Hidden" : l.locked ? "Locked" : "Editable"}
+                    </small>
+                  </button>
+                ))}
+                {!layers.length && (
+                  <p>Start with a word, a shape, or your artwork.</p>
+                )}
+              </div>
+              <details>
+                <summary>Garment & quantity</summary>
+                <label>
+                  Garment
+                  <select
+                    value={draft.garment}
+                    onChange={(e) =>
+                      setDraft({
+                        ...draft,
+                        garment: e.target.value as StudioDraft["garment"],
+                      })
+                    }
+                  >
+                    <option value="tee">Tee</option>
+                    <option value="hoodie">Hoodie</option>
+                    <option value="polo">Polo</option>
+                  </select>
+                </label>
+                <label>
+                  Color
+                  <select
+                    value={draft.color}
+                    onChange={(e) =>
+                      setDraft({ ...draft, color: e.target.value })
+                    }
+                  >
+                    {colors.map(([name, value]) => (
+                      <option key={value} value={value}>
+                        {name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  Decoration
+                  <select
+                    value={draft.decoration}
+                    onChange={(e) =>
+                      setDraft({
+                        ...draft,
+                        decoration: e.target.value as StudioDraft["decoration"],
+                      })
+                    }
+                  >
+                    <option value="graphic">Graphic / print</option>
+                    <option value="embroidery">Embroidery</option>
+                  </select>
+                </label>
+                <label>
+                  Starting size
+                  <select
+                    value={draft.size}
+                    onChange={(e) =>
+                      setDraft({ ...draft, size: e.target.value })
+                    }
+                  >
+                    {["XS", "S", "M", "L", "XL", "2XL", "3XL"].map((s) => (
+                      <option key={s}>{s}</option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  Quantity
+                  <input
+                    type="number"
+                    min={1}
+                    max={10000}
+                    value={draft.quantity}
+                    onChange={(e) =>
+                      setDraft({
+                        ...draft,
+                        quantity: safeQuantity(Number(e.target.value)),
+                      })
+                    }
+                  />
+                </label>
+                <p className="bee-hint">
+                  Availability, sizes and decoration are confirmed with BEE.
+                </p>
+              </details>
+            </aside>
+            <div className="bee-stage" aria-label="Artwork workspace">
+              <div className="bee-stagebar">
+                <div role="group" aria-label="Design side">
+                  {(["front", "back"] as const).map((s) => (
+                    <button
+                      key={s}
+                      aria-pressed={surface === s}
+                      onClick={() => {
+                        setSurface(s);
+                        setSelected(null);
+                      }}
+                    >
+                      {s === "front" ? "Front" : "Back"}{" "}
+                      <small>{doc.surfaces[s].length}</small>
+                    </button>
+                  ))}
+                </div>
+                <div>
+                  <button
+                    disabled={!history.past.length}
+                    onClick={() => setHistory((h) => travel(h, "undo"))}
+                  >
+                    Undo
+                  </button>
+                  <button
+                    disabled={!history.future.length}
+                    onClick={() => setHistory((h) => travel(h, "redo"))}
+                  >
+                    Redo
+                  </button>
+                </div>
+              </div>
+              <div
+                className="bee-viewbar"
+                role="group"
+                aria-label="Preview mode"
+              >
+                <button
+                  aria-pressed={!preview}
+                  onClick={() => setPreview(false)}
+                >
+                  Artwork
+                </button>
+                <button aria-pressed={preview} onClick={() => setPreview(true)}>
+                  On garment
+                </button>
+                <span>12 × 16 in artwork board</span>
+              </div>
+              {preview ? (
+                <div className="bee-garment-preview">
+                  <GarmentSvg
+                    garment={draft.garment}
+                    color={draft.color}
+                    view={surface}
+                  />
+                  <img
+                    src={surfacePreview(doc, surface)}
+                    alt={`${surface} artwork on approximate garment preview`}
+                  />
+                  <p>Approximate placement · edit in Artwork view</p>
+                </div>
+              ) : (
+                <Suspense fallback={<p>Opening artwork tools…</p>}>
+                  <FabricBoard
+                    layers={layers}
+                    selected={selected}
+                    onSelect={setSelected}
+                    onChange={patch}
+                    onReady={setCanvas}
+                  />
+                </Suspense>
+              )}
+              {!preview && !canvas && (
+                <p role="status">
+                  Preparing artwork… If it does not appear, download your
+                  editable file and reload.
+                </p>
+              )}
+              <div className="bee-exportbar">
+                <button disabled={busy} onClick={() => exportArtwork("svg")}>
+                  Export {surface} SVG
+                </button>
+                <button disabled={busy} onClick={() => exportArtwork("png")}>
+                  Export {surface} PNG
+                </button>
+                <span>Transparent artwork only · r{doc.revision}</span>
+              </div>
+              <p className="bee-hint">
+                PNG: 1800 × 2400 pixels (150 PPI at board size). SVG text uses
+                the selected system font. Neither export is a production
+                approval.
+              </p>
+            </div>
+            <aside className="bee-properties" aria-label="Layer properties">
+              <h2>{active ? "Selected layer" : "Your design, your way"}</h2>
+              {active ? (
+                <>
+                  <div className="bee-inline">
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={active.locked}
+                        onChange={(e) =>
+                          patch(active.id, { locked: e.target.checked })
+                        }
+                      />{" "}
+                      Lock
+                    </label>
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={active.hidden}
+                        onChange={(e) =>
+                          patch(active.id, { hidden: e.target.checked })
+                        }
+                      />{" "}
+                      Hide
+                    </label>
+                  </div>
+                  <fieldset disabled={active.locked}>
+                    <legend className="sr-only">Edit selected layer</legend>
+                    {active.kind === "text" && (
+                      <>
+                        <label>
+                          Text
+                          <input
+                            maxLength={200}
+                            value={active.text}
+                            onChange={(e) =>
+                              patch(active.id, { text: e.target.value })
+                            }
+                          />
+                        </label>
+                        <label>
+                          Font
+                          <select
+                            value={active.font}
+                            onChange={(e) =>
+                              patch(active.id, {
+                                font: e.target.value as StudioLayer["font"],
+                              })
+                            }
+                          >
+                            {["Arial", "Georgia", "Courier New"].map((f) => (
+                              <option key={f}>{f}</option>
+                            ))}
+                          </select>
+                        </label>
+                      </>
+                    )}
+                    {active.kind !== "image" && (
+                      <label>
+                        Layer color
+                        <input
+                          type="color"
+                          value={active.fill}
+                          onChange={(e) =>
+                            patch(active.id, { fill: e.target.value })
+                          }
+                        />
+                      </label>
+                    )}
+                    <div className="bee-property-grid">
+                      {(["x", "y", "width", "height"] as const).map((k) => (
+                        <label key={k}>
+                          {
+                            {
+                              x: "Left",
+                              y: "Top",
+                              width: "Width",
+                              height: "Height",
+                            }[k]
+                          }{" "}
+                          (in)
+                          <input
+                            type="number"
+                            step="0.1"
+                            value={Math.round((active[k] / 50) * 100) / 100}
+                            onChange={(e) => {
+                              if (e.target.value !== "")
+                                patch(active.id, {
+                                  [k]: Number(e.target.value) * 50,
+                                });
+                            }}
+                          />
+                        </label>
+                      ))}
+                    </div>
+                    <label>
+                      Rotation (degrees)
+                      <input
+                        type="number"
+                        min={-360}
+                        max={360}
+                        value={active.angle}
+                        onChange={(e) =>
+                          patch(active.id, { angle: Number(e.target.value) })
+                        }
+                      />
+                    </label>
+                    <div className="bee-tool-buttons">
+                      <button
+                        onClick={() =>
+                          patch(active.id, { x: (600 - active.width) / 2 })
+                        }
+                      >
+                        Center horizontally
+                      </button>
+                      <button
+                        onClick={() =>
+                          patch(active.id, { y: (800 - active.height) / 2 })
+                        }
+                      >
+                        Center vertically
+                      </button>
+                      <button
+                        disabled={layers.indexOf(active) === layers.length - 1}
+                        onClick={() => orderLayer(1)}
+                      >
+                        Bring forward
+                      </button>
+                      <button
+                        disabled={layers.indexOf(active) === 0}
+                        onClick={() => orderLayer(-1)}
+                      >
+                        Send backward
+                      </button>
+                      <button
+                        disabled={layers.length >= 20}
+                        onClick={() => {
+                          const copy = { ...active, id: crypto.randomUUID() };
+                          commit([...layers, copy]);
+                          setSelected(copy.id);
+                        }}
+                      >
+                        Duplicate
+                      </button>
+                      <button
+                        onClick={() => {
+                          commit(layers.filter((l) => l.id !== active.id));
+                          setSelected(null);
+                        }}
+                      >
+                        Remove layer
+                      </button>
+                    </div>
+                  </fieldset>
+                </>
+              ) : (
+                <p>
+                  Select a layer to change its text, size, color or position.
+                  Drag the artwork directly, or use the fields here.
+                </p>
+              )}
+              <div className="bee-quality">
+                <h2>Before you send</h2>
+                {warnings.length > 0 && (
+                  <p role="status">
+                    Check {warnings.length} rotated or edge-crossing layer
+                    {warnings.length === 1 ? "" : "s"}. Artwork beyond the board
+                    is cropped in exports.
+                  </p>
+                )}
+                <p>
+                  The board is a starting size, not a verified print area.
+                  Garment previews are approximate.
+                </p>
+                {draft.decoration === "embroidery" && (
+                  <p>
+                    Embroidery needs digitizing and BEE review. These files
+                    contain artwork, not machine stitches.
+                  </p>
+                )}
+                <p>
+                  Check your spelling and keep the original artwork. BEE
+                  confirms dimensions, materials and the final proof.
+                </p>
+              </div>
+              <button className="bee-primary" onClick={() => save(true)}>
+                Save both sides + add to bag
+              </button>
+              <a href="/cart">Review project bag →</a>
+            </aside>
+          </div>
+        </>
+      )}
     </section>
   );
 }
