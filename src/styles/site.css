@@ -4270,6 +4270,160 @@ h3 {
   color-scheme: dark;
 }
 
+/* Staff review workspace. */
+.staff-inbox {
+  padding-block: 64px;
+}
+.staff-title {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  align-items: start;
+  margin-bottom: 38px;
+}
+.staff-title h1 {
+  font-size: clamp(2.3rem, 5vw, 4.5rem);
+  max-width: 800px;
+}
+.staff-title > div:last-child:not(:first-child) {
+  display: grid;
+  gap: 14px;
+  max-width: 270px;
+  overflow-wrap: anywhere;
+}
+.staff-layout {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.7fr) minmax(0, 1.5fr);
+  gap: 28px;
+  align-items: start;
+}
+.staff-list {
+  background: #111827;
+  border: 1px solid var(--line-strong);
+  padding: 24px;
+  display: grid;
+  gap: 16px;
+}
+.staff-inbox label {
+  display: grid;
+  gap: 8px;
+  font-size: 14px;
+}
+.staff-inbox input,
+.staff-inbox select,
+.staff-inbox textarea {
+  min-width: 0;
+  width: 100%;
+  min-height: 46px;
+  padding: 12px;
+  background: #080f1b;
+  color: #f2f8ff;
+  border: 1px solid var(--line-strong);
+  border-radius: 4px;
+}
+.staff-inbox button:not(.button) {
+  min-height: 44px;
+  border: 1px solid var(--line-strong);
+  background: #19263a;
+  color: var(--text);
+  padding: 10px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.staff-inbox button:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+.staff-inbox .staff-request {
+  display: grid;
+  gap: 8px;
+  text-align: left;
+  background: #0d1625;
+  padding: 18px;
+  overflow-wrap: anywhere;
+}
+.staff-inbox .staff-request[aria-pressed="true"] {
+  border-color: #339cff;
+  box-shadow: inset 3px 0 #339cff;
+}
+.staff-request small,
+.staff-history small {
+  color: #a9b6c7;
+  font-size: 12px;
+}
+.staff-request span {
+  color: #b9e8ff;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.staff-detail {
+  display: grid;
+  gap: 28px;
+  min-width: 0;
+}
+.staff-detail code {
+  overflow-wrap: anywhere;
+  color: #b9e8ff;
+}
+.staff-design {
+  border-top: 1px solid var(--line);
+  padding-block: 16px;
+}
+.staff-design img {
+  max-width: 240px;
+  max-height: 220px;
+  object-fit: contain;
+}
+.staff-review-form fieldset {
+  display: grid;
+  gap: 18px;
+  padding: 24px;
+  border: 1px solid #294664;
+  background: #101d2d;
+  margin: 0;
+  min-width: 0;
+}
+.staff-review-form legend {
+  padding-inline: 10px;
+  color: #b9e8ff;
+  font-weight: 600;
+}
+.staff-history article {
+  border-left: 2px solid #339cff;
+  padding: 6px 20px;
+  margin-block: 20px;
+}
+.staff-history article small {
+  display: block;
+  margin-top: 8px;
+}
+.staff-history p {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 900px) {
+  .staff-layout {
+    grid-template-columns: 1fr;
+  }
+  .staff-title {
+    flex-direction: column;
+  }
+  .staff-list {
+    max-height: 560px;
+    overflow: auto;
+  }
+}
+@media print {
+  .staff-list,
+  .staff-review-form,
+  .staff-title button {
+    display: none;
+  }
+  .staff-layout {
+    display: block;
+  }
+}
+
 /* Post-launch identity and project-planning components. */
 .logo-lockup .bee-brand-signature {
   gap: 0;

@@ -78,6 +78,7 @@ beforeEach(() => {
     TURNSTILE_SECRET_KEY: "test-secret",
     STAFF_API_TOKEN: "a".repeat(48),
     CONTACT_EMAIL: "projects@example.com",
+    CONTACT_EMAIL_VERIFIED: "true",
   };
 });
 afterEach(() => sqlite.close());
@@ -120,6 +121,7 @@ describe("Quote intake", () => {
     for (const patch of [
       { DB: undefined },
       { CONTACT_EMAIL: "" },
+      { CONTACT_EMAIL_VERIFIED: "false" },
       { STAFF_API_TOKEN: "" },
       { INTAKE_ENABLED: "false" },
     ]) {

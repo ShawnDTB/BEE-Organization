@@ -18,6 +18,8 @@ The adapter directs /api/* to the server before asset fallback; the remainder go
 
 ## Intake activation
 
+Current planned public email is hello@worksbybee.com. It is unprovisioned and must pass a real send/receive test before CONTACT_EMAIL_VERIFIED=true or VITE_PUBLIC_CONTACT_EMAIL_VERIFIED=true. See [email-and-staff-setup.md](email-and-staff-setup.md) for the verified-mailbox guard, Cloudflare Access staff inbox, and migration 0002.
+
 Create a D1 database in the appropriate account and bind it as DB. Apply migrations/0001_quote_requests.sql to that database. Do not run a remote migration against an unidentified database.
 
 Server configuration:
@@ -27,6 +29,7 @@ Server configuration:
 | APP_ORIGIN | Exact canonical origin, https://worksbybee.com |
 | INTAKE_ENABLED | false until operational checks complete; true enables submission when all required values exist |
 | CONTACT_EMAIL | Verified public business contact, required by the server activation guard |
+| CONTACT_EMAIL_VERIFIED | Must be true after a real mailbox send/receive test |
 | TURNSTILE_SITE_KEY | Public widget key for the correct hostname |
 | TURNSTILE_SECRET_KEY | Server-only Turnstile secret |
 | STAFF_API_TOKEN | Random server-only bearer secret, at least 32 characters; generate securely and keep out of the browser/repository |

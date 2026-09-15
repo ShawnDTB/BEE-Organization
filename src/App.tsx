@@ -102,6 +102,11 @@ const PrivacyPage = lazy(() =>
 );
 
 const routeMap: Record<string, PageComponent> = {
+  "/staff": lazy(() =>
+    import("./pages/StaffInboxPage").then((module) => ({
+      default: module.StaffInboxPage,
+    })),
+  ),
   "/group-planner": lazy(() =>
     import("./pages/GroupPlannerPage").then((module) => ({
       default: module.GroupPlannerPage,

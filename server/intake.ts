@@ -3,6 +3,8 @@ import {
   validateRequest,
   ValidationError,
 } from "../shared/request";
+import type { StaffAuthEnv } from "./staffAuth";
+import { handleStaffInbox } from "./staffInbox";
 export interface Statement {
   bind(...values: unknown[]): Statement;
   first<T>(): Promise<T | null>;
@@ -12,7 +14,7 @@ export interface Statement {
 export interface Database {
   prepare(sql: string): Statement;
 }
-export type Env = {
+export type Env = StaffAuthEnv & {
   DB?: Database;
   APP_ORIGIN?: string;
   INTAKE_ENABLED?: string;
@@ -20,6 +22,7 @@ export type Env = {
   TURNSTILE_SECRET_KEY?: string;
   STAFF_API_TOKEN?: string;
   CONTACT_EMAIL?: string;
+  CONTACT_EMAIL_VERIFIED?: string;
 };
 const headers = {
   "Content-Type": "application/json; charset=utf-8",
@@ -32,6 +35,7 @@ const json = (data: unknown, status = 200) =>
 export function enabled(env: Env) {
   return (
     env.INTAKE_ENABLED === "true" &&
+    env.CONTACT_EMAIL_VERIFIED === "true" &&
     !!(
       env.DB &&
       env.APP_ORIGIN?.startsWith("https://") &&
@@ -95,6 +99,11 @@ export async function handleIntake(
   fetcher: typeof fetch = fetch,
 ): Promise<Response> {
   const url = new URL(request.url);
+  if (
+    url.pathname.startsWith("/api/staff/") &&
+    url.pathname !== "/api/staff/requests"
+  )
+    return handleStaffInbox(request, env);
   try {
     if (url.pathname === "/api/intake/status" && request.method === "GET")
       return json({

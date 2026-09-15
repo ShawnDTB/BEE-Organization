@@ -11,7 +11,10 @@ export const siteConfig = {
     "Custom apparel for teams, brands, creators, and personal projects.",
   supportingMessage:
     "Choose a garment, bring your artwork, or start with a rough idea. BEE organizes the quote, proof, production, and reorder around one project.",
-  email: import.meta.env.VITE_PUBLIC_CONTACT_EMAIL || "",
+  email:
+    import.meta.env.VITE_PUBLIC_CONTACT_EMAIL_VERIFIED === "true"
+      ? import.meta.env.VITE_PUBLIC_CONTACT_EMAIL || ""
+      : "",
   phone: import.meta.env.VITE_PUBLIC_PHONE || "",
   serviceArea:
     "Schools, teams, organizations, businesses, creators, events, and individual projects.",
