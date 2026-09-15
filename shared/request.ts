@@ -1,4 +1,5 @@
 import { validateSizePlan, type SizePlan } from "./sizePlan";
+import { validateStudioDocument, type StudioDocument } from "./studio";
 export const MAX_PREVIEW_BYTES = 350_000;
 export const MAX_REQUEST_BYTES = 2_000_000;
 export type RequestDetails = {
@@ -17,6 +18,7 @@ export type RequestDetails = {
   notes: string;
 };
 export type DesignSnapshot = {
+  document?: StudioDocument;
   id: string;
   name: string;
   garment: "tee" | "hoodie" | "polo";
@@ -90,6 +92,13 @@ const color = (v: unknown) => {
 };
 export function validateDesign(value: unknown): DesignSnapshot {
   const d = record(value);
+  let document: StudioDocument | undefined;
+  try {
+    document =
+      d.document === undefined ? undefined : validateStudioDocument(d.document);
+  } catch {
+    throw new ValidationError("Check the layered studio document.");
+  }
   const artworkData =
     d.artworkData === undefined
       ? undefined
@@ -100,6 +109,7 @@ export function validateDesign(value: unknown): DesignSnapshot {
   )
     throw new ValidationError("Use a PNG, JPEG, or WebP preview.");
   return {
+    ...(document ? { document } : {}),
     id: string(d.id, 100, 1),
     name: string(d.name, 120, 1),
     garment: choice(d.garment, ["tee", "hoodie", "polo"]),

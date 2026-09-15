@@ -78,8 +78,8 @@ const ShopV2Page = lazy(() =>
   import("./pages/ShopV2").then((module) => ({ default: module.ShopV2Page })),
 );
 const StudioPage = lazy(() =>
-  import("./pages/StudioPageV3").then((module) => ({
-    default: module.StudioPageV3,
+  import("./pages/StudioPageV4").then((module) => ({
+    default: module.StudioPageV4,
   })),
 );
 const GroupCollectorPage = lazy(() =>

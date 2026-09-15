@@ -120,7 +120,7 @@ function initialDraft() {
   } satisfies StudioDraft;
 }
 
-function GarmentSvg({
+export function GarmentSvg({
   garment,
   color,
   view,

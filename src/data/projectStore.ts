@@ -1,4 +1,5 @@
 import type { RequestItem } from "../../shared/request";
+import type { StudioDocument } from "../../shared/studio";
 import { validateSizePlan, type SizePlan } from "../../shared/sizePlan";
 export const CART_KEY = "bee-project-bag-v1";
 export const CART_EVENT = "bee-cart-updated";
@@ -17,6 +18,7 @@ export type PlacementPreset =
 export type IntakeType = "custom" | "bulk" | "creator" | "unsure";
 
 export type StudioDraft = {
+  document?: StudioDocument;
   id: string;
   name: string;
   garment: GarmentType;

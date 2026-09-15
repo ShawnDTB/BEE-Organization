@@ -1,3 +1,4 @@
+import { studioDescription } from "../../shared/studio";
 import type { RequestDetails, RequestItem } from "../../shared/request";
 import { sizePlanLines, sizePlanTotal } from "../../shared/sizePlan";
 export function projectBrief(
@@ -46,7 +47,7 @@ export function projectBrief(
     ...(items.length
       ? items.map(
           (item, index) =>
-            `${index + 1}. ${item.design?.name || item.productSlug}\n   ${item.quantity} × ${item.size}; ${item.color}; ${item.decoration}${item.design ? `\n   ${item.design.view}; ${item.design.placement}; text: ${item.design.text || "None"}` : ""}`,
+            `${index + 1}. ${item.design?.name || item.productSlug}\n   ${item.quantity} × ${item.size}; ${item.color}; ${item.decoration}${item.design ? `\n   ${item.design.document ? studioDescription(item.design.document) + " · 12 × 16 in artwork boards" : item.design.view + "; " + item.design.placement + "; text: " + (item.design.text || "None")}` : ""}`,
         )
       : ["No Studio designs attached. A mockup is optional."]),
     "",

@@ -1,3 +1,4 @@
+import { StudioDesignSummary } from "../components/StudioDesignSummary";
 import { useEffect, useRef, useState } from "react";
 import {
   triageLabels,
@@ -426,11 +427,14 @@ export function StaffInboxPage() {
                       {item.quantity} × {item.size} · {item.color} ·{" "}
                       {item.decoration}
                     </p>
-                    {item.design && (
+                    {item.design && !item.design.document && (
                       <p>
                         {item.design.view} / {item.design.placement} ·{" "}
                         {item.design.text}
                       </p>
+                    )}
+                    {item.design?.document && (
+                      <StudioDesignSummary document={item.design.document} />
                     )}
                     {item.design?.artworkData && (
                       <img

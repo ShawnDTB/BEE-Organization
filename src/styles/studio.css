@@ -1,0 +1,375 @@
+.bee-studio {
+  max-width: 1600px;
+  margin: auto;
+  padding: 28px clamp(14px, 3vw, 48px) 60px;
+  color: #e8eff5;
+}
+.bee-studio-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+.bee-studio-heading h1 {
+  font-size: clamp(2.4rem, 4vw, 4rem);
+  line-height: 1.05;
+  margin: 10px 0;
+}
+.bee-studio-heading p {
+  color: #b3c1d1;
+}
+.bee-studio button,
+.bee-studio input,
+.bee-studio select {
+  font: inherit;
+}
+.bee-studio button {
+  min-height: 44px;
+  padding: 10px 14px;
+  background: #202c3c;
+  border: 1px solid #3c4d62;
+  border-radius: 7px;
+  color: #edf4ff;
+  cursor: pointer;
+}
+.bee-studio button:hover {
+  background: #2b405a;
+}
+.bee-studio button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.bee-studio button[aria-pressed="true"],
+.bee-studio .is-selected {
+  border-color: #56aeff;
+  background: #183e65;
+}
+.bee-studio :focus-visible {
+  outline: 3px solid #8ccbff;
+  outline-offset: 3px;
+}
+.bee-studio label {
+  display: grid;
+  gap: 6px;
+  font-size: 0.83rem;
+  color: #b8c9db;
+}
+.bee-studio input:not([type="checkbox"]),
+.bee-studio select {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  padding: 9px;
+  border: 1px solid #40526a;
+  border-radius: 5px;
+  background: #0d1724;
+  color: #f0f6ff;
+}
+.bee-studio input[type="color"] {
+  padding: 3px;
+}
+.bee-projectbar {
+  display: flex;
+  align-items: end;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 16px;
+  background: #111d2b;
+  border: 1px solid #2c3c50;
+  border-radius: 10px;
+  margin-bottom: 16px;
+}
+.bee-projectbar label {
+  flex: 1;
+  min-width: 190px;
+}
+.bee-projectbar > span {
+  font-size: 0.76rem;
+  align-self: center;
+  max-width: 180px;
+  color: #a3b7cd;
+}
+.bee-editor-grid {
+  display: grid;
+  grid-template-columns: 220px minmax(260px, 1fr) 260px;
+  gap: 16px;
+  align-items: start;
+}
+.bee-tools,
+.bee-properties {
+  background: #111d2b;
+  border: 1px solid #2c3c50;
+  border-radius: 10px;
+  padding: 16px;
+  display: grid;
+  gap: 14px;
+}
+.bee-studio h2 {
+  font-size: 0.98rem;
+  margin: 0;
+}
+.bee-studio p {
+  line-height: 1.5;
+}
+.bee-tool-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.bee-tool-buttons button {
+  padding: 9px 7px;
+  font-size: 0.79rem;
+}
+.bee-hint {
+  font-size: 0.75rem;
+  color: #a5b6c9;
+  margin: 0;
+}
+.bee-layers {
+  display: grid;
+  gap: 7px;
+  max-height: 340px;
+  overflow: auto;
+}
+.bee-layers button {
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+.bee-layers small {
+  display: block;
+  color: #a7c4e2;
+  font-size: 0.68rem;
+  margin-top: 4px;
+}
+.bee-studio details {
+  border-top: 1px solid #354559;
+  padding-top: 12px;
+}
+.bee-studio summary {
+  padding: 8px 0;
+  cursor: pointer;
+}
+.bee-studio details label {
+  margin-top: 12px;
+}
+.bee-stage {
+  min-width: 0;
+  background: #172333;
+  border: 1px solid #344356;
+  border-radius: 10px;
+  padding: 14px;
+}
+.bee-stagebar,
+.bee-viewbar,
+.bee-exportbar {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 14px;
+}
+.bee-stagebar > div {
+  display: flex;
+  gap: 6px;
+}
+.bee-viewbar {
+  justify-content: flex-start;
+}
+.bee-viewbar span,
+.bee-exportbar span {
+  font-size: 0.74rem;
+  color: #afc2d7;
+}
+.bee-board {
+  width: 100%;
+  max-width: 600px;
+  margin: auto;
+  background: #f3f4f6;
+  background-image:
+    linear-gradient(45deg, #e1e5ea 25%, transparent 25%),
+    linear-gradient(-45deg, #e1e5ea 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #e1e5ea 75%),
+    linear-gradient(-45deg, transparent 75%, #e1e5ea 75%);
+  background-size: 20px 20px;
+  background-position:
+    0 0,
+    0 10px,
+    10px -10px,
+    -10px 0;
+  overflow: hidden;
+}
+.bee-board canvas {
+  touch-action: none;
+}
+.bee-exportbar {
+  margin: 14px 0 10px;
+  justify-content: flex-start;
+}
+.bee-properties fieldset {
+  padding: 0;
+  border: 0;
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+}
+.bee-property-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.bee-inline {
+  display: flex;
+  gap: 18px;
+}
+.bee-inline label {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+}
+.bee-quality {
+  border-top: 1px solid #354559;
+  padding-top: 15px;
+  font-size: 0.8rem;
+  color: #b4c4d7;
+}
+.bee-quality p[role="status"] {
+  color: #ffd38b;
+}
+.bee-studio .bee-primary {
+  background: #1278c9;
+  border-color: #67b6f6;
+  font-weight: 700;
+}
+.bee-feedback {
+  position: sticky;
+  bottom: 12px;
+  background: #142b43;
+  border: 1px solid #497daa;
+  border-radius: 8px;
+  padding: 14px;
+  box-shadow: 0 8px 30px #0006;
+  font-size: 0.86rem;
+  z-index: 3;
+}
+.bee-garment-preview {
+  position: relative;
+  max-width: 500px;
+  margin: auto;
+  aspect-ratio: 500/650;
+}
+.bee-garment-preview > svg {
+  width: 100%;
+  height: auto;
+  position: static;
+}
+.bee-garment-preview > img {
+  position: absolute;
+  left: 35%;
+  top: 31%;
+  width: 30%;
+  height: 32%;
+  object-fit: fill;
+}
+.bee-garment-preview > p {
+  position: absolute;
+  bottom: 0;
+  text-align: center;
+  width: 100%;
+  font-size: 0.75rem;
+  color: #aebfd0;
+}
+.bee-design-summary {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.bee-design-summary figure {
+  margin: 0;
+  max-width: 150px;
+}
+.bee-design-summary img {
+  width: 100%;
+  background: #bcc4cd;
+  border-radius: 6px;
+}
+.bee-design-summary figcaption {
+  font-size: 0.75rem;
+}
+@media (max-width: 1150px) {
+  .bee-editor-grid {
+    grid-template-columns: 180px minmax(240px, 1fr);
+  }
+  .bee-properties {
+    grid-column: 1/-1;
+    grid-template-columns: 1fr 1fr;
+  }
+  .bee-properties fieldset {
+    grid-column: 1/-1;
+  }
+  .bee-property-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+@media (max-width: 700px) {
+  .bee-studio-heading {
+    align-items: start;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .bee-editor-grid {
+    display: flex;
+    flex-direction: column;
+  }
+  .bee-tools,
+  .bee-stage,
+  .bee-properties {
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .bee-tools {
+    order: 1;
+  }
+  .bee-stage {
+    order: 0;
+  }
+  .bee-properties {
+    order: 2;
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+  .bee-properties fieldset {
+    grid-column: auto;
+  }
+  .bee-tools .bee-tool-buttons {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .bee-layers {
+    max-height: 180px;
+  }
+  .bee-property-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .bee-projectbar {
+    align-items: stretch;
+  }
+  .bee-projectbar > span {
+    max-width: none;
+  }
+  .bee-feedback {
+    position: static;
+  }
+  .bee-stagebar button {
+    padding: 8px;
+  }
+  .bee-stage {
+    padding: 10px;
+  }
+  .bee-projectbar button {
+    flex: 1;
+  }
+  .bee-projectbar label {
+    flex-basis: 100%;
+  }
+}

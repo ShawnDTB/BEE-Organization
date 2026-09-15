@@ -1,3 +1,4 @@
+import { StudioDesignSummary } from "../components/StudioDesignSummary";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import {
   createProject,
@@ -605,6 +606,9 @@ export function StartOrderPage() {
           )}
           {snapshots.map((item) => (
             <div className="quote-design" key={item.id}>
+              {item.design?.document && (
+                <StudioDesignSummary document={item.design.document} />
+              )}
               {item.design?.artworkData && (
                 <img src={item.design.artworkData} alt="Your artwork preview" />
               )}
