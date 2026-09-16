@@ -40,3 +40,22 @@ it("rejects locked, rotated and ambiguous operations without partial changes", (
   expect(parseGuideCommand("Center the design!")).toBe("center");
   expect(parseGuideCommand("make a bulldog")).toBeNull();
 });
+
+import { effectivePpi, lowGarmentContrast } from "../src/studio/review";
+it("calculates density from placed size and distinguishes similar text colors", () => {
+  const l = {
+    ...templateLayers("event", "", "", "#ffffff")[0]!,
+    kind: "image" as const,
+    width: 600,
+    height: 400,
+  };
+  expect(effectivePpi(l, { width: 1200, height: 800 })).toBe(100);
+  expect(
+    effectivePpi(
+      { ...l, width: 300, height: 200 },
+      { width: 1200, height: 800 },
+    ),
+  ).toBe(200);
+  expect(lowGarmentContrast("#ffffff", "#e8e8e4")).toBe(true);
+  expect(lowGarmentContrast("#ffffff", "#15191d")).toBe(false);
+});

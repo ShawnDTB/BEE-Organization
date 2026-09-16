@@ -41,3 +41,11 @@ Scope: first complete customer-journey slice of the Astra brief. This does not c
 77 tests across 12 files pass, including original recovery/front-back/request-snapshot tests and new guided-mode/history/command tests. Production build and Worker dry-run pass. No production suitability claim is inferred from software checks.
 
 Browser screenshots and visual/live interaction verification were blocked in this environment: Playwright has no installed Chromium executable and the browser download timed out. The live URL could not be opened through web retrieval. Do not interpret unit/UI tests as completed visual QA. Before the next release, verify 390px mobile and desktop layouts, first-use creation, Advanced canvas mounting and intake handoff in a browser.
+
+## Follow-up: guided brief and artwork checks (September 16)
+
+Help me create it now opens three optional question groups instead of the template form. Event/purpose, audience, mascot/visual idea, style, colors and keep-details are stored as an optional validated design brief, separate from rendered wording. Existing drafts remain valid. Brief answers survive browser recovery, design JSON, bag snapshots and request validation; customer/staff reviews and text downloads show them. Requested imagery is explicitly distinguished from included artwork. Step changes move keyboard focus to the relevant heading.
+
+Review now checks decoded image dimensions against the placed size on the current board, with an advisory below 150 PPI; product-specific thresholds still require Brian's profiles. Text/garment contrast suggestions use a conservative heuristic and acknowledge overlapping artwork. Decode failures and pending checks are shown rather than silently passing.
+
+Validation: 80 tests pass across 12 files, including a guided-answer/reload/bag test and resolution calculations. Typecheck and production build pass. Remote browser connects but refuses localhost with ERR_BLOCKED_BY_CLIENT; local visual verification remains unavailable. Production browser verification is attempted after publishing.

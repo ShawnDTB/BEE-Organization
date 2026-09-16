@@ -164,3 +164,34 @@ it("preserves both surfaces in validated requests, immutable snapshots and reord
   reorderProject(project);
   expect(readDrafts().at(-1)?.document).toEqual(document);
 });
+
+it("preserves creative intent through design validation and request snapshots", () => {
+  const brief = {
+    occasion: "Charity event",
+    audience: "Our school",
+    subject: "Bulldog mascot",
+    style: "Bold",
+    colors: "Blue and white",
+    notes: "Keep the school name exact",
+  };
+  const design = validateDesign({ ...old, document: emptyDocument(), brief });
+  expect(design.brief).toEqual(brief);
+  saveStudioDraft({ ...old, ...design });
+  upsertBagItem({
+    id: old.id,
+    draftId: old.id,
+    productSlug: "creator-graphic-tee",
+    color: "Black",
+    size: "M",
+    quantity: 12,
+    decoration: "graphic",
+  });
+  expect(snapshotItems()[0]?.design?.brief).toEqual(brief);
+  expect(validateDesign(JSON.parse(JSON.stringify(design))).brief).toEqual(
+    brief,
+  );
+  expect(() =>
+    validateDesign({ ...old, brief: { ...brief, subject: "x".repeat(501) } }),
+  ).toThrow("design brief");
+  expect(validateDesign(old).brief).toBeUndefined();
+});

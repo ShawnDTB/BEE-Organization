@@ -1,4 +1,7 @@
-import { useState } from "react";
+import { ArtworkReview } from "./ArtworkReview";
+import { briefFields, emptyBrief } from "../../shared/designBrief";
+import { DesignBriefSummary } from "../components/DesignBriefSummary";
+import { useEffect, useRef, useState } from "react";
 import type { StudioDocument, StudioLayer, Surface } from "../../shared/studio";
 import { surfacePreview } from "../../shared/studio";
 import type { StudioDraft } from "../data/projectStore";
@@ -38,6 +41,16 @@ export function GuidedStudio(p: Props) {
   const [template, setTemplate] = useState("event");
   const [ink, setInk] = useState("#ffffff");
   const [showTemplates, setShowTemplates] = useState(false);
+  const [helpCreate, setHelpCreate] = useState(false);
+  const [briefStep, setBriefStep] = useState(0);
+  const panel = useRef<HTMLDivElement>(null);
+  const mounted = useRef(false);
+  useEffect(() => {
+    if (mounted.current)
+      panel.current?.querySelector<HTMLElement>("[data-step-heading]")?.focus();
+    mounted.current = true;
+  }, [step, helpCreate, briefStep, showTemplates]);
+  const brief = p.draft.brief || emptyBrief();
   const texts = p.doc.surfaces[p.surface].filter(
     (l) => l.kind === "text" && !l.hidden,
   );
@@ -48,7 +61,7 @@ export function GuidedStudio(p: Props) {
     if (p.save(true)) window.location.assign("/start-order");
   }
   return (
-    <div className="bee-guided">
+    <div className="bee-guided" ref={panel}>
       <nav className="bee-journey" aria-label="Design progress">
         {(["choose", "edit", "review"] as const).map((s, i) => (
           <button
@@ -67,7 +80,12 @@ export function GuidedStudio(p: Props) {
       </nav>
       {step === "choose" ? (
         <div className="bee-start-panel">
-          <h2>What would you like to make?</h2>
+          <h2
+            tabIndex={-1}
+            data-step-heading={!helpCreate && !showTemplates ? true : undefined}
+          >
+            What would you like to make?
+          </h2>
           <p>
             Choose a starting garment. BEE will help confirm the right product
             and decoration for your project.
@@ -99,11 +117,22 @@ export function GuidedStudio(p: Props) {
           </div>
           <h2>How would you like to begin?</h2>
           <div className="bee-start-paths">
-            <button onClick={() => setShowTemplates(true)}>
+            <button
+              onClick={() => {
+                setHelpCreate(true);
+                setShowTemplates(false);
+                setBriefStep(0);
+              }}
+            >
               <strong>Help me create it</strong>
               <span>Start with your words and a ready-made layout.</span>
             </button>
-            <button onClick={() => setShowTemplates(true)}>
+            <button
+              onClick={() => {
+                setHelpCreate(false);
+                setShowTemplates(true);
+              }}
+            >
               <strong>Use a template</strong>
               <span>Choose a layout, then make it your own.</span>
             </button>
@@ -127,6 +156,78 @@ export function GuidedStudio(p: Props) {
               Continue my current design →
             </button>
           )}
+          {helpCreate && (
+            <form
+              className="bee-template-form"
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (briefStep < 2) {
+                  setBriefStep((n) => n + 1);
+                  return;
+                }
+                setHelpCreate(false);
+                setShowTemplates(true);
+              }}
+            >
+              <h3 tabIndex={-1} data-step-heading>
+                {
+                  [
+                    "What are we making this for?",
+                    "What should it look like?",
+                    "Anything we should keep?",
+                  ][briefStep]
+                }
+              </h3>
+              <p>
+                Question group {briefStep + 1} of 3 · Skip any answer you are
+                unsure about.
+              </p>
+              {briefFields
+                .filter(([key]) =>
+                  (briefStep === 0
+                    ? ["occasion", "audience"]
+                    : briefStep === 1
+                      ? ["subject", "style", "colors"]
+                      : ["notes"]
+                  ).includes(key),
+                )
+                .map(([key, label]) => (
+                  <label key={key}>
+                    {label}
+                    <input
+                      maxLength={500}
+                      value={brief[key]}
+                      onChange={(e) =>
+                        p.update({ brief: { ...brief, [key]: e.target.value } })
+                      }
+                      placeholder={
+                        key === "subject"
+                          ? "For example, a bulldog mascot"
+                          : "Optional"
+                      }
+                    />
+                  </label>
+                ))}
+              <p>
+                Your answers stay with the project for BEE. The next step
+                creates an editable text layout; it does not generate the
+                requested mascot or illustration.
+              </p>
+              <div className="bee-guide-actions">
+                {briefStep > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => setBriefStep((n) => n - 1)}
+                  >
+                    Back
+                  </button>
+                )}
+                <button type="submit" className="bee-primary">
+                  {briefStep < 2 ? "Continue →" : "Choose a starting layout →"}
+                </button>
+              </div>
+            </form>
+          )}
           {showTemplates && (
             <form
               className="bee-template-form"
@@ -143,7 +244,9 @@ export function GuidedStudio(p: Props) {
                 setStep("edit");
               }}
             >
-              <h3>Your words. Your starting point.</h3>
+              <h3 tabIndex={-1} data-step-heading>
+                Your words. Your starting point.
+              </h3>
               <label>
                 Choose a layout
                 <select
@@ -232,7 +335,9 @@ export function GuidedStudio(p: Props) {
           <div className="bee-guided-controls">
             {step === "edit" ? (
               <>
-                <h2>Make it yours.</h2>
+                <h2 tabIndex={-1} data-step-heading>
+                  Make it yours.
+                </h2>
                 <label>
                   Garment color
                   <select
@@ -327,7 +432,15 @@ export function GuidedStudio(p: Props) {
               </>
             ) : (
               <>
-                <h2>Ready for BEE?</h2>
+                <h2 tabIndex={-1} data-step-heading>
+                  Ready for BEE?
+                </h2>
+                <DesignBriefSummary brief={p.draft.brief} />
+                <ArtworkReview
+                  doc={p.doc}
+                  color={p.draft.color}
+                  edit={p.advanced}
+                />
                 <p>
                   Review both sides and your exact wording. BEE confirms garment
                   availability, decoration size and your final proof before

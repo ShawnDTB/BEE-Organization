@@ -1,3 +1,4 @@
+import { DesignBriefSummary } from "../components/DesignBriefSummary";
 import { StudioDesignSummary } from "../components/StudioDesignSummary";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -434,7 +435,10 @@ export function StaffInboxPage() {
                       </p>
                     )}
                     {item.design?.document && (
-                      <StudioDesignSummary document={item.design.document} />
+                      <>
+                        <StudioDesignSummary document={item.design.document} />
+                        <DesignBriefSummary brief={item.design.brief} />
+                      </>
                     )}
                     {item.design?.artworkData && (
                       <img

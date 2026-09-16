@@ -109,3 +109,38 @@ it("starts new visitors guided and preserves template work across modes and undo
   expect(host.textContent).toContain("Ready for BEE?");
   expect(host.textContent).toContain("2 visible design elements");
 });
+
+it("keeps the guided creative brief through browser recovery and quote handoff", async () => {
+  localStorage.removeItem("bee-studio-mode");
+  await act(async () => root.render(<StudioPageV4 />));
+  await click(
+    "Help me create itStart with your words and a ready-made layout.",
+  );
+  const input = [...host.querySelectorAll("label")]
+    .find((l) => l.textContent?.includes("Event or purpose"))!
+    .querySelector("input")!;
+  await act(async () => {
+    Object.getOwnPropertyDescriptor(
+      HTMLInputElement.prototype,
+      "value",
+    )!.set!.call(input, "School charity day");
+    input.dispatchEvent(new Event("input", { bubbles: true }));
+    input.dispatchEvent(new Event("change", { bubbles: true }));
+  });
+  await act(async () => vi.advanceTimersByTime(550));
+  await act(async () => root.unmount());
+  root = createRoot(host);
+  await act(async () => root.render(<StudioPageV4 />));
+  await click(
+    "Help me create itStart with your words and a ready-made layout.",
+  );
+  const restored = [...host.querySelectorAll("label")]
+    .find((l) => l.textContent?.includes("Event or purpose"))!
+    .querySelector("input")!;
+  expect(restored.value).toBe("School charity day");
+  await click("Advanced");
+  await click("Save both sides + add to bag");
+  expect(snapshotItems()[0]?.design?.brief?.occasion).toBe(
+    "School charity day",
+  );
+});

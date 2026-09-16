@@ -1,3 +1,4 @@
+import { validateDesignBrief, type DesignBrief } from "./designBrief";
 import { validateSizePlan, type SizePlan } from "./sizePlan";
 import { validateStudioDocument, type StudioDocument } from "./studio";
 export const MAX_PREVIEW_BYTES = 350_000;
@@ -18,6 +19,7 @@ export type RequestDetails = {
   notes: string;
 };
 export type DesignSnapshot = {
+  brief?: DesignBrief;
   document?: StudioDocument;
   id: string;
   name: string;
@@ -99,6 +101,14 @@ export function validateDesign(value: unknown): DesignSnapshot {
   } catch {
     throw new ValidationError("Check the layered studio document.");
   }
+  let brief: DesignBrief | undefined;
+  try {
+    brief = d.brief === undefined ? undefined : validateDesignBrief(d.brief);
+  } catch {
+    throw new ValidationError(
+      "Check the design brief; each answer must be under 500 characters.",
+    );
+  }
   const artworkData =
     d.artworkData === undefined
       ? undefined
@@ -110,6 +120,7 @@ export function validateDesign(value: unknown): DesignSnapshot {
     throw new ValidationError("Use a PNG, JPEG, or WebP preview.");
   return {
     ...(document ? { document } : {}),
+    ...(brief === undefined ? {} : { brief }),
     id: string(d.id, 100, 1),
     name: string(d.name, 120, 1),
     garment: choice(d.garment, ["tee", "hoodie", "polo"]),

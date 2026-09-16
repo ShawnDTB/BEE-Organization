@@ -1,3 +1,4 @@
+import { designBriefLines } from "../../shared/designBrief";
 import { studioDescription } from "../../shared/studio";
 import type { RequestDetails, RequestItem } from "../../shared/request";
 import { sizePlanLines, sizePlanTotal } from "../../shared/sizePlan";
@@ -51,6 +52,16 @@ export function projectBrief(
         )
       : ["No Studio designs attached. A mockup is optional."]),
     "",
+    ...items.flatMap((item) =>
+      item.design?.brief
+        ? [
+            `DESIGN INTENT — ${item.design.name}`,
+            ...designBriefLines(item.design.brief),
+            "Requested imagery is not necessarily present in the artwork.",
+            "",
+          ]
+        : [],
+    ),
     "This text brief does not embed artwork. Keep the JSON copy for design snapshots.",
     "Contains contact/project details. Share only with the intended recipient.",
     "https://worksbybee.com",

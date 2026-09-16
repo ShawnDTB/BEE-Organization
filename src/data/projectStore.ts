@@ -1,3 +1,4 @@
+import type { DesignBrief } from "../../shared/designBrief";
 import type { RequestItem } from "../../shared/request";
 import type { StudioDocument } from "../../shared/studio";
 import { validateSizePlan, type SizePlan } from "../../shared/sizePlan";
@@ -18,6 +19,7 @@ export type PlacementPreset =
 export type IntakeType = "custom" | "bulk" | "creator" | "unsure";
 
 export type StudioDraft = {
+  brief?: DesignBrief;
   document?: StudioDocument;
   id: string;
   name: string;
