@@ -1,4 +1,5 @@
-import { useEffect, useRef } from "react";
+import { snapOffset } from "./geometry";
+import { useEffect, useRef, useState } from "react";
 import {
   Canvas,
   FabricImage,
@@ -61,6 +62,11 @@ export function FabricBoard({
   onChange: (id: string, patch: Partial<StudioLayer>) => void;
   onReady: (canvas: Canvas | null) => void;
 }) {
+  const [zoom, setZoom] = useState(1);
+  const [snapping, setSnapping] = useState(true);
+  const view = useRef({ zoom, snapping });
+  view.current = { zoom, snapping };
+  const resizeRef = useRef<() => void>(() => {});
   const element = useRef<HTMLCanvasElement>(null);
   const outer = useRef<HTMLDivElement>(null);
   const canvas = useRef<Canvas | null>(null);
@@ -83,6 +89,15 @@ export function FabricBoard({
     c.on("selection:created", select);
     c.on("selection:updated", select);
     c.on("selection:cleared", () => callbacks.current.onSelect(null));
+    c.on("object:moving", ({ target }) => {
+      if (!target || !view.current.snapping) return;
+      const b = target.getBoundingRect();
+      const offset = snapOffset(
+        { ...b, right: b.left + b.width, bottom: b.top + b.height },
+        6 / c.getZoom(),
+      );
+      target.set({ left: target.left + offset.x, top: target.top + offset.y });
+    });
     c.on("object:modified", ({ target }) => {
       if (!target) return;
       const id = objects.current.get(target);
@@ -96,15 +111,18 @@ export function FabricBoard({
         });
     });
     const resize = () => {
-      const width = Math.min(600, outer.current?.clientWidth || 600);
+      const width =
+        Math.min(600, outer.current?.clientWidth || 600) * view.current.zoom;
       c.setDimensions({ width, height: (width * 800) / 600 });
       c.setViewportTransform([width / 600, 0, 0, width / 600, 0, 0]);
     };
+    resizeRef.current = resize;
     const observer = new ResizeObserver(resize);
     observer.observe(outer.current!);
     resize();
     return () => {
       observer.disconnect();
+      resizeRef.current = () => {};
       canvas.current = null;
       callbacks.current.onReady(null);
       void c.dispose();
@@ -117,9 +135,14 @@ export function FabricBoard({
     callbacks.current.onReady(null);
     Promise.all(layers.map(makeObject))
       .then((list) => {
-        if (cancelled) return;
+        if (cancelled) {
+          list.forEach((o) => o.dispose());
+          return;
+        }
         objects.current.clear();
-        c.remove(...c.getObjects());
+        const oldObjects = c.getObjects();
+        c.remove(...oldObjects);
+        oldObjects.forEach((o) => o.dispose());
         list.forEach((o, i) => {
           objects.current.set(o, layers[i]!.id);
           c.add(o);
@@ -144,13 +167,66 @@ export function FabricBoard({
     else c.discardActiveObject();
     c.requestRenderAll();
   }, [selected]);
+  useEffect(() => {
+    resizeRef.current();
+  }, [zoom]);
   return (
-    <div
-      ref={outer}
-      className="bee-board"
-      aria-label="Design canvas. Use the layer list and properties for keyboard editing."
-    >
-      <canvas ref={element} />
+    <div className="bee-canvas-workspace">
+      <div className="bee-canvas-controls">
+        <label>
+          Zoom
+          <select
+            value={zoom}
+            onChange={(e) => setZoom(Number(e.target.value))}
+          >
+            {[0.5, 1, 1.5, 2, 3].map((z) => (
+              <option key={z} value={z}>
+                {z === 1 ? "Fit to width" : `${z * 100}% of fit`}
+              </option>
+            ))}
+          </select>
+        </label>
+        <button onClick={() => setZoom(1)}>Fit artwork</button>
+        <label>
+          <input
+            type="checkbox"
+            checked={snapping}
+            onChange={(e) => setSnapping(e.target.checked)}
+          />
+          Snap to board edges & center
+        </label>
+      </div>
+      <p className="bee-hint">
+        At higher zoom, scroll to move around the artwork. Focus the canvas and
+        use arrow keys to move the selected element; hold Shift for larger
+        steps.
+      </p>
+      <div
+        ref={outer}
+        className="bee-board bee-board-scroll"
+        tabIndex={0}
+        onKeyDown={(e) => {
+          const delta: Record<string, [number, number]> = {
+            ArrowLeft: [-1, 0],
+            ArrowRight: [1, 0],
+            ArrowUp: [0, -1],
+            ArrowDown: [0, 1],
+          };
+          const move = delta[e.key];
+          if (!move || e.ctrlKey || e.metaKey || e.altKey) return;
+          e.preventDefault();
+          const l = layers.find((l) => l.id === selected);
+          if (!l || l.locked || l.hidden) return;
+          const step = e.shiftKey ? 10 : 1;
+          callbacks.current.onChange(l.id, {
+            x: l.x + move[0] * step,
+            y: l.y + move[1] * step,
+          });
+        }}
+        aria-label="Design canvas. Use the layer list and properties for keyboard editing."
+      >
+        <canvas ref={element} />
+      </div>
     </div>
   );
 }

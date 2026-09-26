@@ -1,3 +1,4 @@
+import { ArrangePanel } from "../studio/ArrangePanel";
 import {
   Suspense,
   lazy,
@@ -630,6 +631,11 @@ export function StudioPageV4() {
                   <p>Start with a word, a shape, or your artwork.</p>
                 )}
               </div>
+              <ArrangePanel
+                key={surface}
+                layers={layers}
+                onApply={(next) => commit(next)}
+              />
               <details>
                 <summary>Garment & quantity</summary>
                 <label>

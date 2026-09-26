@@ -494,3 +494,33 @@
     font-size: 0.85rem;
   }
 }
+
+.bee-canvas-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: end;
+  margin: 12px 0;
+}
+.bee-canvas-controls label {
+  max-width: 240px;
+}
+.bee-board-scroll {
+  overflow: auto;
+  max-height: 70vh;
+}
+.bee-arrange {
+  margin: 16px 0;
+}
+.bee-arrange .bee-arrange-choice {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-wrap: anywhere;
+  min-height: 44px;
+}
+.bee-arrange input[type="checkbox"] {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+}

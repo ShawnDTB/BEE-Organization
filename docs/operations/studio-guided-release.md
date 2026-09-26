@@ -49,3 +49,11 @@ Help me create it now opens three optional question groups instead of the templa
 Review now checks decoded image dimensions against the placed size on the current board, with an advisory below 150 PPI; product-specific thresholds still require Brian's profiles. Text/garment contrast suggestions use a conservative heuristic and acknowledge overlapping artwork. Decode failures and pending checks are shown rather than silently passing.
 
 Validation: 80 tests pass across 12 files, including a guided-answer/reload/bag test and resolution calculations. Typecheck and production build pass. Remote browser connects but refuses localhost with ERR_BLOCKED_BY_CLIENT; local visual verification remains unavailable. Production browser verification is attempted after publishing.
+
+## Follow-up: precise arrangement (September 26)
+
+Advanced now provides checkbox-based selection for batch arrangement. Align edges or centers, distribute equal gaps horizontally/vertically, or center the entire selection on the board. Geometry accounts for rotation and preserves unselected elements. Locked/hidden elements are excluded. Each operation goes through the existing single-step undo history. This is batch arrangement, not persistent groups or canvas multi-selection.
+
+The canvas now supports 50–300% zoom relative to fitted width with scroll-based navigation, a Fit artwork reset, optional edge/center snapping during drag and arrow-key nudging (Shift for ten-unit steps). View transforms remain separate from document dimensions and exports. Stale/replaced Fabric objects are disposed during document refresh.
+
+Validation: 85 tests pass across 13 files, including rotated bounds, proportional selection centering, unequal-width spacing, snap tolerance and batch undo/front-back preservation. Type checking and production build are run before publishing. Browser visual verification remains a separate check.
