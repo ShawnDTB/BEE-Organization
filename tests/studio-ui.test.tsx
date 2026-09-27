@@ -144,3 +144,58 @@ it("keeps the guided creative brief through browser recovery and quote handoff",
     "School charity day",
   );
 });
+
+async function setField(label: string, value: string) {
+  const input = [...host.querySelectorAll("label")]
+    .find((l) => l.textContent?.trim() === label)!
+    .querySelector("input")!;
+  await act(async () => {
+    Object.getOwnPropertyDescriptor(
+      HTMLInputElement.prototype,
+      "value",
+    )!.set!.call(input, value);
+    input.dispatchEvent(new Event("input", { bubbles: true }));
+  });
+}
+it("links numeric dimensions by default, undoes both together, and allows deliberate stretching", async () => {
+  await act(async () => root.render(<StudioPageV4 />));
+  await click("＋ Text");
+  await click("Save to My projects");
+  const original = readDrafts()[0]!.document!.surfaces.front[0]!;
+  await setField("Width (in)", "12");
+  await click("Save to My projects");
+  const resized = readDrafts()[0]!.document!.surfaces.front[0]!;
+  expect(resized.width).toBe(600);
+  expect(resized.width / resized.height).toBeCloseTo(
+    original.width / original.height,
+  );
+  await click("Undo");
+  await click("Save to My projects");
+  expect(readDrafts()[0]!.document!.surfaces.front[0]).toEqual(original);
+  const toggle = [...host.querySelectorAll("label")]
+    .find((l) => l.textContent?.includes("Keep proportions"))!
+    .querySelector("input")!;
+  await act(async () => toggle.click());
+  await setField("Width (in)", "12");
+  await click("Save to My projects");
+  expect(readDrafts()[0]!.document!.surfaces.front[0]!.height).toBe(
+    original.height,
+  );
+});
+it("centers rotated artwork using visible bounds, with one undo per axis", async () => {
+  await act(async () => root.render(<StudioPageV4 />));
+  await click("＋ Text");
+  await setField("Rotation (degrees)", "90");
+  await click("Center horizontally");
+  await click("Center vertically");
+  await click("Save to My projects");
+  const centered = readDrafts()[0]!.document!.surfaces.front[0]!;
+  // At 90 degrees the width points down and the height points left.
+  expect(centered.x - centered.height / 2).toBeCloseTo(300);
+  expect(centered.y + centered.width / 2).toBeCloseTo(400);
+  await click("Undo");
+  await click("Save to My projects");
+  const undone = readDrafts()[0]!.document!.surfaces.front[0]!;
+  expect(undone.x).toBe(centered.x);
+  expect(undone.y).not.toBe(centered.y);
+});

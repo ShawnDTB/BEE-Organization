@@ -1,3 +1,4 @@
+import { layerBounds } from "../studio/geometry";
 import { ArrangePanel } from "../studio/ArrangePanel";
 import {
   Suspense,
@@ -162,6 +163,7 @@ export function StudioPageV4() {
   });
   const [surface, setSurface] = useState<Surface>(start.draft.view);
   const [selected, setSelected] = useState<string | null>(null);
+  const [keepProportions, setKeepProportions] = useState(true);
   const [preview, setPreview] = useState(false);
   const [status, setStatus] = useState(start.message);
   const [saveState, setSaveState] = useState("Preparing recovery");
@@ -249,7 +251,7 @@ export function StudioPageV4() {
       setHistory(h);
     } catch {
       setStatus(
-        "Use a supported value. Artwork dimensions must be between 0.02 and 24 inches wide.",
+        "Use a supported value. Artwork must be 0.02–24 inches wide and 0.02–32 inches tall. Both dimensions must fit these limits when proportions are linked.",
       );
     }
   }
@@ -879,6 +881,14 @@ export function StudioPageV4() {
                         />
                       </label>
                     )}
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={keepProportions}
+                        onChange={(e) => setKeepProportions(e.target.checked)}
+                      />{" "}
+                      Keep proportions when entering sizes
+                    </label>
                     <div className="bee-property-grid">
                       {(["x", "y", "width", "height"] as const).map((k) => (
                         <label key={k}>
@@ -896,10 +906,18 @@ export function StudioPageV4() {
                             step="0.1"
                             value={Math.round((active[k] / 50) * 100) / 100}
                             onChange={(e) => {
-                              if (e.target.value !== "")
-                                patch(active.id, {
-                                  [k]: Number(e.target.value) * 50,
-                                });
+                              if (e.target.value === "") return;
+                              const value = Number(e.target.value) * 50;
+                              const dimensions =
+                                keepProportions &&
+                                (k === "width" || k === "height")
+                                  ? {
+                                      width: (active.width * value) / active[k],
+                                      height:
+                                        (active.height * value) / active[k],
+                                    }
+                                  : { [k]: value };
+                              patch(active.id, dimensions);
                             }}
                           />
                         </label>
@@ -920,14 +938,28 @@ export function StudioPageV4() {
                     <div className="bee-tool-buttons">
                       <button
                         onClick={() =>
-                          patch(active.id, { x: (600 - active.width) / 2 })
+                          patch(active.id, {
+                            x:
+                              active.x +
+                              (600 -
+                                layerBounds(active).left -
+                                layerBounds(active).right) /
+                                2,
+                          })
                         }
                       >
                         Center horizontally
                       </button>
                       <button
                         onClick={() =>
-                          patch(active.id, { y: (800 - active.height) / 2 })
+                          patch(active.id, {
+                            y:
+                              active.y +
+                              (800 -
+                                layerBounds(active).top -
+                                layerBounds(active).bottom) /
+                                2,
+                          })
                         }
                       >
                         Center vertically

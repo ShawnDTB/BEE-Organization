@@ -57,3 +57,11 @@ Advanced now provides checkbox-based selection for batch arrangement. Align edge
 The canvas now supports 50–300% zoom relative to fitted width with scroll-based navigation, a Fit artwork reset, optional edge/center snapping during drag and arrow-key nudging (Shift for ten-unit steps). View transforms remain separate from document dimensions and exports. Stale/replaced Fabric objects are disposed during document refresh.
 
 Validation: 85 tests pass across 13 files, including rotated bounds, proportional selection centering, unequal-width spacing, snap tolerance and batch undo/front-back preservation. Type checking and production build are run before publishing. Browser visual verification remains a separate check.
+
+## September 27: safer precise resizing
+
+- Advanced numeric width/height controls preserve the current aspect ratio by default. Customers can uncheck “Keep proportions when entering sizes” for intentional stretching. This is an editor preference, not a new document format or a change to canvas drag behavior.
+- Both dimensions update in one history revision, so a single Undo restores the original proportions and size.
+- Single-element horizontal and vertical centering now uses rotated artwork bounds, matching the batch arrangement geometry.
+- Dimension validation now explains both width and height limits, including linked sizes.
+- Verified the previously released zoom/fit and text editing controls on the live Studio. Local verification for this release: all 87 tests, typecheck and production build pass. New UI regression coverage checks linked resizing, optional stretching, undo and rotated centering.
