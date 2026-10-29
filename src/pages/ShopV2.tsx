@@ -39,26 +39,26 @@ export function ShopV2Page() {
         <span className="sf-breadcrumb-current">Shop</span>
         <div className="sf-shop-title">
           <div>
-            <span className="sf-kicker">Find your starting point</span>
-            <h1>Your style starts here.</h1>
+            <span className="sf-kicker">Custom apparel & graphics</span>
+            <h1>Find your next favorite.</h1>
           </div>
           <p>
-            Pick a category. Explore an idea.
+            Choose your piece. Bring your artwork.
             <br />
-            Let's make it feel like you.
+            We'll work through the details together.
           </p>
         </div>
         <aside className="sf-shop-notice" aria-label="Shop availability">
-          <strong>Browse now. Order later.</strong>
+          <strong>Custom options / Collection in progress</strong>
           <p>
-            Product ideas, not live stock. Pricing and online checkout are being
-            prepared.
+            Explore product types and plan a custom piece. Finished designs,
+            prices, and checkout are being prepared.
           </p>
         </aside>
       </section>
       <section className="sf-catalog sf-wrap" aria-labelledby="catalog-heading">
         <h2 id="catalog-heading" className="sf-catalog-label">
-          Browse by category
+          Choose your base
         </h2>
         <div
           className="sf-filters"
@@ -77,8 +77,8 @@ export function ShopV2Page() {
           ))}
         </div>
         <p className="sf-result-count" role="status" aria-live="polite">
-          {options.length} {options.length === 1 ? "idea" : "ideas"} to explore
-          · {shopCategories.find((item) => item.id === category)?.label}
+          {options.length} {options.length === 1 ? "option" : "options"} to
+          explore · {shopCategories.find((item) => item.id === category)?.label}
         </p>
         <div className="sf-product-grid">
           {options.map((option) => (

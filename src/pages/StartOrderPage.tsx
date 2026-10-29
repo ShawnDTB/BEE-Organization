@@ -241,11 +241,14 @@ export function StartOrderPage() {
   return (
     <section className="bee-page quote-page">
       <header>
-        <span className="eyebrow">Your next project</span>
+        <a className="sf-flow-back" href="/shop">
+          ← Back to custom options
+        </a>
+        <span className="eyebrow">Your custom piece</span>
         <h1>
-          Start with the idea.
+          Make it personal.
           <br />
-          We’ll work through the details.
+          Start with your idea.
         </h1>
         <p>
           A rough headcount and a direction are enough to start planning. A

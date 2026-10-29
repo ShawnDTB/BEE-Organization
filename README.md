@@ -18,6 +18,10 @@ Home and Shop now lead the public experience with the gray/teal palette, product
 
 [Audit, Amanda’s requirements, implementation decisions, verification and next launch steps](docs/reviews/2026-10-28-storefront-reset.md)
 
+## Square setup and customer-flow refinement
+
+[Square owner setup](docs/operations/square-owner-setup.md) records the next steps for BEE's account and Sandbox. [Character refinement](docs/reviews/2026-10-29-character-release.md) describes the updated presentation and concept-image provenance. Square is not connected and checkout remains unavailable.
+
 ## Local development
 
 Use Node 24.19+ and npm 10+. Run `npm ci`, then `npm run dev`. `npm run check` runs frontend/server TypeScript, workflow tests and the production build. Static output is `dist`. The lockfile is committed; do not delete it as a routine installation repair.

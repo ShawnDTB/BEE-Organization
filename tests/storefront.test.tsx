@@ -34,7 +34,9 @@ it("opens a linked category and keeps filters, results and browser history align
   );
   expect(window.location.search).toBe("?category=embroidery");
   expect(host.querySelectorAll("article")).toHaveLength(2);
-  expect(host.querySelector("[role=status]")?.textContent).toContain("2 ideas");
+  expect(host.querySelector("[role=status]")?.textContent).toContain(
+    "2 options",
+  );
   act(() => {
     window.history.replaceState(null, "", "/shop?category=hats");
     window.dispatchEvent(new PopStateEvent("popstate"));
@@ -49,7 +51,7 @@ it("handles invalid category URLs and never presents preview ideas as purchasabl
   expect(host.querySelector("[aria-pressed=true]")?.textContent).toBe(
     "All options",
   );
-  expect(host.textContent).toContain("not live stock");
+  expect(host.textContent).toContain("checkout are being prepared");
   expect(host.querySelector('a[href="/checkout"]')).toBeNull();
   expect(
     host.querySelector('a[href="/start-order?type=custom&item=tee"]'),

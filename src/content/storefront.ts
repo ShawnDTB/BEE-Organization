@@ -15,7 +15,7 @@ export function parseCategory(value: string | null): ShopCategory {
 export const shopOptions = [
   {
     id: "tee",
-    name: "Your everyday T-shirt",
+    name: "T-shirts",
     category: "t-shirts",
     image: "tee",
     description:
@@ -26,7 +26,7 @@ export const shopOptions = [
   },
   {
     id: "hoodie",
-    name: "Make it a hoodie",
+    name: "Hoodies",
     category: "hoodies",
     image: "hoodie",
     description: "A little extra comfort. A lot of room to make it personal.",
@@ -36,7 +36,7 @@ export const shopOptions = [
   },
   {
     id: "hat",
-    name: "Top it off",
+    name: "Hats",
     category: "hats",
     image: "cap",
     description: "A cap with a personal touch, for your crew or just for you.",
@@ -46,7 +46,7 @@ export const shopOptions = [
   },
   {
     id: "decal",
-    name: "A small detail. All you.",
+    name: "Decals",
     category: "decals",
     image: "decal",
     description:
@@ -57,7 +57,7 @@ export const shopOptions = [
   },
   {
     id: "polo",
-    name: "The stitched finishing touch",
+    name: "Embroidered polos",
     category: "embroidery",
     image: "polo",
     description: "Explore embroidered names and logos for a polished look.",
@@ -67,7 +67,7 @@ export const shopOptions = [
   },
   {
     id: "embroidered-cap",
-    name: "Your mark, in stitches",
+    name: "Embroidered hats",
     category: "embroidery",
     image: "cap",
     description: "Keep a name or logo front and center on an embroidered cap.",

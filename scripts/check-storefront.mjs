@@ -21,12 +21,16 @@ assert(entry + home + content < 85000, "Homepage JS exceeds 85 kB gzip budget");
 assert(entry + shop + content < 85000, "Shop JS exceeds 85 kB gzip budget");
 assert(css < 20000, "Shared CSS exceeds 20 kB gzip budget");
 let illustrationBytes = 0;
-for (const name of await readdir("dist/storefront"))
+for (const name of (await readdir("dist/storefront")).filter((name) =>
+  name.endsWith(".svg"),
+))
   illustrationBytes += (await stat(`dist/storefront/${name}`)).size;
 assert(
   illustrationBytes < 15000,
   "Storefront illustrations exceed 15 kB total",
 );
+const heroBytes = (await stat("dist/storefront/apparel-study.webp")).size;
+assert(heroBytes < 220000, "Apparel study exceeds 220 kB image budget");
 const html = await readFile("dist/shop/index.html", "utf8");
 assert(html.includes("Shop Custom Apparel &amp; More"));
 assert(
@@ -47,6 +51,7 @@ console.log(
         sharedCSS: css,
       },
       illustrationBytes,
+      heroBytes,
       externalFonts: 0,
     },
     null,

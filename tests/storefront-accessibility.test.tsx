@@ -68,18 +68,20 @@ function luminance(hex: string) {
   return c[0]! * 0.2126 + c[1]! * 0.7152 + c[2]! * 0.0722;
 }
 it.each([
-  ["0f172a", "f5f7f7"],
-  ["4b5e63", "f5f7f7"],
-  ["0b6b63", "f5f7f7"],
-  ["0b6b63", "e1e5e9"],
-  ["4b5e63", "e1e5e9"],
-  ["ffffff", "12312b"],
-  ["102d2a", "14b8a6"],
-  ["e1e5e9", "102d2a"],
-  ["5eead4", "102d2a"],
-  ["365b55", "e2eeeb"],
-  ["5a706b", "f5f7f7"],
-  ["bdcfca", "102d2a"],
+  ["111827", "f2f4f6"],
+  ["52606d", "f2f4f6"],
+  ["0b6b63", "f2f4f6"],
+  ["0b6b63", "ffffff"],
+  ["52606d", "e5e9ed"],
+  ["ffffff", "0b6b63"],
+  ["11151a", "14b8a6"],
+  ["e1e5e9", "11151a"],
+  ["5eead4", "11151a"],
+  ["c1cbd2", "20262a"],
+  ["adbcc6", "11151a"],
+  ["657581", "ffffff"],
+  ["14b8a6", "11151a"],
+  ["b6c4cc", "11151a"],
 ])("meets 4.5:1 normal-text contrast for #%s on #%s", (fg, bg) => {
   const [light, dark] = [luminance(fg), luminance(bg)].sort((a, b) => b - a);
   expect((light! + 0.05) / (dark! + 0.05)).toBeGreaterThanOrEqual(4.5);

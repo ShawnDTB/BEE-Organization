@@ -157,7 +157,17 @@ function App() {
       </a>
       <SiteHeader currentPath={currentPath} />
       <StorageNotice />
-      <main id="main-content" tabIndex={-1}>
+      <main
+        id="main-content"
+        tabIndex={-1}
+        className={
+          ["/start-order", "/project-review", "/cart", "/checkout"].includes(
+            currentPath,
+          )
+            ? "customer-flow"
+            : undefined
+        }
+      >
         <PageBoundary>
           <Suspense fallback={<RouteLoading />}>
             <Page />
