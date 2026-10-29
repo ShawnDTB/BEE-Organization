@@ -240,35 +240,30 @@ export function StartOrderPage() {
     );
   return (
     <section className="bee-page quote-page">
-      <header>
+      <div className="quote-topbar">
         <a className="sf-flow-back" href="/shop">
-          ← Back to custom options
+          ← Back to shop
         </a>
-        <span className="eyebrow">Your custom piece</span>
-        <h1>
-          Make it personal.
-          <br />
-          Start with your idea.
-        </h1>
-        <p>
-          A rough headcount and a direction are enough to start planning. A
-          mockup is optional.
-        </p>
-      </header>
-      {availability?.enabled === false && (
-        <aside className="availability-note">
-          <strong>Online submission is being prepared.</strong>
-          <p>
-            You can plan, save, and download your request today. It will not
-            reach BEE until you send it through an available contact method.
-          </p>
-          {siteConfig.email && (
-            <a href={`mailto:${siteConfig.email}`}>
-              Email {siteConfig.email} →
-            </a>
-          )}
-        </aside>
-      )}
+        <span>Custom order planner · Step {step} of 3</span>
+      </div>
+      <div className="quote-intro">
+        <header>
+          <span className="eyebrow">Custom by BEE</span>
+          <h1>Plan your custom piece.</h1>
+          <p>Choose your piece, add the details, and review your idea.</p>
+        </header>
+        {availability?.enabled === false && (
+          <aside className="availability-note">
+            <strong>Online submission is being prepared.</strong>
+            <p>Save or download your brief. It won't be sent to BEE yet.</p>
+            {siteConfig.email && (
+              <a href={`mailto:${siteConfig.email}`}>
+                Email {siteConfig.email} →
+              </a>
+            )}
+          </aside>
+        )}
+      </div>
       <div className="quote-layout">
         <div>
           <nav className="quote-steps" aria-label="Request steps">
@@ -297,9 +292,11 @@ export function StartOrderPage() {
               </h2>
               {step === 1 && (
                 <>
-                  <a className="text-link" href="/group-planner">
-                    Organizing sizes? Use the group planner →
-                  </a>
+                  {data.type === "bulk" && (
+                    <a className="text-link" href="/group-planner">
+                      Organizing sizes? Use the group planner →
+                    </a>
+                  )}
                   <div className="project-type-options">
                     {types.map(([value, label]) => (
                       <button
@@ -309,28 +306,32 @@ export function StartOrderPage() {
                         onClick={() => update("type", value)}
                       >
                         {label}
-                        <span aria-hidden="true">↗</span>
+                        <span className="project-type-check" aria-hidden="true">
+                          {data.type === value ? "✓" : ""}
+                        </span>
                       </button>
                     ))}
                   </div>
-                  <label>
-                    Garments or items
-                    <input
-                      maxLength={200}
-                      value={data.garment}
-                      onChange={(e) => update("garment", e.target.value)}
-                      placeholder="Polos for the team, hoodies for a merch drop…"
-                    />
-                  </label>
-                  <label>
-                    Estimated quantity
-                    <input
-                      maxLength={80}
-                      value={data.quantity}
-                      onChange={(e) => update("quantity", e.target.value)}
-                      placeholder="About 30 pieces, or still deciding"
-                    />
-                  </label>
+                  <div className="quote-fields quote-fields--primary">
+                    <label>
+                      Garments or items
+                      <input
+                        maxLength={200}
+                        value={data.garment}
+                        onChange={(e) => update("garment", e.target.value)}
+                        placeholder="Polos for the team, hoodies for a merch drop…"
+                      />
+                    </label>
+                    <label>
+                      Estimated quantity
+                      <input
+                        maxLength={80}
+                        value={data.quantity}
+                        onChange={(e) => update("quantity", e.target.value)}
+                        placeholder="About 30 pieces, or still deciding"
+                      />
+                    </label>
+                  </div>
                   <button
                     className="button"
                     type="button"
@@ -551,7 +552,10 @@ export function StartOrderPage() {
                 ? "Draft saved on this device"
                 : "Save a local project draft"}
             </button>
-            <button onClick={exportRequest}>Download request</button>
+            <details className="request-more-tools">
+              <summary>More options</summary>
+              <button onClick={exportRequest}>Download request</button>
+            </details>
             <span>
               Your contact details remain on this device until you submit.
               Downloads may contain personal information and artwork.
@@ -559,7 +563,6 @@ export function StartOrderPage() {
           </div>
         </div>
         <aside className="quote-summary">
-          <span className="eyebrow">At a glance</span>
           <h2>{data.organization || "Your project"}</h2>
           <dl>
             <div>
@@ -634,7 +637,7 @@ export function StartOrderPage() {
               {item.design?.text && <small>{item.design.text}</small>}
             </div>
           ))}
-          <a href="/cart">Review attached designs →</a>
+          {items.length > 0 && <a href="/cart">Review attached designs →</a>}
           <div className="quote-next">
             <strong>What happens next?</strong>
             <p>

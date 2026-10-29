@@ -76,6 +76,7 @@ export function SiteHeader({ currentPath }: { currentPath: string }) {
           {navItems.map((item) => (
             <a
               key={item.href}
+              className={item.href === "/shop" ? "bee-nav-shop" : undefined}
               href={item.href}
               aria-current={current(item.href) ? "page" : undefined}
             >
@@ -84,8 +85,8 @@ export function SiteHeader({ currentPath }: { currentPath: string }) {
           ))}
         </nav>
 
-        <a className="button bee-header-quote" href={quoteHref}>
-          Plan a custom order <span aria-hidden="true">↗</span>
+        <a className="bee-header-custom" href={quoteHref}>
+          Custom orders
         </a>
         <button
           className="bee-menu-trigger"

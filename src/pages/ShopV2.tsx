@@ -33,27 +33,16 @@ export function ShopV2Page() {
   return (
     <div className="storefront sf-shop">
       <section className="sf-shop-intro sf-wrap">
-        <a className="sf-breadcrumb" href="/">
-          Home <span aria-hidden="true">/</span>
-        </a>
-        <span className="sf-breadcrumb-current">Shop</span>
         <div className="sf-shop-title">
           <div>
             <span className="sf-kicker">Custom apparel & graphics</span>
             <h1>Find your next favorite.</h1>
           </div>
-          <p>
-            Choose your piece. Bring your artwork.
-            <br />
-            We'll work through the details together.
-          </p>
+          <p>Choose a piece and explore your custom options.</p>
         </div>
         <aside className="sf-shop-notice" aria-label="Shop availability">
-          <strong>Custom options / Collection in progress</strong>
-          <p>
-            Explore product types and plan a custom piece. Finished designs,
-            prices, and checkout are being prepared.
-          </p>
+          <strong>Collection in progress</strong>
+          <p>Explore custom options. Prices and checkout are being prepared.</p>
         </aside>
       </section>
       <section className="sf-catalog sf-wrap" aria-labelledby="catalog-heading">

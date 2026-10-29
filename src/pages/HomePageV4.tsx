@@ -20,23 +20,11 @@ export function HomePageV4() {
             <br />
             <em>Made personal.</em>
           </h1>
-          <p>
-            Your artwork. Your interests. Your everyday favorites. Explore
-            T-shirts, hoodies, hats, and custom details with a little more you
-            in them.
-          </p>
+          <p>Custom T-shirts, hoodies, hats, and details that make it yours.</p>
           <div className="sf-hero-actions">
             <a className="sf-button" href="/shop">
-              Explore custom options <span aria-hidden="true">↗</span>
+              Explore the shop <span aria-hidden="true">↗</span>
             </a>
-            <a className="sf-text-link" href="/start-order">
-              Plan your own <span aria-hidden="true">↗</span>
-            </a>
-          </div>
-          <div className="sf-hero-tags">
-            <span>Printed apparel</span>
-            <span>Embroidery</span>
-            <span>Decal ideas</span>
           </div>
         </div>
         <figure className="sf-hero-art">
@@ -60,7 +48,7 @@ export function HomePageV4() {
             <h2>Pick your piece.</h2>
           </div>
           <a className="sf-text-link" href="/shop">
-            All custom options <span aria-hidden="true">↗</span>
+            Shop all options <span aria-hidden="true">↗</span>
           </a>
         </div>
         <nav className="sf-categories" aria-label="Shop by product type">
@@ -79,40 +67,28 @@ export function HomePageV4() {
           ))}
         </nav>
       </section>
-      <section className="sf-about sf-wrap" aria-labelledby="about-bee">
+      <section
+        className="sf-custom-callout sf-wrap"
+        aria-labelledby="custom-heading"
+      >
         <div>
-          <span className="sf-kicker">Something only you would make</span>
-          <h2 id="about-bee">
-            Bring the idea.
-            <br />
-            <em>Let's find its form.</em>
-          </h2>
-        </div>
-        <div>
+          <span className="sf-kicker">Custom by BEE</span>
+          <h2 id="custom-heading">Have something in mind?</h2>
           <p>
-            A design for your crew. A gift with a story. An automotive graphic,
-            a computer-inspired idea, or a piece for the people you work with.
+            Bring your artwork or a rough idea. We'll work through the details
+            together.
           </p>
-          <p>
-            Start with the item and the idea. The artwork, finish, quantity, and
-            price are worked through before production.
-          </p>
-          <a className="sf-text-link" href="/start-order">
-            Build your custom brief <span aria-hidden="true">↗</span>
-          </a>
-          <small>
-            The planner saves your idea on this device. Online ordering is being
-            prepared.
-          </small>
         </div>
+        <a className="sf-button" href="/start-order">
+          Plan a custom piece <span aria-hidden="true">↗</span>
+        </a>
       </section>
       <WorkGallery />
       <div className="sf-launch-note sf-wrap">
         <span className="sf-kicker">Good to know</span>
         <p>
-          We're preparing our first shoppable collection. For now, explore
-          custom options and save a design brief. Checkout and online request
-          submission are not yet available.
+          The collection is being prepared. Explore options and save a brief;
+          checkout and online request submission are not yet available.
         </p>
       </div>
     </div>

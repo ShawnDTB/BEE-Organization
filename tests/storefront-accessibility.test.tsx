@@ -5,6 +5,7 @@ import { act } from "react";
 import axe from "axe-core";
 import { HomePageV4 } from "../src/pages/HomePageV4";
 import { ShopV2Page } from "../src/pages/ShopV2";
+import { StartOrderPage } from "../src/pages/StartOrderPage";
 import { SiteHeader } from "../src/components/SiteHeader";
 import { SiteFooter } from "../src/components/SiteFooter";
 let host: HTMLDivElement;
@@ -21,6 +22,16 @@ beforeEach(() => {
   });
   document.documentElement.lang = "en";
   document.title = "Works by BEE";
+  localStorage.clear();
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(
+      async () =>
+        new Response(JSON.stringify({ enabled: false }), {
+          headers: { "Content-Type": "application/json" },
+        }),
+    ),
+  );
   host = document.createElement("div");
   document.body.append(host);
   root = createRoot(host);
@@ -28,14 +39,23 @@ beforeEach(() => {
 afterEach(() => {
   act(() => root.unmount());
   host.remove();
+  vi.unstubAllGlobals();
 });
-it.each([HomePageV4, ShopV2Page])(
+it.each([HomePageV4, ShopV2Page, StartOrderPage])(
   "has no automated WCAG A/AA structural violations: %s",
   async (Page) => {
-    act(() =>
+    await act(async () =>
       root.render(
         <>
-          <SiteHeader currentPath={Page === HomePageV4 ? "/" : "/shop"} />
+          <SiteHeader
+            currentPath={
+              Page === HomePageV4
+                ? "/"
+                : Page === ShopV2Page
+                  ? "/shop"
+                  : "/start-order"
+            }
+          />
           <main>
             <Page />
           </main>
