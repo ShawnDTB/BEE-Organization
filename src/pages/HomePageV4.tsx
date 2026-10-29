@@ -1,214 +1,134 @@
-import { faqs } from "../content/siteContent";
-import { PlanningStatus } from "../components/PlanningStatus";
+import { shopCategories, plannedCollections } from "../content/storefront";
+import { WorkGallery } from "../components/WorkGallery";
 export function HomePageV4() {
   return (
-    <>
-      <PlanningStatus />
-      <section className="bee-hero">
-        <div className="bee-hero-copy">
-          <span className="eyebrow">Custom apparel & embroidery</span>
+    <div className="storefront">
+      <div className="sf-announcement">
+        A fresh look for your next idea.{" "}
+        <span>Shop preview · Online checkout coming soon</span>
+      </div>
+      <section className="sf-hero sf-wrap">
+        <div className="sf-hero-copy">
+          <span className="sf-kicker">
+            Works by BEE · Custom apparel & more
+          </span>
           <h1>
-            Made for
-            <br />
-            your people.
-            <br />
-            <em>Works by BEE.</em>
+            A little you.
+            <br />A lot of <em>possibility.</em>
           </h1>
           <p>
-            For the team showing up together. The business building its name.
-            The creator bringing a community closer. Let’s make something that
-            represents you.
+            T-shirts, hats, embroidery, and ideas worth wearing. Find your
+            starting point. Make it your own.
           </p>
-          <div className="bee-actions">
-            <a className="button" href="/start-order">
-              Start your project <span aria-hidden="true">↗</span>
+          <a className="sf-button" href="/shop">
+            Explore the shop <span aria-hidden="true">↗</span>
+          </a>
+          <a className="sf-text-link" href="#categories">
+            What can I make? <span aria-hidden="true">↓</span>
+          </a>
+        </div>
+        <figure className="sf-hero-art">
+          <div className="sf-art-heading">
+            <span>YOUR IDEA STARTS HERE</span>
+            <span aria-hidden="true">✳</span>
+          </div>
+          <img
+            className="sf-hero-hoodie"
+            src="/storefront/hoodie.svg"
+            width="800"
+            height="980"
+            alt="Illustrated charcoal hoodie with a teal design area"
+            fetchPriority="high"
+          />
+          <img
+            className="sf-hero-tee"
+            src="/storefront/tee.svg"
+            width="800"
+            height="980"
+            alt=""
+          />
+          <img
+            className="sf-hero-cap"
+            src="/storefront/cap.svg"
+            width="800"
+            height="980"
+            alt=""
+          />
+          <figcaption>
+            <strong>Wear what makes you, you.</strong>
+            <span>Illustrations for inspiration · Not finished products</span>
+          </figcaption>
+        </figure>
+      </section>
+      <section id="categories" className="sf-section sf-wrap">
+        <div className="sf-section-heading">
+          <div>
+            <span className="sf-kicker">One simple place to start</span>
+            <h2>What do you have in mind?</h2>
+          </div>
+          <a className="sf-text-link" href="/shop">
+            View all options <span aria-hidden="true">↗</span>
+          </a>
+        </div>
+        <nav className="sf-categories" aria-label="Shop by product type">
+          {shopCategories.slice(1).map((category, index) => (
+            <a key={category.id} href={`/shop?category=${category.id}`}>
+              <span className="sf-category-number">0{index + 1}</span>
+              <strong>{category.label}</strong>
+              <span aria-hidden="true">↗</span>
             </a>
-            <a href="/bulk-orders">Planning a group order? →</a>
-          </div>
-          <div className="hero-signature">
-            <span>BUILD</span>
-            <i />
-            <span>EMPOWER</span>
-            <i />
-            <span>EQUIP</span>
-          </div>
-        </div>
-        <div className="bee-hero-art">
-          <div className="arc-orbit" aria-hidden="true" />
-          <span className="hero-art-label">The starting point is yours.</span>
-          <img
-            className="hero-hoodie"
-            src="/store/hoodie.svg"
-            alt="Illustrated custom hoodie concept"
-            width="500"
-            height="610"
-          />
-          <img
-            className="hero-polo"
-            src="/store/polo.svg"
-            alt="Illustrated polo concept"
-            width="500"
-            height="610"
-          />
-          <div className="hero-art-caption">
-            <strong>Your identity. Made wearable.</strong>
-            <span>Garment concepts · final details reviewed with you</span>
-          </div>
-        </div>
+          ))}
+        </nav>
       </section>
-      <section className="bee-audiences bee-page">
-        <div className="bee-section-heading">
-          <span className="eyebrow">Find your starting point</span>
-          <h2>
-            A different purpose.
+      <section className="sf-about sf-wrap" aria-labelledby="about-bee">
+        <div>
+          <span className="sf-kicker">A little about BEE</span>
+          <h2 id="about-bee">
+            Your interests.
             <br />
-            The same attention to detail.
+            Your people. <em>Your style.</em>
           </h2>
-        </div>
-        <div className="bee-audience-grid">
-          <a href="/bulk-orders">
-            <span>01 / Together</span>
-            <h3>Groups & businesses</h3>
-            <p>
-              School spirit, team apparel, staff uniforms, events, and the next
-              order after that.
-            </p>
-            <b>Plan a group order ↗</b>
-          </a>
-          <a href="/creator-merch">
-            <span>02 / Connected</span>
-            <h3>Creators & communities</h3>
-            <p>
-              A first piece, a focused drop, or an idea your audience can make
-              their own.
-            </p>
-            <b>Build your merch ↗</b>
-          </a>
-          <a href="/custom-apparel">
-            <span>03 / Individual</span>
-            <h3>Something personal</h3>
-            <p>
-              Bring your artwork or a rough idea. Explore the garment and finish
-              that fit.
-            </p>
-            <b>Explore custom apparel ↗</b>
-          </a>
-        </div>
-      </section>
-      <section className="bee-craft bee-page">
-        <div className="bee-craft-art">
-          <img
-            src="/store/polo.svg"
-            alt="Polo garment illustration"
-            loading="lazy"
-            width="500"
-            height="610"
-          />
-          <span>Embroidery / graphic apparel</span>
         </div>
         <div>
-          <span className="eyebrow">The details make the piece</span>
-          <h2>
-            More than a logo
-            <br />
-            on a blank.
-          </h2>
           <p>
-            The garment, the artwork, the placement, and the finish should work
-            together. We’ll help you think through the options before anything
-            moves into production.
+            Something for yourself, a gift with meaning, or a look for the whole
+            crew. Works by BEE brings personal ideas to custom apparel and
+            embroidery.
           </p>
-          <div className="bee-craft-options">
-            <a href="/embroidery">
-              <strong>Embroidery</strong>
-              <span>Stitched marks for polos, hats, layers and more.</span>
-              <b>↗</b>
-            </a>
-            <a href="/graphic-apparel">
-              <strong>Graphic apparel</strong>
-              <span>Space for colorful artwork, names and larger designs.</span>
-              <b>↗</b>
-            </a>
-          </div>
-          <a className="text-link" href="/studio">
-            Have a direction? Try it in Studio →
+          <p>You bring the idea. We work through the details together.</p>
+          <a className="sf-text-link" href="/start-order">
+            Plan a custom piece <span aria-hidden="true">↗</span>
           </a>
+          <small>
+            The planner saves your idea. It does not place an order.
+          </small>
         </div>
       </section>
-      <section className="bee-process bee-page">
-        <div className="bee-section-heading">
-          <span className="eyebrow">A clear path to made</span>
-          <h2>Know what comes next.</h2>
+      <WorkGallery />
+      <section
+        className="sf-section sf-wrap sf-coming"
+        aria-labelledby="collections-heading"
+      >
+        <div className="sf-section-heading">
+          <div>
+            <span className="sf-kicker">On the drawing board</span>
+            <h2 id="collections-heading">Made for what you're into.</h2>
+          </div>
+          <p>
+            Collections in the works.
+            <br />
+            Designs and release dates to come.
+          </p>
         </div>
-        <ol>
-          {[
-            [
-              "Share the idea",
-              "Who it’s for, what you need, and the timing you have in mind.",
-            ],
-            [
-              "Confirm the quote",
-              "Review garment options, quantities, decoration, and pricing.",
-            ],
-            [
-              "Approve the proof",
-              "Confirm the artwork and placement before production.",
-            ],
-            [
-              "Wear it. Build on it.",
-              "Keep the useful details for the next run, new hire, or new idea.",
-            ],
-          ].map(([title, copy], i) => (
-            <li key={title}>
-              <span>0{i + 1}</span>
-              <h3>{title}</h3>
-              <p>{copy}</p>
+        <ul>
+          {plannedCollections.map((name) => (
+            <li key={name}>
+              {name}
+              <span>Coming later</span>
             </li>
           ))}
-        </ol>
+        </ul>
       </section>
-      <section className="bee-belief bee-page">
-        <span className="eyebrow">What BEE stands for</span>
-        <h2>
-          Build an identity.
-          <br />
-          <em>Empower a community.</em>
-          <br />
-          Equip your people.
-        </h2>
-        <p>
-          Good apparel gives people something to belong to—and something they
-          want to wear. That’s the purpose behind the work.
-        </p>
-        <a href="/about">Get to know BEE →</a>
-      </section>
-      <section className="bee-faq bee-page">
-        <div>
-          <span className="eyebrow">Before you begin</span>
-          <h2>A few useful answers.</h2>
-        </div>
-        <div>
-          {faqs.map(([question, answer]) => (
-            <details key={question}>
-              <summary>{question}</summary>
-              <p>{answer}</p>
-            </details>
-          ))}
-        </div>
-      </section>
-      <section className="bee-final-cta bee-page">
-        <div>
-          <span className="eyebrow">Bring the idea</span>
-          <h2>
-            Let’s put your
-            <br />
-            identity to work.
-          </h2>
-        </div>
-        <a className="button" href="/start-order">
-          Plan your project ↗
-        </a>
-      </section>
-    </>
+    </div>
   );
 }

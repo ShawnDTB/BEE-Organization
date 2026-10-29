@@ -12,6 +12,12 @@ The public site is live at worksbybee.com. Releases go to `main`, as authorized 
 - [Post-launch assessment](docs/operations/post-launch-assessment.md)
 - [Current brand direction](docs/brand/site-identity.md)
 
+## Storefront focus — October 28, 2026
+
+Home and Shop now lead the public experience with the gray/teal palette, product-category browsing and a custom-planner handoff. Studio and local project tools are retained under secondary navigation. The shop is a clearly labeled preview until actual inventory and commerce are configured.
+
+[Audit, Amanda’s requirements, implementation decisions, verification and next launch steps](docs/reviews/2026-10-28-storefront-reset.md)
+
 ## Local development
 
 Use Node 24.19+ and npm 10+. Run `npm ci`, then `npm run dev`. `npm run check` runs frontend/server TypeScript, workflow tests and the production build. Static output is `dist`. The lockfile is committed; do not delete it as a routine installation repair.

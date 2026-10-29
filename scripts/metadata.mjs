@@ -37,8 +37,8 @@ const routes = {
     "The developing sample library at Works by BEE.",
   ],
   "/shop": [
-    "Future Collections",
-    "Explore what is next for Works by BEE merchandise.",
+    "Shop Custom Apparel & More",
+    "Explore T-shirts, hoodies, hats, decals and embroidery ideas. Browse Works by BEE custom options while online checkout is being prepared.",
   ],
   "/privacy": [
     "Project Privacy",
@@ -90,7 +90,7 @@ await writeFile(
   )
     .filter(
       (path) =>
-        !["/shop", "/our-work", "/schools-organizations"].includes(path),
+        !["/our-work", "/schools-organizations"].includes(path),
     )
     .map(
       (path) =>

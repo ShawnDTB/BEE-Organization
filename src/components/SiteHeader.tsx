@@ -23,7 +23,7 @@ export function SiteHeader({ currentPath }: { currentPath: string }) {
       );
   }, []);
   useEffect(() => {
-    const media = window.matchMedia("(min-width: 1181px)");
+    const media = window.matchMedia("(min-width: 761px)");
     const resize = () => {
       if (media.matches) setOpen(false);
     };
@@ -83,14 +83,9 @@ export function SiteHeader({ currentPath }: { currentPath: string }) {
             </a>
           ))}
         </nav>
-        <div className="bee-header-tools">
-          <a href="/account">My projects</a>
-          <a href="/cart" aria-label={`Project bag, ${count} designs`}>
-            Bag{count > 0 && <span>{count}</span>}
-          </a>
-        </div>
+
         <a className="button bee-header-quote" href={quoteHref}>
-          Request a quote <span aria-hidden="true">↗</span>
+          Plan a custom order <span aria-hidden="true">↗</span>
         </a>
         <button
           className="bee-menu-trigger"
@@ -129,9 +124,6 @@ export function SiteHeader({ currentPath }: { currentPath: string }) {
                   </button>
                 </div>
                 <nav aria-label="Mobile navigation" className="bee-menu-links">
-                  <a href="/" onClick={close}>
-                    Home
-                  </a>
                   {navItems.map((item) => (
                     <a
                       key={item.href}
@@ -143,25 +135,25 @@ export function SiteHeader({ currentPath }: { currentPath: string }) {
                       <span aria-hidden="true">↗</span>
                     </a>
                   ))}
-                  <div className="bee-menu-utilities">
-                    <a href="/group-planner" onClick={close}>
-                      Group size planner
-                    </a>
-                    <a href="/studio" onClick={close}>
-                      Design studio
-                    </a>
-                    <a href="/account" onClick={close}>
-                      My projects
-                    </a>
-                    <a href="/cart" onClick={close}>
-                      Project bag ({count})
-                    </a>
-                    <a href="/shop" onClick={close}>
-                      Future collections
-                    </a>
-                  </div>
+                  <details className="sf-menu-tools">
+                    <summary>Project tools</summary>
+                    <div className="bee-menu-utilities">
+                      <a href="/group-planner" onClick={close}>
+                        Group size planner
+                      </a>
+                      <a href="/studio" onClick={close}>
+                        Design studio
+                      </a>
+                      <a href="/account" onClick={close}>
+                        My projects
+                      </a>
+                      <a href="/cart" onClick={close}>
+                        Project bag ({count})
+                      </a>
+                    </div>
+                  </details>
                   <a className="button" href={quoteHref} onClick={close}>
-                    Request a quote
+                    Plan a custom order
                   </a>
                   <p>Build. Empower. Equip.</p>
                 </nav>

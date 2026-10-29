@@ -21,10 +21,8 @@ export const siteConfig = {
 } as const;
 
 export const navItems: NavItem[] = [
-  { label: "Custom apparel", href: "/custom-apparel" },
-  { label: "Groups & businesses", href: "/bulk-orders" },
-  { label: "Creator merch", href: "/creator-merch" },
-  { label: "About", href: "/about" },
+  { label: "Home", href: "/" },
+  { label: "Shop", href: "/shop" },
 ];
 
 export const orderSteps = [

@@ -50,7 +50,7 @@ it("opens a top-layer dialog with focus and restores it on cancel", () => {
   expect(document.body.style.position).toBe("");
 });
 it("keeps inside clicks open and closes on the backdrop", () => {
-  act(() => root.render(<SiteHeader currentPath="/bulk-orders" />));
+  act(() => root.render(<SiteHeader currentPath="/shop" />));
   act(() =>
     (host.querySelector(".bee-menu-trigger") as HTMLButtonElement).click(),
   );
@@ -61,10 +61,9 @@ it("keeps inside clicks open and closes on the backdrop", () => {
   expect(document.querySelector("dialog")).toBeNull();
 });
 it("exposes current navigation and excludes fake account login wording", () => {
-  act(() => root.render(<SiteHeader currentPath="/bulk-orders" />));
-  expect(host.querySelector('[aria-current="page"]')?.textContent).toBe(
-    "Groups & businesses",
-  );
-  expect(host.textContent).toContain("My projects");
+  act(() => root.render(<SiteHeader currentPath="/shop" />));
+  expect(host.querySelector('[aria-current="page"]')?.textContent).toBe("Shop");
+  expect(host.textContent).toContain("Home");
+  expect(host.textContent).not.toContain("My projects");
   expect(host.textContent).not.toContain("Login");
 });

@@ -1,3 +1,4 @@
+import { shopOptions } from "../content/storefront";
 import { DesignBriefSummary } from "../components/DesignBriefSummary";
 import { StudioDesignSummary } from "../components/StudioDesignSummary";
 import { useEffect, useRef, useState, type FormEvent } from "react";
@@ -28,10 +29,17 @@ const types = [
 export function StartOrderPage() {
   const [data, setData] = useState<ProjectIntake>(() => {
     const saved = readProjectDraft();
-    const type = new URLSearchParams(window.location.search).get("type");
-    return types.some(([key]) => key === type)
+    const params = new URLSearchParams(window.location.search);
+    const type = params.get("type");
+    const option = shopOptions.find((item) => item.id === params.get("item"));
+    const next = types.some(([key]) => key === type)
       ? { ...saved, type: type as ProjectIntake["type"] }
       : saved;
+    // A shop link preselects an item only for an empty draft. Never overwrite
+    // an existing customer brief or its sizes/designs without their choice.
+    return option && !next.garment
+      ? { ...next, garment: option.garment }
+      : next;
   });
   const [items] = useState(readBag);
   const [snapshots] = useState(() => snapshotItems(items));

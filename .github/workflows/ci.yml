@@ -76,6 +76,9 @@ jobs:
           }
 
           render home-desktop 1440,900 /
+          render home-phone 390,844 /
+          render shop-phone 390,844 /shop
+          render shop-tablet 820,1180 '/shop?category=embroidery'
           render bulk-medium 1024,768 /bulk-orders
           render studio-tablet 820,1180 /studio
           render account-phone 390,844 /account
