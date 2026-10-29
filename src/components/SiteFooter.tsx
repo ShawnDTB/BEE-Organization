@@ -11,13 +11,13 @@ export function SiteFooter() {
         <nav aria-label="Footer navigation">
           <a href="/">Home</a>
           <a href="/shop">Shop</a>
+          <a href="/studio">Custom design studio</a>
           <a href="/start-order">Plan a custom order</a>
           <a href="/privacy">Privacy</a>
         </nav>
         <details>
           <summary>Project tools</summary>
           <nav aria-label="Project tools">
-            <a href="/studio">Design studio</a>
             <a href="/group-planner">Group size planner</a>
             <a href="/account">Saved projects</a>
             <a href="/cart">Project bag</a>

@@ -292,8 +292,7 @@ export function GuidedStudio(p: Props) {
               </button>
               <p>
                 These are editable text layouts. For an illustration or mascot,
-                upload artwork or ask BEE for help. AI image generation is not
-                connected yet.
+                upload artwork or describe your idea in the custom planner.
               </p>
             </form>
           )}
@@ -417,8 +416,8 @@ export function GuidedStudio(p: Props) {
                   <button type="submit">Apply request</button>
                   <p>
                     Quick commands: center the design, make it larger, make it
-                    smaller, fit to board. Other requests and AI image
-                    generation are not connected yet.
+                    smaller, fit to board. For help developing the idea itself,
+                    save your design and open the custom planner.
                   </p>
                 </form>
                 <button onClick={p.advanced}>Open Advanced controls</button>
@@ -433,7 +432,7 @@ export function GuidedStudio(p: Props) {
             ) : (
               <>
                 <h2 tabIndex={-1} data-step-heading>
-                  Ready for BEE?
+                  Review your custom concept.
                 </h2>
                 <DesignBriefSummary brief={p.draft.brief} />
                 <ArtworkReview
@@ -443,8 +442,8 @@ export function GuidedStudio(p: Props) {
                 />
                 <p>
                   Review both sides and your exact wording. BEE confirms garment
-                  availability, decoration size and your final proof before
-                  production.
+                  availability, decoration size, price, and timing with you. The
+                  final artwork proof needs your approval before production.
                 </p>
                 {(["front", "back"] as const).map((s) => (
                   <div key={s}>
@@ -476,7 +475,7 @@ export function GuidedStudio(p: Props) {
                   </p>
                 )}
                 <label>
-                  Approximate quantity
+                  Approximate quantity (for planning)
                   <input
                     type="number"
                     min={1}
@@ -493,22 +492,20 @@ export function GuidedStudio(p: Props) {
                   />
                 </label>
                 <p>
-                  Next, add your size breakdown, deadline and contact details.
-                  Pricing is confirmed through a quote.
+                  Next, review the project details in the custom planner. Saving
+                  a concept does not send it to BEE or place an order.
                 </p>
                 <button
                   className="bee-primary"
                   disabled={!hasArtwork}
                   onClick={handoff}
                 >
-                  Continue with this design →
+                  Save & review project details →
                 </button>
                 <button onClick={() => setStep("edit")}>Keep editing</button>
               </>
             )}
-            <button onClick={handoff}>
-              Ask BEE for help with this project
-            </button>
+            <button onClick={handoff}>Save & open the custom planner</button>
           </div>
         </div>
       )}

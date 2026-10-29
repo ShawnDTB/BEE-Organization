@@ -31,7 +31,34 @@ assert(
 );
 const heroBytes = (await stat("dist/storefront/apparel-study.webp")).size;
 assert(heroBytes < 220000, "Apparel study exceeds 220 kB image budget");
+const smallHeroBytes = (await stat("dist/storefront/apparel-study-640.webp"))
+  .size;
+const mediumHeroBytes = (await stat("dist/storefront/apparel-study-960.webp"))
+  .size;
+assert(smallHeroBytes < 50000, "Small hero exceeds 50 kB image budget");
+assert(mediumHeroBytes < 100000, "Medium hero exceeds 100 kB image budget");
+const homeHTML = await readFile("dist/index.html", "utf8");
+assert(
+  homeHTML.includes('imagesrcset="/storefront/apparel-study-640.webp 640w'),
+);
+assert(
+  homeHTML.includes(
+    'rel="modulepreload" crossorigin href="/assets/HomePageV4-',
+  ),
+);
 const html = await readFile("dist/shop/index.html", "utf8");
+assert(html.includes('rel="modulepreload" crossorigin href="/assets/ShopV2-'));
+assert(!html.includes('as="image"'), "Home hero must not preload on Shop");
+const plannerHTML = await readFile("dist/start-order/index.html", "utf8");
+assert(
+  plannerHTML.includes(
+    'rel="modulepreload" crossorigin href="/assets/StartOrderPage-',
+  ),
+);
+assert(
+  !homeHTML.includes("index.min-"),
+  "Fabric must not be preloaded on Home",
+);
 assert(html.includes("Shop Custom Apparel &amp; More"));
 assert(
   !(
@@ -52,6 +79,7 @@ console.log(
       },
       illustrationBytes,
       heroBytes,
+      responsiveHeroBytes: { small: smallHeroBytes, medium: mediumHeroBytes },
       externalFonts: 0,
     },
     null,

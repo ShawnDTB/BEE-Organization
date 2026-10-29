@@ -26,23 +26,73 @@ const types = [
   ["custom", "Personal project"],
   ["unsure", "Help me choose"],
 ] as const;
+const studioGarments = {
+  tee: "T-shirts",
+  hoodie: "Hoodies",
+  polo: "Polos",
+};
 export function StartOrderPage() {
+  const [items] = useState(readBag);
+  const [snapshots] = useState(() => snapshotItems(items));
+  const attachedGarments = [
+    ...new Set(
+      snapshots.flatMap((item) => (item.design ? [item.design.garment] : [])),
+    ),
+  ];
+  const attachedQuantity = items.reduce((sum, item) => sum + item.quantity, 0);
+  const [shopChoice, setShopChoice] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    const option = shopOptions.find((item) => item.id === params.get("item"));
+    const saved = readProjectDraft();
+    return option && saved.garment && saved.garment !== option.garment
+      ? option
+      : null;
+  });
   const [data, setData] = useState<ProjectIntake>(() => {
     const saved = readProjectDraft();
     const params = new URLSearchParams(window.location.search);
     const type = params.get("type");
     const option = shopOptions.find((item) => item.id === params.get("item"));
-    const next = types.some(([key]) => key === type)
-      ? { ...saved, type: type as ProjectIntake["type"] }
-      : saved;
+    const next =
+      !saved.garment && types.some(([key]) => key === type)
+        ? { ...saved, type: type as ProjectIntake["type"] }
+        : saved;
     // A shop link preselects an item only for an empty draft. Never overwrite
     // an existing customer brief or its sizes/designs without their choice.
-    return option && !next.garment
-      ? { ...next, garment: option.garment }
-      : next;
+    const selected =
+      option && !next.garment ? { ...next, garment: option.garment } : next;
+    return {
+      ...selected,
+      garment:
+        selected.garment ||
+        selected.sizePlan?.garment ||
+        (attachedGarments.length === 1 && snapshots.every((item) => item.design)
+          ? studioGarments[attachedGarments[0]!]
+          : ""),
+      quantity:
+        selected.quantity ||
+        (selected.sizePlan
+          ? String(sizePlanTotal(selected.sizePlan))
+          : attachedQuantity
+            ? String(attachedQuantity)
+            : ""),
+    };
   });
-  const [items] = useState(readBag);
-  const [snapshots] = useState(() => snapshotItems(items));
+  const garmentMismatch =
+    !!data.garment &&
+    attachedGarments.some(
+      (garment) =>
+        !new RegExp(
+          garment === "tee"
+            ? "\\b(?:tee|tees|t-shirt|t-shirts)\\b"
+            : garment === "hoodie"
+              ? "\\bhoodies?\\b"
+              : "\\bpolos?\\b",
+          "i",
+        ).test(data.garment),
+    );
+  const quantityMismatch =
+    /^\d+$/.test(data.quantity) && Number(data.quantity) !== attachedQuantity;
   const [availability, setAvailability] = useState<{
     enabled: boolean;
     siteKey?: string;
@@ -56,6 +106,7 @@ export function StartOrderPage() {
   const [saved, setSaved] = useState(false);
   const [website, setWebsite] = useState("");
   const pending = useRef<{ signature: string; id: string } | null>(null);
+  const submitting = useRef(false);
   const heading = useRef<HTMLHeadingElement>(null);
   const [step, setStep] = useState(1);
   useEffect(() => {
@@ -104,6 +155,15 @@ export function StartOrderPage() {
     setStep(next);
     requestAnimationFrame(() => heading.current?.focus());
   }
+  function resolveShopChoice(useSelected: boolean) {
+    if (useSelected && shopChoice) update("garment", shopChoice.garment);
+    setShopChoice(null);
+    const url = new URL(window.location.href);
+    url.searchParams.delete("item");
+    url.searchParams.delete("type");
+    window.history.replaceState(null, "", url);
+    requestAnimationFrame(() => heading.current?.focus());
+  }
   const exportRequest = () =>
     downloadText(
       "BEE-project-request.json",
@@ -137,7 +197,17 @@ export function StartOrderPage() {
   }
   async function submit(event: FormEvent) {
     event.preventDefault();
-    if (busy || receipt || !availability?.enabled) return;
+    if (
+      submitting.current ||
+      receipt ||
+      step !== 3 ||
+      shopChoice ||
+      !availability?.enabled ||
+      !consent ||
+      !token
+    )
+      return;
+    submitting.current = true;
     setError("");
     setBusy(true);
     try {
@@ -202,6 +272,7 @@ export function StartOrderPage() {
       setToken("");
       setAttempt((n) => n + 1);
     } finally {
+      submitting.current = false;
       setBusy(false);
     }
   }
@@ -250,7 +321,10 @@ export function StartOrderPage() {
         <header>
           <span className="eyebrow">Custom by BEE</span>
           <h1>Plan your custom piece.</h1>
-          <p>Choose your piece, add the details, and review your idea.</p>
+          <p>
+            Choose your piece, add the details, and review your idea. No payment
+            is taken here.
+          </p>
         </header>
         {availability?.enabled === false && (
           <aside className="availability-note">
@@ -264,13 +338,63 @@ export function StartOrderPage() {
           </aside>
         )}
       </div>
+      {items.length > 0 && (
+        <section
+          className="request-review request-attached-context"
+          aria-label="Attached custom pieces"
+        >
+          <h2>Your custom pieces are attached.</h2>
+          <p>
+            {snapshots
+              .map(
+                (item) =>
+                  `${item.quantity} × ${item.design ? studioGarments[item.design.garment] : item.productSlug}`,
+              )
+              .join(" · ")}
+          </p>
+          {garmentMismatch || quantityMismatch ? (
+            <p role="status">
+              Your brief has different garment or quantity details. Review the
+              attached designs and update the brief if needed; your saved
+              details have been kept.
+            </p>
+          ) : (
+            <p>
+              Review the designs alongside your project details before sending.
+            </p>
+          )}
+          <a href="/cart">Review attached designs →</a>
+        </section>
+      )}
+      {shopChoice && (
+        <section
+          className="request-review quote-shop-choice"
+          aria-labelledby="shop-choice-heading"
+        >
+          <h2 id="shop-choice-heading">You already have a brief started.</h2>
+          <p>
+            You chose {shopChoice.garment.toLowerCase()} in the shop. Your saved
+            brief is for {data.garment}. Choose which item to use. Your notes,
+            sizes, and attached designs will stay in this brief for you to
+            review.
+          </p>
+          <div className="bee-actions">
+            <button type="button" onClick={() => resolveShopChoice(true)}>
+              Use {shopChoice.garment.toLowerCase()} for this brief
+            </button>
+            <button type="button" onClick={() => resolveShopChoice(false)}>
+              Keep my saved item
+            </button>
+          </div>
+        </section>
+      )}
       <div className="quote-layout">
         <div>
           <nav className="quote-steps" aria-label="Request steps">
             {["Project", "Details", "Contact & review"].map((label, index) => (
               <button
                 key={label}
-                disabled={busy}
+                disabled={busy || !!shopChoice}
                 aria-current={step === index + 1 ? "step" : undefined}
                 onClick={() => move(index + 1)}
               >
@@ -280,7 +404,7 @@ export function StartOrderPage() {
             ))}
           </nav>
           <form onSubmit={submit} className="quote-form">
-            <fieldset disabled={busy}>
+            <fieldset disabled={busy || !!shopChoice}>
               <h2 ref={heading} tabIndex={-1}>
                 {
                   [
@@ -440,12 +564,21 @@ export function StartOrderPage() {
                     <button type="button" onClick={() => move(2)}>
                       Edit project details
                     </button>
+                    <button type="button" onClick={() => move(1)}>
+                      Edit garments or quantity
+                    </button>
                   </section>
+                  <p id="contact-help">
+                    {availability?.enabled
+                      ? "Your name and email are required to send a request. Other contact details are optional."
+                      : "Contact details are optional while you plan. You can save or download this brief without them."}
+                  </p>
                   <div className="quote-fields">
                     <label>
                       Your name
                       <input
-                        required
+                        required={availability?.enabled === true}
+                        aria-describedby="contact-help"
                         maxLength={120}
                         autoComplete="name"
                         value={data.name}
@@ -464,7 +597,8 @@ export function StartOrderPage() {
                     <label>
                       Email
                       <input
-                        required
+                        required={availability?.enabled === true}
+                        aria-describedby="contact-help"
                         type="email"
                         maxLength={254}
                         autoComplete="email"
@@ -497,6 +631,7 @@ export function StartOrderPage() {
                   <label className="quote-consent">
                     <input
                       type="checkbox"
+                      disabled={!availability?.enabled}
                       checked={consent}
                       onChange={(e) => setConsent(e.target.checked)}
                     />
@@ -514,15 +649,20 @@ export function StartOrderPage() {
                     />
                   )}
                   <p className="quote-note">
-                    Pricing, garment availability, artwork, and timing need
-                    confirmation before production. Only PNG, JPEG and WebP
+                    This is a request for a quote, not a purchase. Review the
+                    price and artwork with BEE before choosing to pay; approve
+                    the final proof before production. Only PNG, JPEG and WebP
                     mockup previews are attached here; original production files
                     are arranged during review.
                   </p>
                   <button
                     className="button"
                     disabled={
-                      !availability?.enabled || !consent || !token || busy
+                      !availability?.enabled ||
+                      !consent ||
+                      !token ||
+                      busy ||
+                      !!shopChoice
                     }
                     type="submit"
                   >
@@ -556,7 +696,8 @@ export function StartOrderPage() {
               <summary>More options</summary>
               <button onClick={exportRequest}>Download request</button>
             </details>
-            <span>
+            <span role="status">
+              {saved && "Draft saved on this device. "}
               Your contact details remain on this device until you submit.
               Downloads may contain personal information and artwork.
             </span>
@@ -642,7 +783,8 @@ export function StartOrderPage() {
             <strong>What happens next?</strong>
             <p>
               Once received, BEE reviews the fit, clarifies the details, and
-              prepares a quote. You approve the final proof before production.
+              prepares a quote. You review the price before choosing to pay and
+              approve the final proof before production.
             </p>
           </div>
         </aside>

@@ -3,7 +3,14 @@ import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { createRoot, type Root } from "react-dom/client";
 import { act } from "react";
 import { StartOrderPage } from "../src/pages/StartOrderPage";
-import { readProjects, saveProjectDraft } from "../src/data/projectStore";
+import {
+  readProjectDraft,
+  readProjects,
+  saveProjectDraft,
+  emptyProjectIntake,
+  saveStudioDraft,
+  upsertBagItem,
+} from "../src/data/projectStore";
 vi.mock("../src/components/Turnstile", () => ({
   Turnstile: ({ onToken }: { onToken: (token: string) => void }) => (
     <button type="button" onClick={() => onToken("test-token")}>
@@ -21,6 +28,7 @@ const json = (value: unknown, status = 200) =>
 beforeEach(() => {
   Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true });
   localStorage.clear();
+  window.history.replaceState(null, "", "/start-order");
   saveProjectDraft({
     name: "Test Customer",
     email: "test@example.com",
@@ -48,6 +56,106 @@ async function click(text: string) {
   expect(button).toBeDefined();
   await act(async () => button!.click());
 }
+function attachDesign(garment: "tee" | "hoodie", quantity: number) {
+  const id = `studio-${garment}`;
+  saveStudioDraft({
+    id,
+    name: `My ${garment}`,
+    garment,
+    color: "#15191d",
+    view: "front",
+    decoration: "graphic",
+    text: "",
+    textColor: "#ffffff",
+    placement: "center-front",
+    x: 50,
+    y: 45,
+    scale: 100,
+    size: "M",
+    quantity,
+    createdAt: "2026-10-29T00:00:00Z",
+    updatedAt: "2026-10-29T00:00:00Z",
+  });
+  upsertBagItem({
+    id,
+    draftId: id,
+    productSlug:
+      garment === "tee" ? "creator-graphic-tee" : "heavyweight-creator-hoodie",
+    color: "Black",
+    size: "M",
+    quantity,
+    decoration: "graphic",
+  });
+}
+it("carries a single Studio garment and quantity into an empty brief", async () => {
+  saveProjectDraft(emptyProjectIntake);
+  attachDesign("hoodie", 7);
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async () => json({ enabled: false })),
+  );
+  await render();
+  expect(
+    (
+      host.querySelector(
+        'input[placeholder="Polos for the team, hoodies for a merch drop…"]',
+      ) as HTMLInputElement
+    ).value,
+  ).toBe("Hoodies");
+  expect(
+    (
+      host.querySelector(
+        'input[placeholder="About 30 pieces, or still deciding"]',
+      ) as HTMLInputElement
+    ).value,
+  ).toBe("7");
+  expect(host.textContent).toContain("7 × Hoodies");
+  expect(host.textContent).not.toContain("Your brief has different");
+});
+it("keeps existing brief details and flags a mismatch with attached Studio designs", async () => {
+  attachDesign("hoodie", 1);
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async () => json({ enabled: false })),
+  );
+  await render();
+  expect(
+    (
+      host.querySelector(
+        'input[placeholder="Polos for the team, hoodies for a merch drop…"]',
+      ) as HTMLInputElement
+    ).value,
+  ).toBe("Polos");
+  expect(readProjectDraft().quantity).toBe("24");
+  expect(host.textContent).toContain(
+    "Your brief has different garment or quantity details",
+  );
+});
+it("totals mixed Studio quantities without guessing one garment", async () => {
+  saveProjectDraft(emptyProjectIntake);
+  attachDesign("hoodie", 2);
+  attachDesign("tee", 3);
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async () => json({ enabled: false })),
+  );
+  await render();
+  expect(
+    (
+      host.querySelector(
+        'input[placeholder="Polos for the team, hoodies for a merch drop…"]',
+      ) as HTMLInputElement
+    ).value,
+  ).toBe("");
+  expect(
+    (
+      host.querySelector(
+        'input[placeholder="About 30 pieces, or still deciding"]',
+      ) as HTMLInputElement
+    ).value,
+  ).toBe("5");
+  expect(host.textContent).toContain("2 × Hoodies · 3 × T-shirts");
+});
 it("offers drafts without pretending offline requests were sent", async () => {
   vi.stubGlobal(
     "fetch",
@@ -58,6 +166,105 @@ it("offers drafts without pretending offline requests were sent", async () => {
   await click("Save a local project draft");
   expect(readProjects()[0]?.delivery).toBe("draft");
   expect(host.textContent).not.toContain("Request received");
+});
+it.each([true, false])(
+  "asks before changing a saved garment and preserves the rest of the brief: %s",
+  async (useSelected) => {
+    saveProjectDraft({
+      type: "bulk",
+      notes: "Keep our sleeve artwork",
+      sizePlan: { garment: "Polos", color: "Navy", counts: { M: 24 } },
+    });
+    window.history.replaceState(
+      null,
+      "",
+      "/start-order?type=custom&item=hoodie",
+    );
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => json({ enabled: false })),
+    );
+    await render();
+    expect(host.textContent).toContain("You already have a brief started");
+    expect(readProjectDraft().garment).toBe("Polos");
+    await click(
+      useSelected ? "Use hoodies for this brief" : "Keep my saved item",
+    );
+    expect(host.textContent).not.toContain("You already have a brief started");
+    expect(readProjectDraft().garment).toBe(useSelected ? "Hoodies" : "Polos");
+    expect(readProjectDraft().type).toBe("bulk");
+    expect(readProjectDraft().notes).toBe("Keep our sleeve artwork");
+    expect(readProjectDraft().sizePlan?.counts.M).toBe(24);
+    expect(window.location.search).toBe("");
+  },
+);
+it("does not require contact details or consent for an offline planning draft", async () => {
+  saveProjectDraft({ name: "", email: "" });
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async () => json({ enabled: false })),
+  );
+  await render();
+  await click("Contact & review");
+  expect(host.querySelectorAll("input[required]")).toHaveLength(0);
+  expect(
+    (host.querySelector('input[type="checkbox"]') as HTMLInputElement).disabled,
+  ).toBe(true);
+  expect(host.textContent).toContain("not a purchase");
+  await click("Save a local project draft");
+  expect(readProjects()[0]?.delivery).toBe("draft");
+});
+it("requires the review step and security confirmation before sending", async () => {
+  const fetch = vi.fn(async () => json({ enabled: true, siteKey: "test" }));
+  vi.stubGlobal("fetch", fetch);
+  await render();
+  const send = () =>
+    host
+      .querySelector("form")!
+      .dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
+  await act(async () => {
+    send();
+  });
+  await click("Contact & review");
+  await act(async () => {
+    send();
+  });
+  expect(fetch).toHaveBeenCalledTimes(1);
+  expect(readProjects()).toHaveLength(0);
+  expect(host.querySelectorAll("input[required]")).toHaveLength(2);
+});
+it("allows only one request while a confirmation is pending", async () => {
+  let finish!: (response: Response) => void;
+  const fetch = vi.fn(async (url) =>
+    url === "/api/intake/status"
+      ? json({ enabled: true, siteKey: "test" })
+      : new Promise<Response>((resolve) => {
+          finish = resolve;
+        }),
+  );
+  vi.stubGlobal("fetch", fetch);
+  await render();
+  await click("Contact & review");
+  await act(async () =>
+    (host.querySelector('input[type="checkbox"]') as HTMLInputElement).click(),
+  );
+  await click("Test security check");
+  await act(async () => {
+    const form = host.querySelector("form")!;
+    form.dispatchEvent(
+      new Event("submit", { bubbles: true, cancelable: true }),
+    );
+    form.dispatchEvent(
+      new Event("submit", { bubbles: true, cancelable: true }),
+    );
+  });
+  expect(fetch).toHaveBeenCalledTimes(2);
+  await act(async () =>
+    finish(
+      json({ reference: "BEE-once", receivedAt: "2026-10-29T00:00:00Z" }, 201),
+    ),
+  );
+  expect(readProjects()).toHaveLength(1);
 });
 it("shows all project details and the attached size plan for review", async () => {
   saveProjectDraft({

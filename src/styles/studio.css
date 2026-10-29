@@ -1,8 +1,9 @@
 .bee-studio {
+  --muted: #b6c4cc;
   max-width: 1600px;
   margin: auto;
   padding: 28px clamp(14px, 3vw, 48px) 60px;
-  color: #e8eff5;
+  color: #e1e5e9;
 }
 .bee-studio-heading {
   display: flex;
@@ -17,7 +18,27 @@
   margin: 10px 0;
 }
 .bee-studio-heading p {
-  color: #b3c1d1;
+  color: #b6c4cc;
+}
+.bee-studio-heading .bee-studio-scope {
+  max-width: 640px;
+  font-size: 0.84rem;
+  line-height: 1.6;
+  margin-top: 8px;
+}
+.bee-recovery-choice {
+  min-height: 55vh;
+}
+.bee-recovery-choice h1 {
+  font-size: clamp(2rem, 5vw, 3rem);
+  margin-block: 16px;
+}
+.bee-recovery-choice > p {
+  max-width: 740px;
+}
+.bee-recovery-choice .bee-actions {
+  margin-top: 24px;
+  gap: 12px;
 }
 .bee-studio button,
 .bee-studio input,
@@ -27,14 +48,14 @@
 .bee-studio button {
   min-height: 44px;
   padding: 10px 14px;
-  background: #202c3c;
-  border: 1px solid #3c4d62;
+  background: #20262a;
+  border: 1px solid #75818d;
   border-radius: 7px;
-  color: #edf4ff;
+  color: #e1e5e9;
   cursor: pointer;
 }
 .bee-studio button:hover {
-  background: #2b405a;
+  background: #303b40;
 }
 .bee-studio button:disabled {
   opacity: 0.45;
@@ -42,18 +63,18 @@
 }
 .bee-studio button[aria-pressed="true"],
 .bee-studio .is-selected {
-  border-color: #56aeff;
-  background: #183e65;
+  border-color: #5eead4;
+  background: #164b47;
 }
 .bee-studio :focus-visible {
-  outline: 3px solid #8ccbff;
+  outline: 3px solid #5eead4;
   outline-offset: 3px;
 }
 .bee-studio label {
   display: grid;
   gap: 6px;
   font-size: 0.83rem;
-  color: #b8c9db;
+  color: #c1cbd2;
 }
 .bee-studio input:not([type="checkbox"]),
 .bee-studio select {
@@ -61,13 +82,21 @@
   min-width: 0;
   min-height: 44px;
   padding: 9px;
-  border: 1px solid #40526a;
+  border: 1px solid #75818d;
   border-radius: 5px;
-  background: #0d1724;
-  color: #f0f6ff;
+  background: #11151a;
+  color: #e1e5e9;
 }
 .bee-studio input[type="color"] {
   padding: 3px;
+}
+.bee-studio input::placeholder {
+  color: #b6c4cc;
+  opacity: 1;
+}
+.bee-studio input[type="checkbox"],
+.bee-studio input[type="range"] {
+  accent-color: #14b8a6;
 }
 .bee-projectbar {
   display: flex;
@@ -75,8 +104,8 @@
   flex-wrap: wrap;
   gap: 10px;
   padding: 16px;
-  background: #111d2b;
-  border: 1px solid #2c3c50;
+  background: #20262a;
+  border: 1px solid #414e57;
   border-radius: 10px;
   margin-bottom: 16px;
 }
@@ -88,7 +117,7 @@
   font-size: 0.76rem;
   align-self: center;
   max-width: 180px;
-  color: #a3b7cd;
+  color: #b6c4cc;
 }
 .bee-editor-grid {
   display: grid;
@@ -98,8 +127,8 @@
 }
 .bee-tools,
 .bee-properties {
-  background: #111d2b;
-  border: 1px solid #2c3c50;
+  background: #20262a;
+  border: 1px solid #414e57;
   border-radius: 10px;
   padding: 16px;
   display: grid;
@@ -123,7 +152,7 @@
 }
 .bee-hint {
   font-size: 0.75rem;
-  color: #a5b6c9;
+  color: #b6c4cc;
   margin: 0;
 }
 .bee-layers {
@@ -138,12 +167,12 @@
 }
 .bee-layers small {
   display: block;
-  color: #a7c4e2;
+  color: #c1cbd2;
   font-size: 0.68rem;
   margin-top: 4px;
 }
 .bee-studio details {
-  border-top: 1px solid #354559;
+  border-top: 1px solid #414e57;
   padding-top: 12px;
 }
 .bee-studio summary {
@@ -155,8 +184,8 @@
 }
 .bee-stage {
   min-width: 0;
-  background: #172333;
-  border: 1px solid #344356;
+  background: #20262a;
+  border: 1px solid #414e57;
   border-radius: 10px;
   padding: 14px;
 }
@@ -180,7 +209,7 @@
 .bee-viewbar span,
 .bee-exportbar span {
   font-size: 0.74rem;
-  color: #afc2d7;
+  color: #c1cbd2;
 }
 .bee-board {
   width: 100%;
@@ -229,24 +258,29 @@
   min-height: 44px;
 }
 .bee-quality {
-  border-top: 1px solid #354559;
+  border-top: 1px solid #414e57;
   padding-top: 15px;
   font-size: 0.8rem;
-  color: #b4c4d7;
+  color: #c1cbd2;
 }
 .bee-quality p[role="status"] {
   color: #ffd38b;
 }
 .bee-studio .bee-primary {
-  background: #1278c9;
-  border-color: #67b6f6;
+  background: #14b8a6;
+  border-color: #14b8a6;
+  color: #11151a;
   font-weight: 700;
+}
+.bee-studio .bee-primary:hover {
+  background: #5eead4;
+  border-color: #5eead4;
 }
 .bee-feedback {
   position: sticky;
   bottom: 12px;
-  background: #142b43;
-  border: 1px solid #497daa;
+  background: #164b47;
+  border: 1px solid #14b8a6;
   border-radius: 8px;
   padding: 14px;
   box-shadow: 0 8px 30px #0006;
@@ -278,7 +312,7 @@
   text-align: center;
   width: 100%;
   font-size: 0.75rem;
-  color: #aebfd0;
+  color: #b6c4cc;
 }
 .bee-design-summary {
   display: flex;
@@ -382,8 +416,8 @@
   flex-wrap: wrap;
 }
 .bee-journey [aria-current="step"] {
-  background: #183e65;
-  border-color: #8ccbff;
+  background: #164b47;
+  border-color: #5eead4;
 }
 .bee-start-panel {
   max-width: 960px;
@@ -423,12 +457,12 @@
 }
 .bee-start-paths span,
 .bee-guided p {
-  color: #bcc9d8;
+  color: #c1cbd2;
   line-height: 1.6;
 }
 .bee-template-form {
   padding: 24px;
-  border: 1px solid #3c4d62;
+  border: 1px solid #75818d;
   border-radius: 12px;
   margin-top: 24px;
   display: grid;
@@ -461,7 +495,7 @@
   display: grid;
   gap: 10px;
   padding: 18px;
-  border: 1px solid #665486;
+  border: 1px solid #75818d;
   border-radius: 10px;
 }
 .bee-guided .bee-garment-preview {

@@ -102,6 +102,14 @@ it.each([
   ["657581", "ffffff"],
   ["14b8a6", "11151a"],
   ["b6c4cc", "11151a"],
+  // Studio controls, selected steps, primary actions and muted helper text.
+  ["e1e5e9", "20262a"],
+  ["e1e5e9", "303b40"],
+  ["e1e5e9", "164b47"],
+  ["c1cbd2", "303b40"],
+  ["c1cbd2", "164b47"],
+  ["b6c4cc", "20262a"],
+  ["11151a", "5eead4"],
 ])("meets 4.5:1 normal-text contrast for #%s on #%s", (fg, bg) => {
   const [light, dark] = [luminance(fg), luminance(bg)].sort((a, b) => b - a);
   expect((light! + 0.05) / (dark! + 0.05)).toBeGreaterThanOrEqual(4.5);

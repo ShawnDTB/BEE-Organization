@@ -7,8 +7,19 @@ import { HomePageV4 } from "../src/pages/HomePageV4";
 import { WorkGallery } from "../src/components/WorkGallery";
 import { StartOrderPage } from "../src/pages/StartOrderPage";
 import { saveProjectDraft } from "../src/data/projectStore";
+import { shopOptions, studioHref } from "../src/content/storefront";
 let host: HTMLDivElement;
 let root: Root;
+it("only routes editor-supported garments into a matching custom studio", () => {
+  expect(shopOptions.map((option) => [option.id, studioHref(option)])).toEqual([
+    ["tee", "/studio?garment=tee"],
+    ["hoodie", "/studio?garment=hoodie"],
+    ["hat", null],
+    ["decal", null],
+    ["polo", "/studio?garment=polo"],
+    ["embroidered-cap", null],
+  ]);
+});
 beforeEach(() => {
   Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true });
   localStorage.clear();

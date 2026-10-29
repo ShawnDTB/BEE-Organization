@@ -4,6 +4,7 @@ import {
   planningHref,
   shopCategories,
   shopOptions,
+  studioHref,
   type ShopCategory,
 } from "../content/storefront";
 export function ShopV2Page() {
@@ -36,9 +37,12 @@ export function ShopV2Page() {
         <div className="sf-shop-title">
           <div>
             <span className="sf-kicker">Custom apparel & graphics</span>
-            <h1>Find your next favorite.</h1>
+            <h1>Start with a piece. Make it yours.</h1>
           </div>
-          <p>Choose a piece and explore your custom options.</p>
+          <p>
+            Your team, your artwork, your story. Choose the starting point for
+            your custom piece.
+          </p>
         </div>
         <aside className="sf-shop-notice" aria-label="Shop availability">
           <strong>Collection in progress</strong>
@@ -98,31 +102,72 @@ export function ShopV2Page() {
                   <summary>What to know</summary>
                   <p>{option.detail}</p>
                 </details>
-                <a className="sf-product-link" href={planningHref(option)}>
-                  Plan {option.garment.toLowerCase()}{" "}
-                  <span aria-hidden="true">↗</span>
-                </a>
+                {studioHref(option) ? (
+                  <div className="sf-product-actions">
+                    <a className="sf-product-link" href={studioHref(option)!}>
+                      {option.id === "tee"
+                        ? "Design a custom T-shirt"
+                        : option.id === "hoodie"
+                          ? "Design a custom hoodie"
+                          : "Design a custom polo"}
+                      <span aria-hidden="true">↗</span>
+                    </a>
+                    <a
+                      className="sf-product-assist"
+                      href={planningHref(option)}
+                      aria-label={`Ask BEE for help with ${option.garment.toLowerCase()}`}
+                    >
+                      Ask BEE for help
+                    </a>
+                  </div>
+                ) : (
+                  <a className="sf-product-link" href={planningHref(option)}>
+                    Plan {option.garment.toLowerCase()}{" "}
+                    <span aria-hidden="true">↗</span>
+                  </a>
+                )}
               </div>
             </article>
           ))}
         </div>
         <p className="sf-catalog-note">
-          Illustrations show product types, not completed BEE work. Saving an
-          idea opens the planner; it does not submit or pay for an order.
+          Illustrations show product types, not completed BEE work. Designs and
+          briefs save on this device; they do not submit or pay for an order.
         </p>
       </section>
-      <section className="sf-help sf-wrap">
+      <section
+        className="sf-help sf-wrap"
+        aria-labelledby="studio-entry-heading"
+      >
         <div>
-          <span className="sf-kicker">Something else in mind?</span>
-          <h2>Start with the idea you have.</h2>
+          <span className="sf-kicker">Made for custom</span>
+          <h2 id="studio-entry-heading">Start with the idea you have.</h2>
           <p>
-            A few words are enough to begin. Save the details in the
-            custom-order planner and come back when you're ready.
+            Try words and artwork on a garment in the design studio, or describe
+            your idea in the planner. No finished artwork needed.
           </p>
         </div>
-        <a className="sf-button" href="/start-order">
-          Open the planner <span aria-hidden="true">↗</span>
-        </a>
+        <div className="sf-custom-actions">
+          <a className="sf-button" href="/studio">
+            Open the design studio <span aria-hidden="true">↗</span>
+          </a>
+          <a className="sf-text-link" href="/start-order">
+            Describe my idea instead <span aria-hidden="true">↗</span>
+          </a>
+        </div>
+      </section>
+      <section
+        className="sf-order-expectations sf-wrap"
+        aria-labelledby="custom-process-heading"
+      >
+        <h2 id="custom-process-heading">
+          Your idea comes first. Commitment comes after review.
+        </h2>
+        <p>
+          For custom work, the garment, artwork, quantity, price, and timing
+          need to be confirmed together. A saved concept is the starting point;
+          an approved proof is what guides production.
+        </p>
       </section>
     </div>
   );

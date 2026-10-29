@@ -1,4 +1,29 @@
 import { readFile, writeFile, mkdir } from "node:fs/promises";
+const manifest = JSON.parse(await readFile("dist/.vite/manifest.json", "utf8"));
+const routeSources = {
+  "/": "src/pages/HomePageV4.tsx",
+  "/shop": "src/pages/ShopV2.tsx",
+  "/start-order": "src/pages/StartOrderPage.tsx",
+};
+function routePreloads(path) {
+  const source = routeSources[path];
+  if (!source) return "";
+  const seen = new Set();
+  function collect(key) {
+    const chunk = manifest[key];
+    if (!chunk || seen.has(chunk.file)) return;
+    seen.add(chunk.file);
+    // Only static dependencies belong in the critical path. In particular,
+    // never preload the Studio's dynamic Fabric renderer into the storefront.
+    for (const dependency of chunk.imports || []) collect(dependency);
+  }
+  collect(source);
+  return [...seen]
+    .map((file) => `<link rel="modulepreload" crossorigin href="/${file}">`)
+    .join("");
+}
+const heroPreload =
+  '<link rel="preload" as="image" href="/storefront/apparel-study.webp" imagesrcset="/storefront/apparel-study-640.webp 640w, /storefront/apparel-study-960.webp 960w, /storefront/apparel-study.webp 1400w" imagesizes="(max-width: 760px) calc(100vw - 36px), (max-width: 1999px) 50vw, 900px" fetchpriority="high">';
 const routes = {
   "/": [
     "Custom Apparel & Embroidery",
@@ -68,7 +93,10 @@ for (const [path, [title, description]] of Object.entries(routes)) {
   const html = base
     .replace(/<title>.*?<\/title>/s, "")
     .replace(/<meta name="description"[^>]*>/, "")
-    .replace("</head>", `${head}</head>`);
+    .replace(
+      "</head>",
+      `${head}${routePreloads(path)}${path === "/" ? heroPreload : ""}</head>`,
+    );
   const directory = path === "/" ? "dist" : `dist${path}`;
   await mkdir(directory, { recursive: true });
   await writeFile(`${directory}/index.html`, html);
@@ -79,7 +107,7 @@ for (const path of privateRoutes) {
     `dist${path}/index.html`,
     base.replace(
       "</head>",
-      '<meta name="robots" content="noindex, nofollow"></head>',
+      `<meta name="robots" content="noindex, nofollow">${routePreloads(path)}</head>`,
     ),
   );
 }
@@ -88,10 +116,7 @@ await writeFile(
   `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${Object.keys(
     routes,
   )
-    .filter(
-      (path) =>
-        !["/our-work", "/schools-organizations"].includes(path),
-    )
+    .filter((path) => !["/our-work", "/schools-organizations"].includes(path))
     .map(
       (path) =>
         `<url><loc>https://worksbybee.com${path === "/" ? "" : path}</loc></url>`,

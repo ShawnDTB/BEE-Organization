@@ -55,7 +55,14 @@ export function SiteHeader({ currentPath }: { currentPath: string }) {
       body.style.inset = previous.inset;
       html.style.overflow = previous.htmlOverflow;
       window.scrollTo({ top: scrollY, behavior: "instant" });
-      opener?.focus({ preventScroll: true });
+      // A desktop resize hides the mobile trigger. Keep keyboard focus on
+      // the visible navigation rather than attempting to focus that control.
+      const focusTarget = window.matchMedia("(min-width: 761px)").matches
+        ? document.querySelector<HTMLAnchorElement>(
+            '.bee-desktop-nav a[aria-current="page"], .bee-desktop-nav a.bee-nav-shop',
+          )
+        : opener;
+      focusTarget?.focus({ preventScroll: true });
     };
   }, [open]);
   const close = () => setOpen(false);
@@ -85,10 +92,15 @@ export function SiteHeader({ currentPath }: { currentPath: string }) {
           ))}
         </nav>
 
-        <a className="bee-header-custom" href={quoteHref}>
-          Custom orders
+        <a
+          className="bee-header-custom"
+          href="/studio"
+          aria-current={current("/studio") ? "page" : undefined}
+        >
+          Custom design studio
         </a>
         <button
+          type="button"
           className="bee-menu-trigger"
           ref={trigger}
           aria-haspopup="dialog"
@@ -117,6 +129,7 @@ export function SiteHeader({ currentPath }: { currentPath: string }) {
                 <div className="bee-menu-heading">
                   <LogoLockup compact />
                   <button
+                    type="button"
                     ref={closeButton}
                     onClick={close}
                     aria-label="Close navigation"
@@ -136,14 +149,18 @@ export function SiteHeader({ currentPath }: { currentPath: string }) {
                       <span aria-hidden="true">↗</span>
                     </a>
                   ))}
+                  <a
+                    href="/studio"
+                    onClick={close}
+                    aria-current={current("/studio") ? "page" : undefined}
+                  >
+                    Custom design studio <span aria-hidden="true">↗</span>
+                  </a>
                   <details className="sf-menu-tools">
                     <summary>Project tools</summary>
                     <div className="bee-menu-utilities">
                       <a href="/group-planner" onClick={close}>
                         Group size planner
-                      </a>
-                      <a href="/studio" onClick={close}>
-                        Design studio
                       </a>
                       <a href="/account" onClick={close}>
                         My projects

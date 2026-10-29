@@ -67,7 +67,7 @@ it("reports failed browser recovery without claiming it was saved", async () => 
   await click("＋ Text");
   await act(async () => vi.advanceTimersByTime(550));
   expect(host.textContent).toContain("Recovery failed");
-  expect(host.textContent).not.toContain("Recovered automatically");
+  expect(host.textContent).not.toContain("Saved on this device");
 });
 it("recovers newer edits after explicitly reopening a saved draft", async () => {
   await act(async () => root.render(<StudioPageV4 />));
@@ -106,7 +106,7 @@ it("starts new visitors guided and preserves template work across modes and undo
   expect(readDrafts()[0]!.document!.surfaces.front[0]!.width).toBe(480);
   await click("Guided");
   await click("Review & continue →");
-  expect(host.textContent).toContain("Ready for BEE?");
+  expect(host.textContent).toContain("Review your custom concept.");
   expect(host.textContent).toContain("2 visible design elements");
 });
 
@@ -157,6 +157,77 @@ async function setField(label: string, value: string) {
     input.dispatchEvent(new Event("input", { bubbles: true }));
   });
 }
+it("carries the selected hoodie into a one-piece concept and saves recovery without live chatter", async () => {
+  history.replaceState({}, "", "/studio?garment=hoodie");
+  await act(async () => root.render(<StudioPageV4 />));
+  await act(async () => vi.advanceTimersByTime(550));
+  const recovered = JSON.parse(localStorage.getItem("bee-studio-recovery-v2")!);
+  expect(recovered.garment).toBe("hoodie");
+  expect(recovered.quantity).toBe(1);
+  expect(host.textContent).toContain("No order or payment is placed here");
+  const status = [...host.querySelectorAll("[role=status]")]
+    .map((n) => n.textContent)
+    .join(" ");
+  expect(status).not.toContain("Saved on this device");
+  expect(host.textContent).toContain("Saved on this device");
+});
+it.each([true, false])(
+  "protects autosaved work when a shop garment starts a new concept: %s",
+  async (startNew) => {
+    await act(async () => root.render(<StudioPageV4 />));
+    await click("＋ Text");
+    await act(async () => vi.advanceTimersByTime(550));
+    const recovery = localStorage.getItem("bee-studio-recovery-v2")!;
+    const originalId = JSON.parse(recovery).id;
+    expect(readDrafts()).toHaveLength(0);
+    await act(async () => root.unmount());
+    history.replaceState({}, "", "/studio?garment=hoodie");
+    root = createRoot(host);
+    await act(async () => root.render(<StudioPageV4 />));
+    expect(host.textContent).toContain("Keep your current design?");
+    await act(async () => vi.advanceTimersByTime(550));
+    expect(localStorage.getItem("bee-studio-recovery-v2")).toBe(recovery);
+    await click(
+      startNew
+        ? "Save current & start a new hoodie"
+        : "Continue my current design",
+    );
+    expect(document.activeElement).toBe(host.querySelector("h1"));
+    await act(async () => vi.advanceTimersByTime(550));
+    const next = JSON.parse(localStorage.getItem("bee-studio-recovery-v2")!);
+    if (startNew) {
+      expect(
+        readDrafts().find((draft) => draft.id === originalId)?.document
+          ?.surfaces.front,
+      ).toHaveLength(1);
+      expect(next.garment).toBe("hoodie");
+      expect(next.document.surfaces.front).toHaveLength(0);
+      expect(next.id).not.toBe(originalId);
+    } else {
+      expect(next.garment).toBe("tee");
+      expect(next.document.surfaces.front).toHaveLength(1);
+      expect(next.id).toBe(originalId);
+    }
+  },
+);
+it("keeps recovery untouched when preserving the previous concept fails", async () => {
+  await act(async () => root.render(<StudioPageV4 />));
+  await click("＋ Text");
+  await act(async () => vi.advanceTimersByTime(550));
+  const recovery = localStorage.getItem("bee-studio-recovery-v2");
+  await act(async () => root.unmount());
+  history.replaceState({}, "", "/studio?garment=hoodie");
+  root = createRoot(host);
+  await act(async () => root.render(<StudioPageV4 />));
+  vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+    throw Error("quota");
+  });
+  await click("Save current & start a new hoodie");
+  await act(async () => vi.advanceTimersByTime(550));
+  expect(host.textContent).toContain("Keep your current design?");
+  expect(host.textContent).toContain("could not save your work");
+  expect(localStorage.getItem("bee-studio-recovery-v2")).toBe(recovery);
+});
 it("links numeric dimensions by default, undoes both together, and allows deliberate stretching", async () => {
   await act(async () => root.render(<StudioPageV4 />));
   await click("＋ Text");

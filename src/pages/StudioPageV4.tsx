@@ -59,9 +59,10 @@ const products = {
   hoodie: "heavyweight-creator-hoodie",
   polo: "embroidered-performance-polo",
 };
-function fresh(): StudioDraft {
+function fresh(
+  requested = new URLSearchParams(location.search).get("garment"),
+): StudioDraft {
   const now = new Date().toISOString();
-  const requested = new URLSearchParams(location.search).get("garment");
   const garment =
     requested === "hoodie" || requested === "polo" ? requested : "tee";
   return {
@@ -78,7 +79,7 @@ function fresh(): StudioDraft {
     y: 45,
     scale: 100,
     size: "M",
-    quantity: 12,
+    quantity: 1,
     createdAt: now,
     updatedAt: now,
     document: emptyDocument(),
@@ -97,7 +98,12 @@ function openDraft(d: StudioDraft): StudioDraft {
     document: doc,
   };
 }
-function initial() {
+type StudioStart = {
+  draft: StudioDraft;
+  message: string;
+  requestedGarment?: "tee" | "hoodie" | "polo";
+};
+function initial(): StudioStart {
   const params = new URLSearchParams(location.search);
   const found = getDraft(params.get("draft"));
   try {
@@ -105,10 +111,8 @@ function initial() {
     if (raw) {
       const parsed = JSON.parse(raw);
       const requested = params.get("draft");
-      if (
-        (requested && parsed.id === requested) ||
-        (!requested && !params.has("garment"))
-      ) {
+      if ((requested && parsed.id === requested) || !requested) {
+        const garment = params.get("garment");
         return {
           draft: {
             ...validateDesign(parsed),
@@ -116,6 +120,10 @@ function initial() {
             updatedAt: new Date().toISOString(),
           },
           message: "Recovered your latest studio work from this browser.",
+          ...(!requested &&
+          (garment === "tee" || garment === "hoodie" || garment === "polo")
+            ? { requestedGarment: garment }
+            : {}),
         };
       }
     }
@@ -140,6 +148,12 @@ function initial() {
 }
 export function StudioPageV4() {
   const [start] = useState(initial);
+  const [recoveryChoice, setRecoveryChoice] = useState(start.requestedGarment);
+  const studioHeading = useRef<HTMLHeadingElement>(null);
+  useEffect(() => {
+    if (start.requestedGarment && !recoveryChoice)
+      studioHeading.current?.focus();
+  }, [start.requestedGarment, recoveryChoice]);
   const [mode, setMode] = useState<"guided" | "advanced">(() => {
     try {
       return localStorage.getItem("bee-studio-mode") === "advanced"
@@ -190,6 +204,7 @@ export function StudioPageV4() {
   const latest = useRef(working);
   latest.current = working;
   useEffect(() => {
+    if (recoveryChoice) return;
     const save = () => {
       try {
         const value = latest.current;
@@ -200,12 +215,12 @@ export function StudioPageV4() {
           `/studio?draft=${encodeURIComponent(value.id)}`,
         );
         saved.current = JSON.stringify({ draft, doc });
-        setSaveState("Recovered automatically on this browser");
+        setSaveState("Saved on this device");
       } catch {
         setSaveState("Recovery failed — download your design now");
       }
     };
-    setSaveState("Saving recovery…");
+    setSaveState("Saving on this device…");
     const timer = setTimeout(save, 500);
     const unload = () => {
       try {
@@ -217,8 +232,9 @@ export function StudioPageV4() {
       clearTimeout(timer);
       window.removeEventListener("pagehide", unload);
     };
-  }, [draft, doc]);
+  }, [draft, doc, recoveryChoice]);
   useEffect(() => {
+    if (recoveryChoice) return;
     const warn = (e: BeforeUnloadEvent) => {
       if (saved.current !== JSON.stringify({ draft, doc })) {
         e.preventDefault();
@@ -227,7 +243,7 @@ export function StudioPageV4() {
     };
     window.addEventListener("beforeunload", warn);
     return () => window.removeEventListener("beforeunload", warn);
-  }, [draft, doc]);
+  }, [draft, doc, recoveryChoice]);
   const commit = (next: StudioLayer[], target = surface) => {
     try {
       const checked = validateStudioDocument({
@@ -283,7 +299,7 @@ export function StudioPageV4() {
         });
       setStatus(
         toBag
-          ? "Both sides saved to your project bag. Review the project to request a quote."
+          ? "Both sides saved on this device. Open the custom planner to review your project details."
           : "Design saved to My projects on this browser.",
       );
       return true;
@@ -450,20 +466,81 @@ export function StudioPageV4() {
         l.y + l.height > 800 ||
         l.angle !== 0),
   );
+  if (recoveryChoice) {
+    const garmentName = recoveryChoice === "tee" ? "T-shirt" : recoveryChoice;
+    return (
+      <section
+        className="bee-studio bee-recovery-choice"
+        aria-labelledby="recovery-choice-heading"
+      >
+        <span className="eyebrow">Your saved concept</span>
+        <h1 id="recovery-choice-heading">Keep your current design?</h1>
+        <p>
+          You have a concept saved on this device. Continue it, or keep a copy
+          in My projects before starting a new {garmentName}.
+        </p>
+        <div className="bee-actions">
+          <button
+            onClick={() => {
+              setRecoveryChoice(undefined);
+              setStatus("Continuing your current concept.");
+            }}
+          >
+            Continue my current design
+          </button>
+          <button
+            onClick={() => {
+              if (!save()) return;
+              const next = fresh(recoveryChoice);
+              uploadEpoch.current++;
+              setDraft(next);
+              setHistory({ past: [], present: next.document!, future: [] });
+              setSelected(null);
+              setSurface("front");
+              setPreview(false);
+              setRecoveryChoice(undefined);
+              setStatus(
+                "Previous concept kept in My projects. Start your new design.",
+              );
+            }}
+          >
+            Save current & start a new {garmentName}
+          </button>
+          <button
+            onClick={() =>
+              downloadText(
+                "BEE-current-concept.json",
+                JSON.stringify(working),
+                "application/json",
+              )
+            }
+          >
+            Download current concept
+          </button>
+        </div>
+        <p role="status">{status}</p>
+      </section>
+    );
+  }
   return (
     <section className="bee-studio">
       <header className="bee-studio-heading">
         <div>
-          <span className="eyebrow">BEE Studio</span>
-          <h1>Make it yours.</h1>
-          <p>Build your artwork. Try it on. Keep every detail.</p>
+          <span className="eyebrow">Custom design studio</span>
+          <h1 ref={studioHeading} tabIndex={-1}>
+            Make it yours.
+          </h1>
+          <p>Create a custom concept. Preview it. Make it personal.</p>
+          <p className="bee-studio-scope">
+            Concepts stay on this device. No order or payment is placed here.
+          </p>
         </div>
         <button
           onClick={() => {
             if (save(true)) window.location.assign("/start-order");
           }}
         >
-          Prefer help from BEE? →
+          Save & open the custom planner →
         </button>
       </header>
       <div className="bee-stagebar" role="group" aria-label="Studio mode">
@@ -492,7 +569,11 @@ export function StudioPageV4() {
       </p>
       {mode === "guided" && (
         <>
-          <p role="status">{saveState}</p>
+          <p
+            role={saveState.startsWith("Recovery failed") ? "alert" : undefined}
+          >
+            {saveState}
+          </p>
           <GuidedStudio
             draft={draft}
             doc={doc}
@@ -554,7 +635,13 @@ export function StudioPageV4() {
                 onChange={(e) => setDraft({ ...draft, name: e.target.value })}
               />
             </label>
-            <span role="status">{saveState}</span>
+            <span
+              role={
+                saveState.startsWith("Recovery failed") ? "alert" : undefined
+              }
+            >
+              {saveState}
+            </span>
             <button onClick={() => save()}>Save to My projects</button>
             <button
               onClick={() =>

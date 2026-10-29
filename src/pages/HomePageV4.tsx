@@ -20,7 +20,10 @@ export function HomePageV4() {
             <br />
             <em>Made personal.</em>
           </h1>
-          <p>Custom T-shirts, hoodies, hats, and details that make it yours.</p>
+          <p>
+            For your crew, your next chapter, or an idea that feels like you.
+            Custom apparel starts with what matters to you.
+          </p>
           <div className="sf-hero-actions">
             <a className="sf-button" href="/shop">
               Explore the shop <span aria-hidden="true">↗</span>
@@ -30,6 +33,8 @@ export function HomePageV4() {
         <figure className="sf-hero-art">
           <img
             src="/storefront/apparel-study.webp"
+            srcSet="/storefront/apparel-study-640.webp 640w, /storefront/apparel-study-960.webp 960w, /storefront/apparel-study.webp 1400w"
+            sizes="(max-width: 760px) calc(100vw - 36px), (max-width: 1999px) 50vw, 900px"
             width="1400"
             height="933"
             alt="Apparel design study: a textured charcoal hoodie, a cream T-shirt and a cap with abstract teal graphics"
@@ -71,17 +76,55 @@ export function HomePageV4() {
         className="sf-custom-callout sf-wrap"
         aria-labelledby="custom-heading"
       >
-        <div>
-          <span className="sf-kicker">Custom by BEE</span>
-          <h2 id="custom-heading">Have something in mind?</h2>
-          <p>
-            Bring your artwork or a rough idea. We'll work through the details
-            together.
-          </p>
+        <div className="sf-custom-intro">
+          <div>
+            <span className="sf-kicker">The custom design studio</span>
+            <h2 id="custom-heading">Your idea. A piece only you could make.</h2>
+            <p>
+              A team worth showing up for. A gift with a story. Something
+              entirely your own. Try your words and artwork on a garment, then
+              shape the details with BEE.
+            </p>
+          </div>
+          <div className="sf-custom-actions">
+            <a className="sf-button" href="/studio">
+              Create a custom design <span aria-hidden="true">↗</span>
+            </a>
+            <a className="sf-text-link" href="/start-order">
+              Have BEE help with my idea <span aria-hidden="true">↗</span>
+            </a>
+          </div>
         </div>
-        <a className="sf-button" href="/start-order">
-          Plan a custom piece <span aria-hidden="true">↗</span>
-        </a>
+        <ol
+          className="sf-custom-steps"
+          aria-label="How a custom piece takes shape"
+        >
+          <li>
+            <span aria-hidden="true">01</span>
+            <div>
+              <h3>Pick your piece.</h3>
+              <p>Start with a T-shirt, hoodie, or polo.</p>
+            </div>
+          </li>
+          <li>
+            <span aria-hidden="true">02</span>
+            <div>
+              <h3>Make it personal.</h3>
+              <p>Add artwork, words, or a rough idea.</p>
+            </div>
+          </li>
+          <li>
+            <span aria-hidden="true">03</span>
+            <div>
+              <h3>Review it together.</h3>
+              <p>Confirm the design and quote before paying.</p>
+            </div>
+          </li>
+        </ol>
+        <p className="sf-custom-reassurance">
+          Explore freely. Studio saves a concept on this device; it does not
+          place an order or take payment.
+        </p>
       </section>
       <WorkGallery />
       <div className="sf-launch-note sf-wrap">

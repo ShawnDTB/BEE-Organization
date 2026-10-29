@@ -79,6 +79,14 @@ export const shopOptions = [
 export function planningHref(option: (typeof shopOptions)[number]) {
   return `/start-order?type=custom&item=${option.id}`;
 }
+// Only garments supported by the editor get a studio route. Other ideas
+// stay in the brief planner rather than opening an unrelated T-shirt.
+export function studioHref(option: (typeof shopOptions)[number]) {
+  const garment = { tee: "tee", hoodie: "hoodie", polo: "polo" }[
+    option.id as "tee" | "hoodie" | "polo"
+  ];
+  return garment ? `/studio?garment=${garment}` : null;
+}
 export const plannedCollections = [
   "Cars & motors",
   "Computers & gaming",

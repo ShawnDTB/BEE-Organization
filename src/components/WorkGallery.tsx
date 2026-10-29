@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useId, useState } from "react";
 import { workPhotos, type WorkPhoto } from "../content/storefront";
 export function WorkGallery({
   photos = workPhotos,
@@ -6,6 +6,7 @@ export function WorkGallery({
   photos?: readonly WorkPhoto[];
 }) {
   const [index, setIndex] = useState(0);
+  const slideId = useId();
   if (!photos.length) return null;
   const current = index % photos.length;
   const photo = photos[current];
@@ -24,6 +25,8 @@ export function WorkGallery({
         {photos.length > 1 && (
           <div className="sf-gallery-controls">
             <button
+              type="button"
+              aria-controls={slideId}
               onClick={() =>
                 setIndex((current + photos.length - 1) % photos.length)
               }
@@ -32,6 +35,8 @@ export function WorkGallery({
               ←
             </button>
             <button
+              type="button"
+              aria-controls={slideId}
               onClick={() => setIndex((current + 1) % photos.length)}
               aria-label="Next work photo"
             >
@@ -40,7 +45,12 @@ export function WorkGallery({
           </div>
         )}
       </div>
-      <figure>
+      <figure
+        id={slideId}
+        role="group"
+        aria-roledescription="slide"
+        aria-label={`${current + 1} of ${photos.length}`}
+      >
         <img
           src={photo.src}
           alt={photo.alt}
@@ -49,7 +59,7 @@ export function WorkGallery({
           loading="lazy"
           decoding="async"
         />
-        <figcaption aria-live="polite">
+        <figcaption aria-live="polite" aria-atomic="true">
           {photo.caption} · {current + 1} of {photos.length}
         </figcaption>
       </figure>
