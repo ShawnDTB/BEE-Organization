@@ -9,18 +9,26 @@ function routePreloads(path) {
   const source = routeSources[path];
   if (!source) return "";
   const seen = new Set();
+  const styles = new Set();
   function collect(key) {
     const chunk = manifest[key];
     if (!chunk || seen.has(chunk.file)) return;
     seen.add(chunk.file);
+    for (const css of chunk.css || []) styles.add(css);
     // Only static dependencies belong in the critical path. In particular,
     // never preload the Studio's dynamic Fabric renderer into the storefront.
     for (const dependency of chunk.imports || []) collect(dependency);
   }
   collect(source);
-  return [...seen]
-    .map((file) => `<link rel="modulepreload" crossorigin href="/${file}">`)
-    .join("");
+  return (
+    [...seen]
+      .map((file) => `<link rel="modulepreload" crossorigin href="/${file}">`)
+      .join("") +
+    [...styles]
+      .filter((file) => !base.includes(`href="/${file}"`))
+      .map((file) => `<link rel="stylesheet" href="/${file}">`)
+      .join("")
+  );
 }
 const heroPreload =
   '<link rel="preload" as="image" href="/storefront/apparel-study.webp" imagesrcset="/storefront/apparel-study-640.webp 640w, /storefront/apparel-study-960.webp 960w, /storefront/apparel-study.webp 1400w" imagesizes="(max-width: 760px) calc(100vw - 36px), (max-width: 1999px) 50vw, 900px" fetchpriority="high">';
